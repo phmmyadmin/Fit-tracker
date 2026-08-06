@@ -17,7 +17,7 @@ export default function DailyTimeline({ intakes }) {
           key={idx}
           style={{
             display: 'flex',
-            justify-content: 'space-between',
+            justifyContent: 'space-between',
             alignItems: 'center',
             padding: '1rem',
             background: 'var(--bg-subtle)',
