@@ -1,11 +1,11 @@
 import React from 'react';
-import { Clock } from 'lucide-react';
+import { Clock, Edit2 } from 'lucide-react';
 
-export default function DailyTimeline({ intakes }) {
+export default function DailyTimeline({ intakes, onItemClick }) {
   if (!intakes || intakes.length === 0) {
     return (
       <div style={{ color: 'var(--text-muted)', fontSize: '0.9rem', textAlign: 'center', padding: '2rem' }}>
-        No hay comidas registradas para este día.
+        No hay comidas registradas para este día. Escribe abajo para añadir.
       </div>
     );
   }
@@ -15,6 +15,7 @@ export default function DailyTimeline({ intakes }) {
       {intakes.map((item, idx) => (
         <div
           key={idx}
+          onClick={() => onItemClick && onItemClick(item, idx)}
           style={{
             display: 'flex',
             justifyContent: 'space-between',
@@ -22,10 +23,12 @@ export default function DailyTimeline({ intakes }) {
             padding: '1rem',
             background: 'var(--bg-subtle)',
             borderRadius: 'var(--radius-md)',
-            border: '1px solid var(--border-subtle)'
+            border: '1px solid var(--border-subtle)',
+            cursor: 'pointer',
+            transition: 'transform 0.15s ease, background 0.15s ease'
           }}
         >
-          <div>
+          <div style={{ flex: 1 }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', fontSize: '0.75rem', color: 'var(--color-indigo)', fontWeight: 600, marginBottom: '0.2rem' }}>
               <Clock size={13} />
               <span>{item.time || "12:00"}</span>
@@ -38,6 +41,7 @@ export default function DailyTimeline({ intakes }) {
               <span style={{ color: 'var(--color-fats)', fontWeight: 600 }}>{item.macros.fats}g G</span>
             </div>
           </div>
+          <Edit2 size={16} color="var(--text-subtle)" />
         </div>
       ))}
     </div>
