@@ -1423,13 +1423,23 @@
             "carbs": 0,
             "fats": 5.4
           }
+        },
+        {
+          "time": "11:36",
+          "description": "Platano (200g)",
+          "macros": {
+            "calories": 178,
+            "protein": 2.2,
+            "carbs": 45.6,
+            "fats": 0.6
+          }
         }
       ],
       "dailyTotals": {
-        "calories": 248,
-        "protein": 46.5,
-        "carbs": 0,
-        "fats": 5.4
+        "calories": 426,
+        "protein": 48.7,
+        "carbs": 45.6,
+        "fats": 6
       }
     }
   ]
