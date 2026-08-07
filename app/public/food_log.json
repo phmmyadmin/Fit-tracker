@@ -8,25 +8,12 @@
     },
     "maintenanceCalories": 2450,
     "weightLog": {
-      "startWeight": 84,
-      "targetWeight": 75,
-      "currentWeight": 81.2,
+      "startWeight": 73,
+      "targetWeight": 68,
       "history": [
         {
           "date": "2026-07-13",
-          "weight": 84
-        },
-        {
-          "date": "2026-07-20",
-          "weight": 83.1
-        },
-        {
-          "date": "2026-07-27",
-          "weight": 82.5
-        },
-        {
-          "date": "2026-08-03",
-          "weight": 81.2
+          "weight": 73
         }
       ]
     }

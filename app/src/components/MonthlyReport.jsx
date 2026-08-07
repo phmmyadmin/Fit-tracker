@@ -89,29 +89,33 @@ const MonthlyReport = ({ data }) => {
         </div>
         
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '1rem', textAlign: 'center', marginBottom: '1.5rem' }}>
-          <div style={{ background: 'var(--bg-card)', padding: '1rem', borderRadius: '16px' }}>
-            <div style={{ fontSize: '0.85rem', color: 'var(--text-muted)', marginBottom: '0.5rem' }}>Peso Actual</div>
-            <div style={{ fontSize: '1.5rem', fontWeight: 700, color: '#fff' }}>{latestWeight} kg</div>
+          <div style={{ background: 'var(--bg-card)', padding: '1.25rem', borderRadius: '16px', border: '1px solid var(--border-light)' }}>
+            <div style={{ fontSize: '0.85rem', color: 'var(--text-muted)', marginBottom: '0.5rem', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Actual</div>
+            <div style={{ fontSize: '1.5rem', fontWeight: 700, color: '#fff' }}>{latestWeight} <span style={{fontSize: '1rem', color: 'var(--text-muted)'}}>kg</span></div>
           </div>
-          <div style={{ background: 'var(--bg-card)', padding: '1rem', borderRadius: '16px' }}>
-            <div style={{ fontSize: '0.85rem', color: 'var(--text-muted)', marginBottom: '0.5rem' }}>Perdido Total</div>
-            <div style={{ fontSize: '1.5rem', fontWeight: 700, color: 'var(--color-carbs)' }}>-{totalLost.toFixed(1)} kg</div>
+          <div style={{ background: 'var(--bg-card)', padding: '1.25rem', borderRadius: '16px', border: '1px solid var(--border-light)' }}>
+            <div style={{ fontSize: '0.85rem', color: 'var(--text-muted)', marginBottom: '0.5rem', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Perdido</div>
+            <div style={{ fontSize: '1.5rem', fontWeight: 700, color: totalLost > 0 ? 'var(--color-carbs)' : 'var(--text-muted)' }}>
+              {totalLost > 0 ? `-${totalLost.toFixed(1)}` : '0'} <span style={{fontSize: '1rem', color: 'var(--text-muted)'}}>kg</span>
+            </div>
           </div>
-          <div style={{ background: 'var(--bg-card)', padding: '1rem', borderRadius: '16px' }}>
-            <div style={{ fontSize: '0.85rem', color: 'var(--text-muted)', marginBottom: '0.5rem' }}>Objetivo</div>
-            <div style={{ fontSize: '1.5rem', fontWeight: 700, color: 'var(--color-indigo)' }}>{targetWeight} kg</div>
+          <div style={{ background: 'var(--bg-card)', padding: '1.25rem', borderRadius: '16px', border: '1px solid var(--border-light)' }}>
+            <div style={{ fontSize: '0.85rem', color: 'var(--text-muted)', marginBottom: '0.5rem', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Meta</div>
+            <div style={{ fontSize: '1.5rem', fontWeight: 700, color: 'var(--color-indigo)' }}>{targetWeight} <span style={{fontSize: '1rem', color: 'var(--text-muted)'}}>kg</span></div>
           </div>
         </div>
 
-        <div style={{ background: 'var(--bg-card)', padding: '1.25rem', borderRadius: '16px' }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.5rem', fontSize: '0.9rem' }}>
-            <span style={{ color: 'var(--text-muted)' }}>Progreso hacia la meta</span>
-            <span style={{ color: 'var(--color-protein)', fontWeight: 600 }}>{remainingToTarget.toFixed(1)} kg restantes</span>
+        {startWeight !== targetWeight && (
+          <div style={{ background: 'var(--bg-card)', padding: '1.5rem', borderRadius: '16px', border: '1px solid var(--border-light)' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.75rem', fontSize: '0.9rem' }}>
+              <span style={{ color: 'var(--text-muted)', fontWeight: 500 }}>Progreso al objetivo</span>
+              <span style={{ color: 'var(--color-protein)', fontWeight: 600 }}>{Math.max(0, remainingToTarget).toFixed(1)} kg restantes</span>
+            </div>
+            <div style={{ height: '10px', background: 'var(--border-light)', borderRadius: '5px', overflow: 'hidden' }}>
+              <div style={{ width: `${progressPercent}%`, height: '100%', background: 'linear-gradient(90deg, var(--color-protein), #a855f7)', borderRadius: '5px', transition: 'width 1s ease' }} />
+            </div>
           </div>
-          <div style={{ height: '8px', background: 'var(--border-light)', borderRadius: '4px', overflow: 'hidden' }}>
-            <div style={{ width: `${progressPercent}%`, height: '100%', background: 'var(--color-protein)', borderRadius: '4px', transition: 'width 1s ease' }} />
-          </div>
-        </div>
+        )}
       </div>
     );
   }
