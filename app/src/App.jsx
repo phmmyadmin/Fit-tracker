@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Calendar, ChevronLeft, ChevronRight, CheckCircle2 } from 'lucide-react';
+import { Calendar, ChevronLeft, ChevronRight, CheckCircle2, LayoutDashboard, TrendingUp, CalendarRange, LineChart } from 'lucide-react';
 import MacroRing from './components/MacroRing';
 import DailyTimeline from './components/DailyTimeline';
 import WeeklyChart from './components/WeeklyChart';
@@ -314,25 +314,29 @@ export default function App() {
           className={`tab-item ${activeTab === 'dashboard' ? 'active' : ''}`}
           onClick={() => setActiveTab('dashboard')}
         >
-          Dashboard Diario
+          <LayoutDashboard size={16} />
+          <span>Diario</span>
         </button>
         <button
           className={`tab-item ${activeTab === 'weekly' ? 'active' : ''}`}
           onClick={() => setActiveTab('weekly')}
         >
-          Tendencias Semanales
+          <TrendingUp size={16} />
+          <span>Tendencias</span>
         </button>
         <button
           className={`tab-item ${activeTab === 'monthly' ? 'active' : ''}`}
           onClick={() => setActiveTab('monthly')}
         >
-          Reporte Mensual
+          <CalendarRange size={16} />
+          <span>Reporte</span>
         </button>
         <button
           className={`tab-item ${activeTab === 'progress' ? 'active' : ''}`}
           onClick={() => setActiveTab('progress')}
         >
-          Progreso de Peso
+          <LineChart size={16} />
+          <span>Progreso</span>
         </button>
       </div>
 
