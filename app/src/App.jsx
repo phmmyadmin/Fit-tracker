@@ -78,11 +78,11 @@ export default function App() {
     }
   };
 
-  const handleUpdateGrams = async (index, newGrams, rawName, newMacros) => {
+  const handleUpdateIntake = async (index, newDesc, newMacros) => {
     if (!data) return;
     const dayLog = data.dailyLogs.find(l => l.date === selectedDate);
     if (dayLog && dayLog.intakes[index]) {
-      dayLog.intakes[index].description = `${rawName} (${newGrams}g)`;
+      dayLog.intakes[index].description = newDesc;
       dayLog.intakes[index].macros = newMacros;
       
       // Recalculate totals
@@ -94,7 +94,7 @@ export default function App() {
       }), { calories: 0, protein: 0, carbs: 0, fats: 0 });
 
       setData({ ...data });
-      showToast(`Actualizado a ${newGrams}g`);
+      showToast(`Actualizado: ${newDesc}`);
     }
     setEditingItem(null);
   };
@@ -297,7 +297,7 @@ export default function App() {
         itemIndex={editingIndex}
         onClose={() => setEditingItem(null)}
         onDelete={handleDeleteItem}
-        onUpdateGrams={handleUpdateGrams}
+        onUpdate={handleUpdateIntake}
       />
     </div>
   );
