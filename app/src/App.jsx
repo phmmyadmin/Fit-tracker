@@ -116,7 +116,14 @@ export default function App() {
   };
 
   const totals = currentLog.dailyTotals;
-  const allDates = data.dailyLogs.map((l) => l.date);
+  
+  let allDates = data.dailyLogs.map((l) => l.date);
+  const todayStr = new Date().toISOString().slice(0, 10);
+  if (!allDates.includes(todayStr)) {
+    allDates.push(todayStr);
+    allDates.sort(); // keep it sorted
+  }
+  
   const currentIndex = allDates.indexOf(selectedDate);
 
   const prevDate = () => {
@@ -126,6 +133,8 @@ export default function App() {
   const nextDate = () => {
     if (currentIndex < allDates.length - 1) setSelectedDate(allDates[currentIndex + 1]);
   };
+
+  const goToToday = () => setSelectedDate(todayStr);
 
   return (
     <div className="app-container">
@@ -173,6 +182,22 @@ export default function App() {
           </div>
           <button className="nav-btn" onClick={nextDate} disabled={currentIndex === allDates.length - 1}>
             <ChevronRight size={16} />
+          </button>
+          <button 
+            onClick={goToToday}
+            style={{ 
+              marginLeft: '0.5rem', 
+              padding: '0.2rem 0.6rem', 
+              borderRadius: '12px', 
+              border: '1px solid var(--border-light)', 
+              background: 'var(--bg-subtle)', 
+              color: 'var(--text-main)', 
+              cursor: 'pointer',
+              fontWeight: 600,
+              fontSize: '0.8rem'
+            }}
+          >
+            Hoy
           </button>
         </div>
       </header>
@@ -259,7 +284,7 @@ export default function App() {
           logs={data.dailyLogs}
           selectedDate={selectedDate}
           onSelectDate={setSelectedDate}
-          targetProtein={targetMacros.protein}
+          targetMacros={targetMacros}
         />
       )}
 

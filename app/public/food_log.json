@@ -443,7 +443,7 @@
           "description": "2 burgers",
           "macros": {
             "calories": 171,
-            "protein": 13.0,
+            "protein": 13,
             "carbs": 12.4,
             "fats": 7.5
           }
@@ -453,7 +453,7 @@
           "description": "1 balut",
           "macros": {
             "calories": 171,
-            "protein": 13.0,
+            "protein": 13,
             "carbs": 12.4,
             "fats": 7.5
           }
@@ -463,7 +463,7 @@
           "description": "1 huevo",
           "macros": {
             "calories": 171,
-            "protein": 13.0,
+            "protein": 13,
             "carbs": 12.4,
             "fats": 7.5
           }
@@ -828,7 +828,7 @@
           "macros": {
             "calories": 142,
             "protein": 12.2,
-            "carbs": 18.0,
+            "carbs": 18,
             "fats": 2.4
           }
         },
@@ -838,7 +838,7 @@
           "macros": {
             "calories": 142,
             "protein": 12.2,
-            "carbs": 18.0,
+            "carbs": 18,
             "fats": 2.4
           }
         },
@@ -918,7 +918,7 @@
           "description": "50g avena",
           "macros": {
             "calories": 128,
-            "protein": 6.0,
+            "protein": 6,
             "carbs": 18.9,
             "fats": 3.4
           }
@@ -928,7 +928,7 @@
           "description": "100g yogur natural",
           "macros": {
             "calories": 128,
-            "protein": 6.0,
+            "protein": 6,
             "carbs": 18.9,
             "fats": 3.4
           }
@@ -959,7 +959,7 @@
           "description": "115g yogur",
           "macros": {
             "calories": 145,
-            "protein": 11.0,
+            "protein": 11,
             "carbs": 17.4,
             "fats": 3.5
           }
@@ -969,7 +969,7 @@
           "description": "30g avena",
           "macros": {
             "calories": 145,
-            "protein": 11.0,
+            "protein": 11,
             "carbs": 17.4,
             "fats": 3.5
           }
@@ -979,7 +979,7 @@
           "description": "2 mini burgers",
           "macros": {
             "calories": 145,
-            "protein": 11.0,
+            "protein": 11,
             "carbs": 17.4,
             "fats": 3.5
           }
@@ -1030,7 +1030,7 @@
           "macros": {
             "calories": 102,
             "protein": 3.8,
-            "carbs": 18.0,
+            "carbs": 18,
             "fats": 2.1
           }
         },
@@ -1040,7 +1040,7 @@
           "macros": {
             "calories": 102,
             "protein": 3.8,
-            "carbs": 18.0,
+            "carbs": 18,
             "fats": 2.1
           }
         },
@@ -1050,7 +1050,7 @@
           "macros": {
             "calories": 102,
             "protein": 3.8,
-            "carbs": 18.0,
+            "carbs": 18,
             "fats": 2.1
           }
         }
@@ -1261,7 +1261,7 @@
           "description": "120g pollo",
           "macros": {
             "calories": 150,
-            "protein": 14.0,
+            "protein": 14,
             "carbs": 16.1,
             "fats": 1.7
           }
@@ -1271,7 +1271,7 @@
           "description": "100g patata",
           "macros": {
             "calories": 150,
-            "protein": 14.0,
+            "protein": 14,
             "carbs": 16.1,
             "fats": 1.7
           }
@@ -1281,7 +1281,7 @@
           "description": "100g arroz",
           "macros": {
             "calories": 150,
-            "protein": 14.0,
+            "protein": 14,
             "carbs": 16.1,
             "fats": 1.7
           }
@@ -1435,7 +1435,7 @@
             "calories": 96,
             "protein": 3.5,
             "carbs": 15.4,
-            "fats": 3.0
+            "fats": 3
           }
         },
         {
@@ -1445,7 +1445,7 @@
             "calories": 96,
             "protein": 3.5,
             "carbs": 15.4,
-            "fats": 3.0
+            "fats": 3
           }
         },
         {
@@ -1483,8 +1483,8 @@
           "description": "Batido de plátano",
           "macros": {
             "calories": 270,
-            "protein": 8.0,
-            "carbs": 41.0,
+            "protein": 8,
+            "carbs": 41,
             "fats": 8.2
           }
         },
@@ -1493,8 +1493,8 @@
           "description": "1/2 plato Pad Thai",
           "macros": {
             "calories": 270,
-            "protein": 8.0,
-            "carbs": 41.0,
+            "protein": 8,
+            "carbs": 41,
             "fats": 8.2
           }
         },
@@ -1778,7 +1778,7 @@
             "calories": 312,
             "protein": 21.6,
             "carbs": 26.6,
-            "fats": 13.0
+            "fats": 13
           }
         },
         {
@@ -1788,7 +1788,7 @@
             "calories": 312,
             "protein": 21.6,
             "carbs": 26.6,
-            "fats": 13.0
+            "fats": 13
           }
         },
         {
@@ -1932,33 +1932,12 @@
     },
     {
       "date": "2026-08-07",
-      "intakes": [
-        {
-          "time": "11:35",
-          "description": "Pollo (150g",
-          "macros": {
-            "calories": 248,
-            "protein": 46.5,
-            "carbs": 0,
-            "fats": 5.4
-          }
-        },
-        {
-          "time": "11:36",
-          "description": "Platano (200g",
-          "macros": {
-            "calories": 178,
-            "protein": 2.2,
-            "carbs": 45.6,
-            "fats": 0.6
-          }
-        }
-      ],
+      "intakes": [],
       "dailyTotals": {
-        "calories": 426,
-        "protein": 48.7,
-        "carbs": 45.6,
-        "fats": 6
+        "calories": 0,
+        "protein": 0,
+        "carbs": 0,
+        "fats": 0
       }
     }
   ]

@@ -1,21 +1,90 @@
-import React from 'react';
-import { TrendingUp } from 'lucide-react';
+import React, { useState } from 'react';
+import { TrendingUp, ChevronLeft, ChevronRight } from 'lucide-react';
 
-export default function WeeklyChart({ logs, selectedDate, onSelectDate, targetProtein = 145 }) {
-  const last7Days = logs.slice(-7);
+export default function WeeklyChart({ logs, selectedDate, onSelectDate, targetMacros }) {
+  const [activeMacro, setActiveMacro] = useState('calories');
+  const [weekOffset, setWeekOffset] = useState(0);
+
+  const macrosConfig = {
+    calories: { label: 'Kcal', color: 'var(--color-calories)', target: targetMacros.calories },
+    protein: { label: 'Proteína', color: 'var(--color-protein)', target: targetMacros.protein },
+    carbs: { label: 'Carbs', color: 'var(--color-carbs)', target: targetMacros.carbs },
+    fats: { label: 'Grasas', color: 'var(--color-fats)', target: targetMacros.fats }
+  };
+
+  const currentConfig = macrosConfig[activeMacro];
+
+  const startIndex = Math.max(0, logs.length - 7 * (weekOffset + 1));
+  const endIndex = logs.length - 7 * weekOffset;
+  const visibleDays = logs.slice(startIndex, endIndex);
+  const maxOffset = Math.ceil(logs.length / 7) - 1;
 
   return (
     <div className="health-card" style={{ marginTop: '1.5rem' }}>
-      <h2 style={{ fontFamily: 'var(--font-heading)', fontSize: '1.25rem', marginBottom: '1.5rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-        <TrendingUp size={20} color="var(--color-indigo)" />
-        Tendencia Semanal (Proteína vs Objetivo {targetProtein}g)
-      </h2>
+      <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem', gap: '1rem' }}>
+        <h2 style={{ fontFamily: 'var(--font-heading)', fontSize: '1.25rem', display: 'flex', alignItems: 'center', gap: '0.5rem', margin: 0 }}>
+          <TrendingUp size={20} color={currentConfig.color} />
+          Tendencia Semanal
+        </h2>
+        
+        <div style={{ display: 'flex', gap: '0.5rem', background: 'var(--bg-subtle)', padding: '4px', borderRadius: 'var(--radius-md)' }}>
+          {Object.entries(macrosConfig).map(([key, config]) => (
+            <button
+              key={key}
+              onClick={() => setActiveMacro(key)}
+              style={{
+                background: activeMacro === key ? 'var(--bg-surface)' : 'transparent',
+                color: activeMacro === key ? config.color : 'var(--text-muted)',
+                border: 'none',
+                padding: '0.4rem 0.8rem',
+                borderRadius: '8px',
+                fontWeight: 600,
+                fontSize: '0.8rem',
+                cursor: 'pointer',
+                boxShadow: activeMacro === key ? '0 2px 4px rgba(0,0,0,0.05)' : 'none'
+              }}
+            >
+              {config.label}
+            </button>
+          ))}
+        </div>
+      </div>
 
-      <div style={{ display: 'flex', alignItems: 'flex-end', justifyContent: 'space-between', height: 210, gap: '0.75rem', paddingTop: '2rem' }}>
-        {last7Days.map((d, idx) => {
-          const pPct = Math.min(100, Math.round((d.dailyTotals.protein / targetProtein) * 100));
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
+        <button 
+          onClick={() => setWeekOffset(prev => Math.min(maxOffset, prev + 1))}
+          disabled={weekOffset >= maxOffset}
+          style={{ background: 'none', border: 'none', cursor: weekOffset >= maxOffset ? 'not-allowed' : 'pointer', color: 'var(--text-muted)' }}
+        >
+          <ChevronLeft size={20} />
+        </button>
+        <span style={{ fontSize: '0.9rem', fontWeight: 600, color: 'var(--text-muted)' }}>
+          Objetivo: {currentConfig.target} {activeMacro === 'calories' ? 'kcal' : 'g'}
+        </span>
+        <button 
+          onClick={() => setWeekOffset(prev => Math.max(0, prev - 1))}
+          disabled={weekOffset === 0}
+          style={{ background: 'none', border: 'none', cursor: weekOffset === 0 ? 'not-allowed' : 'pointer', color: 'var(--text-muted)' }}
+        >
+          <ChevronRight size={20} />
+        </button>
+      </div>
+
+      <div style={{ display: 'flex', alignItems: 'flex-end', justifyContent: 'space-between', height: 210, gap: '0.75rem', paddingTop: '1rem' }}>
+        {visibleDays.map((d, idx) => {
+          const val = d.dailyTotals[activeMacro];
+          const target = currentConfig.target;
+          const pPct = Math.min(100, Math.round((val / target) * 100));
           const isSelected = d.date === selectedDate;
-          const targetMet = d.dailyTotals.protein >= targetProtein * 0.8;
+          
+          let targetMet = false;
+          if (activeMacro === 'calories') {
+             // For calories, being under or slightly over is good
+             targetMet = val > 0 && val <= target * 1.1; 
+          } else {
+             // For protein/carbs/fats, being near target is good
+             targetMet = val >= target * 0.8;
+          }
 
           return (
             <div
@@ -32,8 +101,8 @@ export default function WeeklyChart({ logs, selectedDate, onSelectDate, targetPr
                 cursor: 'pointer'
               }}
             >
-              <span style={{ fontSize: '0.75rem', fontWeight: 700, color: targetMet ? 'var(--color-indigo)' : 'var(--color-calories)' }}>
-                {d.dailyTotals.protein}g
+              <span style={{ fontSize: '0.75rem', fontWeight: 700, color: targetMet ? currentConfig.color : 'var(--text-muted)' }}>
+                {Math.round(val)}
               </span>
               <div
                 style={{
@@ -45,7 +114,7 @@ export default function WeeklyChart({ logs, selectedDate, onSelectDate, targetPr
                   display: 'flex',
                   alignItems: 'flex-end',
                   overflow: 'hidden',
-                  border: isSelected ? '2px solid var(--color-indigo)' : '1px solid var(--border-subtle)'
+                  border: isSelected ? `2px solid ${currentConfig.color}` : '1px solid var(--border-subtle)'
                 }}
               >
                 <div
@@ -54,13 +123,14 @@ export default function WeeklyChart({ logs, selectedDate, onSelectDate, targetPr
                     height: `${pPct}%`,
                     borderRadius: '6px 6px 0 0',
                     background: isSelected
-                      ? 'linear-gradient(to top, #4F46E5, #818CF8)'
-                      : targetMet ? '#3B82F6' : '#F87171',
-                    transition: 'height 0.5s ease'
+                      ? currentConfig.color
+                      : targetMet ? currentConfig.color : '#9CA3AF',
+                    opacity: isSelected ? 1 : 0.7,
+                    transition: 'height 0.5s ease, background 0.3s ease'
                   }}
                 />
               </div>
-              <span style={{ fontSize: '0.75rem', fontWeight: isSelected ? 700 : 500, color: isSelected ? 'var(--color-indigo)' : 'var(--text-muted)' }}>
+              <span style={{ fontSize: '0.7rem', fontWeight: isSelected ? 700 : 500, color: isSelected ? 'var(--text-main)' : 'var(--text-muted)' }}>
                 {d.date.slice(5)}
               </span>
             </div>
