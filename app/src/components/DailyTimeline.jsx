@@ -75,38 +75,52 @@ export default function DailyTimeline({ intakes, onItemClick }) {
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
-      {groupedMeals.map((meal, mealIdx) => (
-        <div
-          key={mealIdx}
-          style={{
-            background: 'var(--bg-subtle)',
-            borderRadius: 'var(--radius-md)',
-            padding: '1rem',
-            borderLeft: '4px solid var(--color-indigo)',
-            boxShadow: '0 2px 8px rgba(0,0,0,0.02)'
-          }}
-        >
-          {/* Group Header */}
+      {groupedMeals.map((meal, mealIdx) => {
+        const groupTotalCalories = meal.items.reduce((sum, item) => sum + (item.macros?.calories || 0), 0);
+        return (
           <div
+            key={mealIdx}
             style={{
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'space-between',
-              marginBottom: '0.75rem',
-              paddingBottom: '0.4rem',
-              borderBottom: '1px solid var(--border-subtle)'
+              background: 'var(--bg-subtle)',
+              borderRadius: 'var(--radius-md)',
+              padding: '1rem',
+              borderLeft: '4px solid var(--color-indigo)',
+              boxShadow: '0 2px 8px rgba(0,0,0,0.02)'
             }}
           >
-            <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', fontSize: '0.8rem', color: 'var(--color-indigo)', fontWeight: 700 }}>
-              <Clock size={14} />
-              <span>
-                {meal.dishName ? `${meal.time} - ${meal.dishName}` : `Toma de las ${meal.time}`}
-              </span>
+            {/* Group Header */}
+            <div
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'space-between',
+                marginBottom: '0.75rem',
+                paddingBottom: '0.4rem',
+                borderBottom: '1px solid var(--border-subtle)'
+              }}
+            >
+              <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', fontSize: '0.8rem', color: 'var(--color-indigo)', fontWeight: 700 }}>
+                <Clock size={14} />
+                <span>
+                  {meal.dishName ? `${meal.time} - ${meal.dishName}` : `Toma de las ${meal.time}`}
+                </span>
+              </div>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
+                <span style={{
+                  fontSize: '0.78rem',
+                  background: 'rgba(239, 68, 68, 0.12)',
+                  color: 'var(--color-calories)',
+                  fontWeight: 700,
+                  padding: '0.15rem 0.55rem',
+                  borderRadius: '12px'
+                }}>
+                  {groupTotalCalories} kcal
+                </span>
+                <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)', fontWeight: 500 }}>
+                  ({meal.items.length} {meal.items.length === 1 ? 'alimento' : 'alimentos'})
+                </span>
+              </div>
             </div>
-            <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)', fontWeight: 500 }}>
-              {meal.items.length} {meal.items.length === 1 ? 'alimento' : 'alimentos'}
-            </span>
-          </div>
 
           {/* Individual Items */}
           <div style={{ display: 'flex', flexDirection: 'column', gap: '0.6rem' }}>
@@ -150,7 +164,8 @@ export default function DailyTimeline({ intakes, onItemClick }) {
             })}
           </div>
         </div>
-      ))}
-    </div>
+      );
+    })}
+  </div>
   );
 }
