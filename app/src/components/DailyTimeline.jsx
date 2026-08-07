@@ -40,15 +40,19 @@ export default function DailyTimeline({ intakes, onItemClick }) {
     }
   });
 
-  // Group by time
+  // Group by time and dishName
   const groupedMeals = [];
   let currentGroup = null;
 
   expandedIntakes.forEach((item) => {
     const timeKey = item.time || '12:00';
-    if (!currentGroup || currentGroup.time !== timeKey) {
+    const groupKey = item.dishName ? `${timeKey}-${item.dishName}` : timeKey;
+    
+    if (!currentGroup || currentGroup.key !== groupKey) {
       currentGroup = {
+        key: groupKey,
         time: timeKey,
+        dishName: item.dishName,
         items: []
       };
       groupedMeals.push(currentGroup);
@@ -82,10 +86,12 @@ export default function DailyTimeline({ intakes, onItemClick }) {
           >
             <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', fontSize: '0.8rem', color: 'var(--color-indigo)', fontWeight: 700 }}>
               <Clock size={14} />
-              <span>Toma de las {meal.time}</span>
+              <span>
+                {meal.dishName ? `${meal.time} - ${meal.dishName}` : `Toma de las ${meal.time}`}
+              </span>
             </div>
             <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)', fontWeight: 500 }}>
-              {meal.items.length} {meal.items.length === 1 ? 'alimento' : 'alimentos juntos'}
+              {meal.items.length} {meal.items.length === 1 ? 'alimento' : 'alimentos'}
             </span>
           </div>
 

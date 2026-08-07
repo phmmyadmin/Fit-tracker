@@ -53,20 +53,43 @@
         },
         {
           "time": "08:30",
-          "description": "Del día (Ajo, plátanos, 2 huevos",
+          "dishName": "Plato de Ajo, plátanos y huevos",
+          "description": "Ajo",
           "macros": {
-            "calories": 575,
-            "protein": 38.5,
-            "carbs": 74.9,
-            "fats": 15.3
+            "calories": 15,
+            "protein": 0.5,
+            "carbs": 3,
+            "fats": 0
+          }
+        },
+        {
+          "time": "08:30",
+          "dishName": "Plato de Ajo, plátanos y huevos",
+          "description": "Plátanos (130g)",
+          "macros": {
+            "calories": 120,
+            "protein": 1.4,
+            "carbs": 30,
+            "fats": 0.4
+          }
+        },
+        {
+          "time": "08:30",
+          "dishName": "Plato de Ajo, plátanos y huevos",
+          "description": "Huevos (120g)",
+          "macros": {
+            "calories": 156,
+            "protein": 12.6,
+            "carbs": 1.2,
+            "fats": 10.6
           }
         }
       ],
       "dailyTotals": {
-        "calories": 1449,
-        "protein": 95.2,
-        "carbs": 188.1,
-        "fats": 37.9
+        "calories": 555,
+        "protein": 28.5,
+        "carbs": 65,
+        "fats": 21
       }
     },
     {
@@ -114,10 +137,10 @@
         }
       ],
       "dailyTotals": {
-        "calories": 1631,
-        "protein": 97.4,
-        "carbs": 181.5,
-        "fats": 56.3
+        "calories": 208,
+        "protein": 7.6,
+        "carbs": 35,
+        "fats": 5.2
       }
     },
     {
@@ -195,10 +218,10 @@
         }
       ],
       "dailyTotals": {
-        "calories": 1746,
-        "protein": 124.2,
-        "carbs": 246.2,
-        "fats": 29.2
+        "calories": 449,
+        "protein": 20.4,
+        "carbs": 56.8,
+        "fats": 15.1
       }
     },
     {
@@ -266,20 +289,43 @@
         },
         {
           "time": "12:00",
-          "description": "Omelette (2 huevos, cherrys, cebolla y 4g queso",
+          "dishName": "Omelette de tomates cherry y queso",
+          "description": "Huevos (120g)",
           "macros": {
-            "calories": 171,
-            "protein": 13.9,
-            "carbs": 4.1,
-            "fats": 10.8
+            "calories": 156,
+            "protein": 12.6,
+            "carbs": 1.2,
+            "fats": 10.6
+          }
+        },
+        {
+          "time": "12:00",
+          "dishName": "Omelette de tomates cherry y queso",
+          "description": "Cherrys y cebolla",
+          "macros": {
+            "calories": 10,
+            "protein": 0.5,
+            "carbs": 2,
+            "fats": 0
+          }
+        },
+        {
+          "time": "12:00",
+          "dishName": "Omelette de tomates cherry y queso",
+          "description": "Queso (4g)",
+          "macros": {
+            "calories": 15,
+            "protein": 1,
+            "carbs": 0,
+            "fats": 1.2
           }
         }
       ],
       "dailyTotals": {
-        "calories": 1721,
-        "protein": 132.6,
-        "carbs": 143.6,
-        "fats": 65.2
+        "calories": 909,
+        "protein": 37.9,
+        "carbs": 101.6,
+        "fats": 37.6
       }
     },
     {
@@ -317,30 +363,30 @@
         }
       ],
       "dailyTotals": {
-        "calories": 1807,
-        "protein": 96.9,
-        "carbs": 221.1,
-        "fats": 59
+        "calories": 860,
+        "protein": 28.1,
+        "carbs": 94.8,
+        "fats": 41.6
       }
     },
     {
       "date": "2026-07-19",
       "intakes": [],
       "dailyTotals": {
-        "calories": 1977,
-        "protein": 118.5,
-        "carbs": 195.8,
-        "fats": 82.4
+        "calories": 0,
+        "protein": 0,
+        "carbs": 0,
+        "fats": 0
       }
     },
     {
       "date": "2026-07-20",
       "intakes": [],
       "dailyTotals": {
-        "calories": 1742,
-        "protein": 116.6,
-        "carbs": 229.9,
-        "fats": 42.8
+        "calories": 0,
+        "protein": 0,
+        "carbs": 0,
+        "fats": 0
       }
     },
     {
@@ -358,10 +404,10 @@
         }
       ],
       "dailyTotals": {
-        "calories": 1736,
-        "protein": 109.9,
-        "carbs": 233,
-        "fats": 42.1
+        "calories": 60,
+        "protein": 0.8,
+        "carbs": 15,
+        "fats": 0.4
       }
     },
     {
@@ -379,20 +425,43 @@
         },
         {
           "time": "12:00",
-          "description": "Yogur (50g), avena (50g) y plátano (100g",
+          "dishName": "Yogur con avena y plátano",
+          "description": "Yogur (50g)",
           "macros": {
-            "calories": 305,
-            "protein": 9.7,
-            "carbs": 58.2,
-            "fats": 5.5
+            "calories": 30,
+            "protein": 1.8,
+            "carbs": 2.4,
+            "fats": 1.7
+          }
+        },
+        {
+          "time": "12:00",
+          "dishName": "Yogur con avena y plátano",
+          "description": "Avena (50g)",
+          "macros": {
+            "calories": 195,
+            "protein": 8.5,
+            "carbs": 33.2,
+            "fats": 3.5
+          }
+        },
+        {
+          "time": "12:00",
+          "dishName": "Yogur con avena y plátano",
+          "description": "Plátano (100g)",
+          "macros": {
+            "calories": 89,
+            "protein": 1.1,
+            "carbs": 22.8,
+            "fats": 0.3
           }
         }
       ],
       "dailyTotals": {
-        "calories": 2442,
-        "protein": 136.7,
-        "carbs": 283.1,
-        "fats": 83.9
+        "calories": 564,
+        "protein": 30,
+        "carbs": 93.6,
+        "fats": 9.7
       }
     },
     {
@@ -490,10 +559,10 @@
         }
       ],
       "dailyTotals": {
-        "calories": 2031,
-        "protein": 124.2,
-        "carbs": 238.1,
-        "fats": 65.2
+        "calories": 2589,
+        "protein": 151.3,
+        "carbs": 300.4,
+        "fats": 89.1
       }
     },
     {
@@ -531,12 +600,46 @@
         },
         {
           "time": "12:00",
-          "description": "Pollo (110g), patata (100g), zanahoria (60g) y sitaw (15g",
+          "dishName": "Pollo con patata y zanahoria",
+          "description": "Pollo (110g)",
           "macros": {
-            "calories": 301,
-            "protein": 37.1,
-            "carbs": 27.1,
-            "fats": 4.2
+            "calories": 182,
+            "protein": 34.1,
+            "carbs": 0,
+            "fats": 4
+          }
+        },
+        {
+          "time": "12:00",
+          "dishName": "Pollo con patata y zanahoria",
+          "description": "Patata (100g)",
+          "macros": {
+            "calories": 77,
+            "protein": 2,
+            "carbs": 17,
+            "fats": 0.1
+          }
+        },
+        {
+          "time": "12:00",
+          "dishName": "Pollo con patata y zanahoria",
+          "description": "Zanahoria (60g)",
+          "macros": {
+            "calories": 25,
+            "protein": 0.6,
+            "carbs": 6,
+            "fats": 0.1
+          }
+        },
+        {
+          "time": "12:00",
+          "dishName": "Pollo con patata y zanahoria",
+          "description": "Sitaw (15g)",
+          "macros": {
+            "calories": 7,
+            "protein": 0.4,
+            "carbs": 1.5,
+            "fats": 0
           }
         },
         {
@@ -551,12 +654,46 @@
         },
         {
           "time": "13:30",
-          "description": "Pollo cocido (110g), patata (100g), zanahoria (60g) y sitaw (15g",
+          "dishName": "Pollo cocido con verduras",
+          "description": "Pollo cocido (110g)",
           "macros": {
-            "calories": 334,
-            "protein": 37.1,
-            "carbs": 27.1,
-            "fats": 4.5
+            "calories": 182,
+            "protein": 34.1,
+            "carbs": 0,
+            "fats": 4
+          }
+        },
+        {
+          "time": "13:30",
+          "dishName": "Pollo cocido con verduras",
+          "description": "Patata (100g)",
+          "macros": {
+            "calories": 77,
+            "protein": 2,
+            "carbs": 17,
+            "fats": 0.1
+          }
+        },
+        {
+          "time": "13:30",
+          "dishName": "Pollo cocido con verduras",
+          "description": "Zanahoria (60g)",
+          "macros": {
+            "calories": 25,
+            "protein": 0.6,
+            "carbs": 6,
+            "fats": 0.1
+          }
+        },
+        {
+          "time": "13:30",
+          "dishName": "Pollo cocido con verduras",
+          "description": "Sitaw (15g)",
+          "macros": {
+            "calories": 7,
+            "protein": 0.4,
+            "carbs": 1.5,
+            "fats": 0
           }
         },
         {
@@ -611,10 +748,10 @@
         }
       ],
       "dailyTotals": {
-        "calories": 1578,
-        "protein": 104.5,
-        "carbs": 147.3,
-        "fats": 58.6
+        "calories": 2156,
+        "protein": 164.4,
+        "carbs": 194.4,
+        "fats": 77.5
       }
     },
     {
@@ -642,12 +779,35 @@
         },
         {
           "time": "12:00",
-          "description": "Pollo (110g), arroz (100g), zanahoria, cebolla y sitaw",
+          "dishName": "Pollo con arroz y verduras",
+          "description": "Pollo (110g)",
           "macros": {
-            "calories": 361,
-            "protein": 37.4,
-            "carbs": 31.6,
-            "fats": 4.6
+            "calories": 182,
+            "protein": 34.1,
+            "carbs": 0,
+            "fats": 4
+          }
+        },
+        {
+          "time": "12:00",
+          "dishName": "Pollo con arroz y verduras",
+          "description": "Arroz (100g)",
+          "macros": {
+            "calories": 130,
+            "protein": 2.7,
+            "carbs": 28,
+            "fats": 0.3
+          }
+        },
+        {
+          "time": "12:00",
+          "dishName": "Pollo con arroz y verduras",
+          "description": "Verduras variadas",
+          "macros": {
+            "calories": 49,
+            "protein": 0.6,
+            "carbs": 3.6,
+            "fats": 0.3
           }
         },
         {
@@ -682,20 +842,43 @@
         },
         {
           "time": "12:00",
-          "description": "Guiso de pollo con coco, patata, zanahoria y 70g arroz",
+          "dishName": "Guiso de pollo con coco",
+          "description": "Pollo al coco",
           "macros": {
-            "calories": 470,
-            "protein": 41.2,
-            "carbs": 36.5,
-            "fats": 12.9
+            "calories": 250,
+            "protein": 30,
+            "carbs": 2,
+            "fats": 12
+          }
+        },
+        {
+          "time": "12:00",
+          "dishName": "Guiso de pollo con coco",
+          "description": "Patata y zanahoria",
+          "macros": {
+            "calories": 100,
+            "protein": 2.6,
+            "carbs": 23,
+            "fats": 0.2
+          }
+        },
+        {
+          "time": "12:00",
+          "dishName": "Guiso de pollo con coco",
+          "description": "Arroz (70g)",
+          "macros": {
+            "calories": 91,
+            "protein": 1.9,
+            "carbs": 19.6,
+            "fats": 0.2
           }
         }
       ],
       "dailyTotals": {
-        "calories": 1561,
-        "protein": 110,
-        "carbs": 173.5,
-        "fats": 39.3
+        "calories": 1602,
+        "protein": 105.2,
+        "carbs": 194.8,
+        "fats": 38.7
       }
     },
     {
@@ -753,12 +936,35 @@
         },
         {
           "time": "12:00",
-          "description": "100g arroz, guiso de pollo al coco (110g) y 1 mini burger",
+          "dishName": "Comida Combinada (Arroz, Guiso y Burger)",
+          "description": "Arroz (100g)",
           "macros": {
-            "calories": 584,
-            "protein": 50.4,
-            "carbs": 53.5,
-            "fats": 13.9
+            "calories": 130,
+            "protein": 2.7,
+            "carbs": 28,
+            "fats": 0.3
+          }
+        },
+        {
+          "time": "12:00",
+          "dishName": "Comida Combinada (Arroz, Guiso y Burger)",
+          "description": "Guiso de pollo al coco (110g)",
+          "macros": {
+            "calories": 330,
+            "protein": 35,
+            "carbs": 12,
+            "fats": 15
+          }
+        },
+        {
+          "time": "12:00",
+          "dishName": "Comida Combinada (Arroz, Guiso y Burger)",
+          "description": "Mini burger (1 ud)",
+          "macros": {
+            "calories": 124,
+            "protein": 11.9,
+            "carbs": 13.5,
+            "fats": 2.3
           }
         },
         {
@@ -813,10 +1019,10 @@
         }
       ],
       "dailyTotals": {
-        "calories": 1805,
-        "protein": 114.9,
-        "carbs": 220.1,
-        "fats": 44.2
+        "calories": 1998,
+        "protein": 93.2,
+        "carbs": 301.9,
+        "fats": 46.2
       }
     },
     {
@@ -844,30 +1050,98 @@
         },
         {
           "time": "17:00",
-          "description": "Pollo al coco (120g), 60g puto y 60g mango graham",
+          "dishName": "Pollo al coco con Puto y Mango",
+          "description": "Pollo al coco (120g)",
           "macros": {
-            "calories": 638,
-            "protein": 43.1,
-            "carbs": 62.2,
-            "fats": 19.5
+            "calories": 260,
+            "protein": 32,
+            "carbs": 5,
+            "fats": 14
           }
         },
         {
           "time": "17:00",
-          "description": "Pollo soja/ostras, patata, arroz, huevo, mango graham y Tang",
+          "dishName": "Pollo al coco con Puto y Mango",
+          "description": "Puto (60g)",
           "macros": {
-            "calories": 706,
-            "protein": 50.6,
-            "carbs": 73.4,
-            "fats": 18
+            "calories": 130,
+            "protein": 3,
+            "carbs": 28,
+            "fats": 1
+          }
+        },
+        {
+          "time": "17:00",
+          "dishName": "Pollo al coco con Puto y Mango",
+          "description": "Mango Graham (60g)",
+          "macros": {
+            "calories": 150,
+            "protein": 2,
+            "carbs": 21,
+            "fats": 6
+          }
+        },
+        {
+          "time": "17:00",
+          "dishName": "Festín de Pollo Soja/Ostras",
+          "description": "Pollo soja/ostras",
+          "macros": {
+            "calories": 250,
+            "protein": 35,
+            "carbs": 10,
+            "fats": 5
+          }
+        },
+        {
+          "time": "17:00",
+          "dishName": "Festín de Pollo Soja/Ostras",
+          "description": "Patata y arroz",
+          "macros": {
+            "calories": 250,
+            "protein": 5,
+            "carbs": 55,
+            "fats": 0.5
+          }
+        },
+        {
+          "time": "17:00",
+          "dishName": "Festín de Pollo Soja/Ostras",
+          "description": "Huevo",
+          "macros": {
+            "calories": 72,
+            "protein": 6.3,
+            "carbs": 0.4,
+            "fats": 4.8
+          }
+        },
+        {
+          "time": "17:00",
+          "dishName": "Festín de Pollo Soja/Ostras",
+          "description": "Mango Graham",
+          "macros": {
+            "calories": 100,
+            "protein": 1,
+            "carbs": 14,
+            "fats": 4
+          }
+        },
+        {
+          "time": "17:00",
+          "dishName": "Festín de Pollo Soja/Ostras",
+          "description": "Zumo Tang",
+          "macros": {
+            "calories": 40,
+            "protein": 0,
+            "carbs": 10,
+            "fats": 0
           }
         }
       ],
       "dailyTotals": {
-        "calories": 1628,
-        "protein": 118,
-        "carbs": 171.6,
-        "fats": 42.3
+        "calories": 1536,
+        "protein": 108.7,
+        "carbs": 179.4,
+        "fats": 40.1
       }
     },
     {
@@ -895,12 +1169,46 @@
         },
         {
           "time": "12:00",
-          "description": "Yogur (170g), pollo (120g) con patata (80g) y 30g puto",
+          "dishName": "Combinado Yogur y Pollo",
+          "description": "Yogur (170g)",
           "macros": {
-            "calories": 493,
-            "protein": 46.6,
-            "carbs": 42.3,
-            "fats": 10.5
+            "calories": 102,
+            "protein": 6,
+            "carbs": 8,
+            "fats": 5.6
+          }
+        },
+        {
+          "time": "12:00",
+          "dishName": "Combinado Yogur y Pollo",
+          "description": "Pollo (120g)",
+          "macros": {
+            "calories": 198,
+            "protein": 37.2,
+            "carbs": 0,
+            "fats": 4.3
+          }
+        },
+        {
+          "time": "12:00",
+          "dishName": "Combinado Yogur y Pollo",
+          "description": "Patata (80g)",
+          "macros": {
+            "calories": 62,
+            "protein": 1.6,
+            "carbs": 13.6,
+            "fats": 0.1
+          }
+        },
+        {
+          "time": "12:00",
+          "dishName": "Combinado Yogur y Pollo",
+          "description": "Puto (30g)",
+          "macros": {
+            "calories": 65,
+            "protein": 1.5,
+            "carbs": 14,
+            "fats": 0.5
           }
         },
         {
@@ -945,10 +1253,10 @@
         }
       ],
       "dailyTotals": {
-        "calories": 1743,
-        "protein": 139.4,
-        "carbs": 174.9,
-        "fats": 45.1
+        "calories": 1265,
+        "protein": 100.3,
+        "carbs": 134,
+        "fats": 35.7
       }
     },
     {
@@ -1056,10 +1364,10 @@
         }
       ],
       "dailyTotals": {
-        "calories": 1895,
-        "protein": 133.6,
-        "carbs": 208.7,
-        "fats": 52.4
+        "calories": 1353,
+        "protein": 92.2,
+        "carbs": 154.3,
+        "fats": 38
       }
     },
     {
@@ -1197,10 +1505,10 @@
         }
       ],
       "dailyTotals": {
-        "calories": 1759,
-        "protein": 121.2,
-        "carbs": 187.2,
-        "fats": 53
+        "calories": 1474,
+        "protein": 82.8,
+        "carbs": 175.3,
+        "fats": 48.6
       }
     },
     {
@@ -1308,10 +1616,10 @@
         }
       ],
       "dailyTotals": {
-        "calories": 2220,
-        "protein": 123.3,
-        "carbs": 270.2,
-        "fats": 68.6
+        "calories": 1360,
+        "protein": 96.1,
+        "carbs": 157.3,
+        "fats": 34.7
       }
     },
     {
@@ -1399,10 +1707,10 @@
         }
       ],
       "dailyTotals": {
-        "calories": 2194,
-        "protein": 154.7,
-        "carbs": 275.1,
-        "fats": 46.7
+        "calories": 1622,
+        "protein": 104.1,
+        "carbs": 211.7,
+        "fats": 40.3
       }
     },
     {
@@ -1530,10 +1838,10 @@
         }
       ],
       "dailyTotals": {
-        "calories": 1896,
-        "protein": 122.8,
+        "calories": 1894,
+        "protein": 122.9,
         "carbs": 251.1,
-        "fats": 40.2
+        "fats": 40.4
       }
     },
     {
@@ -1661,10 +1969,10 @@
         }
       ],
       "dailyTotals": {
-        "calories": 1778,
-        "protein": 86.8,
-        "carbs": 275.1,
-        "fats": 40.6
+        "calories": 1940,
+        "protein": 91.9,
+        "carbs": 303.5,
+        "fats": 44.7
       }
     },
     {
@@ -1763,8 +2071,8 @@
       ],
       "dailyTotals": {
         "calories": 1618,
-        "protein": 128,
-        "carbs": 174,
+        "protein": 127.8,
+        "carbs": 174.2,
         "fats": 46.4
       }
     },
@@ -1883,10 +2191,10 @@
         }
       ],
       "dailyTotals": {
-        "calories": 1710,
-        "protein": 88.1,
-        "carbs": 153.7,
-        "fats": 82.9
+        "calories": 2336,
+        "protein": 131,
+        "carbs": 207,
+        "fats": 108.9
       }
     },
     {
@@ -1904,12 +2212,35 @@
         },
         {
           "time": "13:30",
-          "description": "Pollo con garbanzos, patata y zanahoria",
+          "dishName": "Guiso de pollo con garbanzos",
+          "description": "Pollo",
           "macros": {
-            "calories": 311,
-            "protein": 26.3,
-            "carbs": 34.6,
-            "fats": 6.8
+            "calories": 165,
+            "protein": 31,
+            "carbs": 0,
+            "fats": 3.6
+          }
+        },
+        {
+          "time": "13:30",
+          "dishName": "Guiso de pollo con garbanzos",
+          "description": "Garbanzos",
+          "macros": {
+            "calories": 120,
+            "protein": 6,
+            "carbs": 18,
+            "fats": 2
+          }
+        },
+        {
+          "time": "13:30",
+          "dishName": "Guiso de pollo con garbanzos",
+          "description": "Patata y zanahoria",
+          "macros": {
+            "calories": 50,
+            "protein": 1,
+            "carbs": 11,
+            "fats": 0
           }
         },
         {
@@ -1964,10 +2295,10 @@
         }
       ],
       "dailyTotals": {
-        "calories": 2688,
-        "protein": 128.2,
-        "carbs": 293.4,
-        "fats": 106.7
+        "calories": 2712,
+        "protein": 139.9,
+        "carbs": 287.8,
+        "fats": 105.5
       }
     },
     {
