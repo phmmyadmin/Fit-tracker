@@ -227,9 +227,6 @@ const MonthlyReport = ({ data }) => {
           </div>
         </div>
       </div>
-      
-      {weightCard}
-
     </div>
   );
 };
