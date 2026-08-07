@@ -75,9 +75,11 @@ const MonthlyReport = ({ data }) => {
       monthLost = startWeight - latestWeight; // fallback to overall if only 1 data point this month
     }
 
-    const totalLost = startWeight - latestWeight;
-    const remainingToTarget = latestWeight - targetWeight;
-    const progressPercent = Math.min(100, Math.max(0, (totalLost / (startWeight - targetWeight)) * 100));
+    const estimatedLostKg = totalDeficit > 0 ? (totalDeficit / 7700) : 0;
+    const estimatedCurrentWeight = latestWeight - estimatedLostKg;
+    const remainingToTarget = Math.max(0, estimatedCurrentWeight - targetWeight);
+    const totalGoalToLose = latestWeight - targetWeight;
+    const progressPercent = totalGoalToLose > 0 ? Math.min(100, Math.max(0, (estimatedLostKg / totalGoalToLose) * 100)) : 0;
 
     weightCard = (
       <div className="health-card" style={{ marginTop: '1.5rem' }}>
@@ -85,31 +87,40 @@ const MonthlyReport = ({ data }) => {
           <div style={{ background: 'var(--color-protein-bg)', padding: '0.6rem', borderRadius: '12px' }}>
             <Scale color="var(--color-protein)" size={24} />
           </div>
-          <h2 style={{ fontSize: '1.25rem', margin: 0, fontWeight: 600 }}>Registro de Peso</h2>
+          <div>
+            <h2 style={{ fontSize: '1.25rem', margin: 0, fontWeight: 600 }}>Estimación de Peso & Progreso</h2>
+            <div style={{ fontSize: '0.85rem', color: 'var(--text-muted)' }}>Calculado a partir de tu déficit calórico acumulado</div>
+          </div>
         </div>
         
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '1rem', textAlign: 'center', marginBottom: '1.5rem' }}>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(130px, 1fr))', gap: '1rem', textAlign: 'center', marginBottom: '1.5rem' }}>
           <div style={{ background: 'var(--bg-card)', padding: '1.25rem', borderRadius: '16px', border: '1px solid var(--border-light)' }}>
-            <div style={{ fontSize: '0.85rem', color: 'var(--text-muted)', marginBottom: '0.5rem', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Actual</div>
-            <div style={{ fontSize: '1.5rem', fontWeight: 700, color: 'var(--text-main)' }}>{latestWeight} <span style={{fontSize: '1rem', color: 'var(--text-muted)'}}>kg</span></div>
+            <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)', marginBottom: '0.5rem', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Peso Inicial</div>
+            <div style={{ fontSize: '1.4rem', fontWeight: 700, color: 'var(--text-main)' }}>{latestWeight} <span style={{fontSize: '0.9rem', color: 'var(--text-muted)'}}>kg</span></div>
           </div>
           <div style={{ background: 'var(--bg-card)', padding: '1.25rem', borderRadius: '16px', border: '1px solid var(--border-light)' }}>
-            <div style={{ fontSize: '0.85rem', color: 'var(--text-muted)', marginBottom: '0.5rem', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Perdido</div>
-            <div style={{ fontSize: '1.5rem', fontWeight: 700, color: totalLost > 0 ? 'var(--color-carbs)' : 'var(--text-muted)' }}>
-              {totalLost > 0 ? `-${totalLost.toFixed(1)}` : '0'} <span style={{fontSize: '1rem', color: 'var(--text-muted)'}}>kg</span>
+            <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)', marginBottom: '0.5rem', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Perdido Estimado</div>
+            <div style={{ fontSize: '1.4rem', fontWeight: 700, color: 'var(--color-carbs)' }}>
+              -{estimatedLostKg.toFixed(1)} <span style={{fontSize: '0.9rem', color: 'var(--text-muted)'}}>kg</span>
             </div>
           </div>
           <div style={{ background: 'var(--bg-card)', padding: '1.25rem', borderRadius: '16px', border: '1px solid var(--border-light)' }}>
-            <div style={{ fontSize: '0.85rem', color: 'var(--text-muted)', marginBottom: '0.5rem', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Meta</div>
-            <div style={{ fontSize: '1.5rem', fontWeight: 700, color: 'var(--color-indigo)' }}>{targetWeight} <span style={{fontSize: '1rem', color: 'var(--text-muted)'}}>kg</span></div>
+            <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)', marginBottom: '0.5rem', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Peso Estimado</div>
+            <div style={{ fontSize: '1.4rem', fontWeight: 700, color: 'var(--color-protein)' }}>
+              {estimatedCurrentWeight.toFixed(1)} <span style={{fontSize: '0.9rem', color: 'var(--text-muted)'}}>kg</span>
+            </div>
+          </div>
+          <div style={{ background: 'var(--bg-card)', padding: '1.25rem', borderRadius: '16px', border: '1px solid var(--border-light)' }}>
+            <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)', marginBottom: '0.5rem', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Meta</div>
+            <div style={{ fontSize: '1.4rem', fontWeight: 700, color: 'var(--color-indigo)' }}>{targetWeight} <span style={{fontSize: '0.9rem', color: 'var(--text-muted)'}}>kg</span></div>
           </div>
         </div>
 
-        {startWeight !== targetWeight && (
+        {targetWeight && (
           <div style={{ background: 'var(--bg-card)', padding: '1.5rem', borderRadius: '16px', border: '1px solid var(--border-light)' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.75rem', fontSize: '0.9rem' }}>
-              <span style={{ color: 'var(--text-muted)', fontWeight: 500 }}>Progreso al objetivo</span>
-              <span style={{ color: 'var(--color-protein)', fontWeight: 600 }}>{Math.max(0, remainingToTarget).toFixed(1)} kg restantes</span>
+              <span style={{ color: 'var(--text-muted)', fontWeight: 500 }}>Progreso estimado al objetivo ({targetWeight} kg)</span>
+              <span style={{ color: 'var(--color-protein)', fontWeight: 600 }}>{remainingToTarget.toFixed(1)} kg restantes</span>
             </div>
             <div style={{ height: '10px', background: 'var(--border-light)', borderRadius: '5px', overflow: 'hidden' }}>
               <div style={{ width: `${progressPercent}%`, height: '100%', background: 'linear-gradient(90deg, var(--color-protein), #a855f7)', borderRadius: '5px', transition: 'width 1s ease' }} />
