@@ -43,7 +43,7 @@ const ProgressTracker = ({ data, onUpdateProfile }) => {
 
     setIsSubmitting(true);
     try {
-      const res = await fetch('http://localhost:3001/api/weight', {
+      const res = await fetch('/api/weight', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ date: inputDate, time: inputTime, weight: parseFloat(inputWeight) })
@@ -64,7 +64,7 @@ const ProgressTracker = ({ data, onUpdateProfile }) => {
 
   const handleDeleteWeight = async (item, originalIndex) => {
     try {
-      const res = await fetch('http://localhost:3001/api/weight', {
+      const res = await fetch('/api/weight', {
         method: 'DELETE',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ date: item.date, time: item.time, index: originalIndex })

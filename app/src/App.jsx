@@ -44,7 +44,7 @@ export default function App() {
   const handleSendFood = async (text) => {
     setIsLoading(true);
     try {
-      const res = await fetch('http://localhost:3001/api/log-food', {
+      const res = await fetch('/api/log-food', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ text, date: selectedDate })
@@ -66,7 +66,7 @@ export default function App() {
 
   const handleDeleteItem = async (index) => {
     try {
-      await fetch('http://localhost:3001/api/intake', {
+      await fetch('/api/intake', {
         method: 'DELETE',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ date: selectedDate, index })

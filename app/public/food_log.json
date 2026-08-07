@@ -3802,12 +3802,25 @@
     },
     {
       "date": "2026-08-07",
-      "intakes": [],
+      "intakes": [
+        {
+          "time": "12:38",
+          "name": "Añade platano",
+          "quantity": 100,
+          "unit": "g",
+          "macros": {
+            "calories": 89,
+            "protein": 1.1,
+            "carbs": 22.8,
+            "fats": 0.3
+          }
+        }
+      ],
       "dailyTotals": {
-        "calories": 0,
-        "protein": 0,
-        "carbs": 0,
-        "fats": 0
+        "calories": 89,
+        "protein": 1.1,
+        "carbs": 22.8,
+        "fats": 0.3
       }
     }
   ]
