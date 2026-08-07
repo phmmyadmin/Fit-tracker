@@ -112,10 +112,10 @@ const server = http.createServer((req, res) => {
     req.on('data', chunk => { body += chunk.toString(); });
     req.on('end', () => {
       try {
-        const { text, date } = JSON.parse(body);
-        if (!text) {
+        const { text, parsedItems, date } = JSON.parse(body);
+        if (!text && (!parsedItems || parsedItems.length === 0)) {
           res.writeHead(400, { 'Content-Type': 'application/json' });
-          res.end(JSON.stringify({ error: 'Text required' }));
+          res.end(JSON.stringify({ error: 'Text or parsedItems required' }));
           return;
         }
 
@@ -123,7 +123,7 @@ const server = http.createServer((req, res) => {
         const timeStr = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
         const targetDate = date || now.toISOString().slice(0, 10);
 
-        const items = parseFoodText(text);
+        const items = parsedItems && parsedItems.length > 0 ? parsedItems : parseFoodText(text);
 
         let data = { dailyLogs: [], userProfile: { targetMacros: { calories: 1950, protein: 145, carbs: 195, fats: 65 } } };
         if (fs.existsSync(jsonPath)) {

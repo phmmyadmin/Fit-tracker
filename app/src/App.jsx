@@ -7,6 +7,8 @@ import MonthlyReport from './components/MonthlyReport';
 import ProgressTracker from './components/ProgressTracker';
 import ChatInputBar from './components/ChatInputBar';
 import EditDrawer from './components/EditDrawer';
+import { parseFoodWithGemini } from './lib/gemini';
+import { fetchDailyLogsFromSupabase } from './lib/supabase';
 import './index.css';
 
 export default function App() {
@@ -20,7 +22,16 @@ export default function App() {
   const [editingItem, setEditingItem] = useState(null);
   const [editingIndex, setEditingIndex] = useState(null);
 
-  const loadData = () => {
+  const loadData = async () => {
+    const supabaseData = await fetchDailyLogsFromSupabase();
+    if (supabaseData) {
+      setData(supabaseData);
+      if (supabaseData.dailyLogs && supabaseData.dailyLogs.length > 0 && !selectedDate) {
+        setSelectedDate(supabaseData.dailyLogs[supabaseData.dailyLogs.length - 1].date);
+      }
+      return;
+    }
+
     fetch('/food_log.json?t=' + Date.now())
       .then((res) => res.json())
       .then((json) => {
@@ -44,20 +55,21 @@ export default function App() {
   const handleSendFood = async (text) => {
     setIsLoading(true);
     try {
+      const parsedItems = await parseFoodWithGemini(text);
+
       const res = await fetch('/api/log-food', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ text, date: selectedDate })
+        body: JSON.stringify({ text, parsedItems, date: selectedDate })
       });
       const result = await res.json();
       if (result.success) {
         loadData();
         const summary = result.addedItems.map(i => `${i.name} (${i.calories} kcal)`).join(', ');
-        showToast(`Añadido: ${summary}`);
+        showToast(`Añadido (${parsedItems ? 'Gemini 1.5 Flash' : 'Local'}): ${summary}`);
       }
     } catch (err) {
       console.warn("Backend local no disponible, simulando inserción local...", err);
-      // Fallback simulation
       showToast(`Añadido (modo local): ${text}`);
     } finally {
       setIsLoading(false);
