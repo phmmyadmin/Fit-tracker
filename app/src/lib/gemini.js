@@ -4,18 +4,21 @@ const apiKey = import.meta.env.VITE_GEMINI_API_KEY;
 const genAI = apiKey ? new GoogleGenerativeAI(apiKey) : null;
 
 export async function parseFoodWithGemini(userText) {
-  if (!genAI) {
-    console.warn('VITE_GEMINI_API_KEY not configured. Falling back to local backend.');
+  if (!genAI || !apiKey) {
+    console.warn('VITE_GEMINI_API_KEY not configured. Falling back to rule-based parser.');
     return null;
   }
 
-  try {
-    const model = genAI.getGenerativeModel({
-      model: 'gemini-1.5-flash',
-      generationConfig: { responseMimeType: 'application/json' }
-    });
+  const modelsToTry = ['gemini-1.5-flash-latest', 'gemini-1.5-flash', 'gemini-2.0-flash', 'gemini-1.5-pro'];
 
-    const prompt = `
+  for (const modelName of modelsToTry) {
+    try {
+      const model = genAI.getGenerativeModel({
+        model: modelName,
+        generationConfig: { responseMimeType: 'application/json' }
+      });
+
+      const prompt = `
 Eres un nutricionista experto en conteo de calorías y macronutrientes.
 Analiza el siguiente texto de comida del usuario y devuelve un array JSON estricto con los alimentos parseados.
 
@@ -43,12 +46,17 @@ Devuelve ÚNICAMENTE la estructura JSON en este formato:
 ]
 `;
 
-    const result = await model.generateContent(prompt);
-    const responseText = result.response.text();
-    const parsed = JSON.parse(responseText);
-    return parsed;
-  } catch (err) {
-    console.error('Error in Gemini 1.5 Flash parsing:', err);
-    return null;
+      const result = await model.generateContent(prompt);
+      const responseText = result.response.text();
+      const parsed = JSON.parse(responseText);
+      if (Array.isArray(parsed) && parsed.length > 0) {
+        return parsed;
+      }
+    } catch (err) {
+      console.warn(`Model ${modelName} failed or not found:`, err.message);
+    }
   }
+
+  console.error('All Gemini model fallbacks failed. Using local parser.');
+  return null;
 }
