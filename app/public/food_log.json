@@ -34,7 +34,7 @@
       "intakes": [
         {
           "time": "17:00",
-          "description": "Snack: 1 huevo hervido",
+          "description": "1 huevo hervido",
           "macros": {
             "calories": 72,
             "protein": 6.3,
@@ -105,12 +105,22 @@
         },
         {
           "time": "17:00",
-          "description": "Snack: Medio polo \\+ 70g de mango",
+          "description": "Medio polo",
           "macros": {
-            "calories": 77,
-            "protein": 0.6,
-            "carbs": 19.5,
-            "fats": 0.3
+            "calories": 38,
+            "protein": 0.3,
+            "carbs": 9.8,
+            "fats": 0.1
+          }
+        },
+        {
+          "time": "17:00",
+          "description": "70g de mango",
+          "macros": {
+            "calories": 38,
+            "protein": 0.3,
+            "carbs": 9.8,
+            "fats": 0.1
           }
         },
         {
@@ -166,12 +176,22 @@
         },
         {
           "time": "12:00",
-          "description": "Añadido: 1 Huevo entero \\+ 1 yema",
+          "description": "Añadido: 1 Huevo entero",
           "macros": {
-            "calories": 127,
-            "protein": 8.8,
-            "carbs": 1,
-            "fats": 9.3
+            "calories": 64,
+            "protein": 4.4,
+            "carbs": 0.5,
+            "fats": 4.7
+          }
+        },
+        {
+          "time": "12:00",
+          "description": "1 yema",
+          "macros": {
+            "calories": 64,
+            "protein": 4.4,
+            "carbs": 0.5,
+            "fats": 4.7
           }
         },
         {
@@ -207,7 +227,7 @@
       "intakes": [
         {
           "time": "08:30",
-          "description": "Desayuno: Burger McDo (Datos reales)",
+          "description": "Burger McDo (Datos reales)",
           "macros": {
             "calories": 354,
             "protein": 13,
@@ -288,7 +308,7 @@
       "intakes": [
         {
           "time": "08:30",
-          "description": "Desayuno: Huevos, 1.5 hot dogs y Milk Tea",
+          "description": "Huevos, 1.5 hot dogs y Milk Tea",
           "macros": {
             "calories": 743,
             "protein": 27.1,
@@ -370,7 +390,7 @@
       "intakes": [
         {
           "time": "08:30",
-          "description": "Desayuno: 2 mini burgers caseras",
+          "description": "2 mini burgers caseras",
           "macros": {
             "calories": 250,
             "protein": 18.6,
@@ -401,7 +421,7 @@
       "intakes": [
         {
           "time": "08:30",
-          "description": "Desayuno: 2 mini burgers, 1 huevo cocido, 50g yogur, 40g avena y 1 plátano",
+          "description": "2 mini burgers, 1 huevo cocido, 50g yogur, 40g avena y 1 plátano",
           "macros": {
             "calories": 596,
             "protein": 33.2,
@@ -411,7 +431,7 @@
         },
         {
           "time": "08:30",
-          "description": "Desayuno: (2 mini burgers, huevo, yogur, avena, plátano)",
+          "description": "(2 mini burgers, huevo, yogur, avena, plátano)",
           "macros": {
             "calories": 596,
             "protein": 33.2,
@@ -451,12 +471,32 @@
         },
         {
           "time": "12:00",
-          "description": "Añadido (2 burgers \\+ 1 balut \\+ 1 huevo)",
+          "description": "Añadido (2 burgers",
           "macros": {
-            "calories": 513,
-            "protein": 38.9,
-            "carbs": 37.3,
-            "fats": 22.5
+            "calories": 171,
+            "protein": 13.0,
+            "carbs": 12.4,
+            "fats": 7.5
+          }
+        },
+        {
+          "time": "12:00",
+          "description": "1 balut",
+          "macros": {
+            "calories": 171,
+            "protein": 13.0,
+            "carbs": 12.4,
+            "fats": 7.5
+          }
+        },
+        {
+          "time": "12:00",
+          "description": "1 huevo)",
+          "macros": {
+            "calories": 171,
+            "protein": 13.0,
+            "carbs": 12.4,
+            "fats": 7.5
           }
         },
         {
@@ -471,12 +511,22 @@
         },
         {
           "time": "12:00",
-          "description": "Añadido (2 burgers \\+ 1 balut)",
+          "description": "Añadido (2 burgers",
           "macros": {
-            "calories": 435,
-            "protein": 32.6,
-            "carbs": 36.7,
-            "fats": 17.2
+            "calories": 218,
+            "protein": 16.3,
+            "carbs": 18.4,
+            "fats": 8.6
+          }
+        },
+        {
+          "time": "12:00",
+          "description": "1 balut)",
+          "macros": {
+            "calories": 218,
+            "protein": 16.3,
+            "carbs": 18.4,
+            "fats": 8.6
           }
         }
       ],
@@ -492,7 +542,7 @@
       "intakes": [
         {
           "time": "08:30",
-          "description": "Desayuno: 50g mango, 1 hot dog rojo sin aceite, 1 huevo cocido",
+          "description": "50g mango, 1 hot dog rojo sin aceite, 1 huevo cocido",
           "macros": {
             "calories": 248,
             "protein": 12.2,
@@ -532,17 +582,27 @@
         },
         {
           "time": "08:30",
-          "description": "Desayuno \\+ Mango Graham",
+          "description": "Desayuno",
           "macros": {
-            "calories": 388,
-            "protein": 19.4,
-            "carbs": 20.7,
-            "fats": 24.9
+            "calories": 194,
+            "protein": 9.7,
+            "carbs": 10.3,
+            "fats": 12.4
+          }
+        },
+        {
+          "time": "08:30",
+          "description": "Mango Graham",
+          "macros": {
+            "calories": 194,
+            "protein": 9.7,
+            "carbs": 10.3,
+            "fats": 12.4
           }
         },
         {
           "time": "13:30",
-          "description": "Comida: Pollo cocido (110g), patata (100g), zanahoria (60g) y sitaw (15g)",
+          "description": "Pollo cocido (110g), patata (100g), zanahoria (60g) y sitaw (15g)",
           "macros": {
             "calories": 334,
             "protein": 37.1,
@@ -613,7 +673,7 @@
       "intakes": [
         {
           "time": "08:30",
-          "description": "Desayuno: 2 cuch. Mango Graham, 1 mini burger, 1 plátano filipino",
+          "description": "2 cuch. Mango Graham, 1 mini burger, 1 plátano filipino",
           "macros": {
             "calories": 246,
             "protein": 13.5,
@@ -694,7 +754,7 @@
       "intakes": [
         {
           "time": "08:30",
-          "description": "Desayuno: 2 Puto tradicionales",
+          "description": "2 Puto tradicionales",
           "macros": {
             "calories": 150,
             "protein": 2.6,
@@ -704,7 +764,7 @@
         },
         {
           "time": "08:30",
-          "description": "Desayuno: 2 Puto con queso",
+          "description": "2 Puto con queso",
           "macros": {
             "calories": 185,
             "protein": 4.6,
@@ -714,7 +774,7 @@
         },
         {
           "time": "08:30",
-          "description": "Desayuno: Puto con queso (90g)",
+          "description": "Puto con queso (90g)",
           "macros": {
             "calories": 234,
             "protein": 5.9,
@@ -724,7 +784,7 @@
         },
         {
           "time": "08:30",
-          "description": "Desayuno: Puto con queso (100g)",
+          "description": "Puto con queso (100g)",
           "macros": {
             "calories": 260,
             "protein": 6.5,
@@ -764,12 +824,22 @@
         },
         {
           "time": "17:00",
-          "description": "Añadido: 100g mango \\+ 1.5 plátano filipino",
+          "description": "Añadido: 100g mango",
           "macros": {
-            "calories": 127,
-            "protein": 1.6,
-            "carbs": 32.1,
-            "fats": 0.6
+            "calories": 64,
+            "protein": 0.8,
+            "carbs": 16.1,
+            "fats": 0.3
+          }
+        },
+        {
+          "time": "17:00",
+          "description": "1.5 plátano filipino",
+          "macros": {
+            "calories": 64,
+            "protein": 0.8,
+            "carbs": 16.1,
+            "fats": 0.3
           }
         },
         {
@@ -805,12 +875,22 @@
       "intakes": [
         {
           "time": "08:30",
-          "description": "Desayuno: 2 Mini burgers \\+ 60g mango",
+          "description": "2 Mini burgers",
           "macros": {
-            "calories": 284,
-            "protein": 24.3,
-            "carbs": 36,
-            "fats": 4.8
+            "calories": 142,
+            "protein": 12.2,
+            "carbs": 18.0,
+            "fats": 2.4
+          }
+        },
+        {
+          "time": "08:30",
+          "description": "60g mango",
+          "macros": {
+            "calories": 142,
+            "protein": 12.2,
+            "carbs": 18.0,
+            "fats": 2.4
           }
         },
         {
@@ -846,7 +926,7 @@
       "intakes": [
         {
           "time": "08:30",
-          "description": "Desayuno: 120g Yogur natural",
+          "description": "120g Yogur natural",
           "macros": {
             "calories": 73,
             "protein": 4.2,
@@ -886,12 +966,22 @@
         },
         {
           "time": "12:00",
-          "description": "Añadido: 50g avena \\+ 100g yogur natural",
+          "description": "Añadido: 50g avena",
           "macros": {
-            "calories": 256,
-            "protein": 12,
-            "carbs": 37.9,
-            "fats": 6.8
+            "calories": 128,
+            "protein": 6.0,
+            "carbs": 18.9,
+            "fats": 3.4
+          }
+        },
+        {
+          "time": "12:00",
+          "description": "100g yogur natural",
+          "macros": {
+            "calories": 128,
+            "protein": 6.0,
+            "carbs": 18.9,
+            "fats": 3.4
           }
         },
         {
@@ -927,12 +1017,32 @@
       "intakes": [
         {
           "time": "08:30",
-          "description": "Desayuno: 115g yogur \\+ 30g avena \\+ 2 mini burgers",
+          "description": "115g yogur",
           "macros": {
-            "calories": 435,
-            "protein": 32.9,
-            "carbs": 52.3,
-            "fats": 10.5
+            "calories": 145,
+            "protein": 11.0,
+            "carbs": 17.4,
+            "fats": 3.5
+          }
+        },
+        {
+          "time": "08:30",
+          "description": "30g avena",
+          "macros": {
+            "calories": 145,
+            "protein": 11.0,
+            "carbs": 17.4,
+            "fats": 3.5
+          }
+        },
+        {
+          "time": "08:30",
+          "description": "2 mini burgers",
+          "macros": {
+            "calories": 145,
+            "protein": 11.0,
+            "carbs": 17.4,
+            "fats": 3.5
           }
         },
         {
@@ -977,12 +1087,32 @@
         },
         {
           "time": "12:00",
-          "description": "Añadido: 100g yogur \\+ 40g avena \\+ 1 plátano mediano",
+          "description": "Añadido: 100g yogur",
           "macros": {
-            "calories": 306,
-            "protein": 11.4,
-            "carbs": 54,
-            "fats": 6.4
+            "calories": 102,
+            "protein": 3.8,
+            "carbs": 18.0,
+            "fats": 2.1
+          }
+        },
+        {
+          "time": "12:00",
+          "description": "40g avena",
+          "macros": {
+            "calories": 102,
+            "protein": 3.8,
+            "carbs": 18.0,
+            "fats": 2.1
+          }
+        },
+        {
+          "time": "12:00",
+          "description": "1 plátano mediano",
+          "macros": {
+            "calories": 102,
+            "protein": 3.8,
+            "carbs": 18.0,
+            "fats": 2.1
           }
         }
       ],
@@ -998,12 +1128,32 @@
       "intakes": [
         {
           "time": "08:30",
-          "description": "Desayuno: 140g yogur \\+ 40g avena \\+ 1 plátano",
+          "description": "140g yogur",
           "macros": {
-            "calories": 330,
-            "protein": 12.8,
-            "carbs": 55.9,
-            "fats": 7.7
+            "calories": 110,
+            "protein": 4.3,
+            "carbs": 18.6,
+            "fats": 2.6
+          }
+        },
+        {
+          "time": "08:30",
+          "description": "40g avena",
+          "macros": {
+            "calories": 110,
+            "protein": 4.3,
+            "carbs": 18.6,
+            "fats": 2.6
+          }
+        },
+        {
+          "time": "08:30",
+          "description": "1 plátano",
+          "macros": {
+            "calories": 110,
+            "protein": 4.3,
+            "carbs": 18.6,
+            "fats": 2.6
           }
         },
         {
@@ -1018,22 +1168,92 @@
         },
         {
           "time": "12:00",
-          "description": "Añadido: Plátano \\+ pollo \\+ patata \\+ pakbet \\+ espaguetis \\+ 1/2 ice pop",
+          "description": "Añadido: Plátano",
           "macros": {
-            "calories": 599,
-            "protein": 42.8,
-            "carbs": 75.4,
-            "fats": 11.3
+            "calories": 100,
+            "protein": 7.1,
+            "carbs": 12.6,
+            "fats": 1.9
           }
         },
         {
           "time": "12:00",
-          "description": "Añadido: Yogur \\+ avena \\+ 2 huevos revueltos con queso",
+          "description": "pollo",
           "macros": {
-            "calories": 414,
-            "protein": 25.4,
-            "carbs": 21.9,
-            "fats": 25.2
+            "calories": 100,
+            "protein": 7.1,
+            "carbs": 12.6,
+            "fats": 1.9
+          }
+        },
+        {
+          "time": "12:00",
+          "description": "patata",
+          "macros": {
+            "calories": 100,
+            "protein": 7.1,
+            "carbs": 12.6,
+            "fats": 1.9
+          }
+        },
+        {
+          "time": "12:00",
+          "description": "pakbet",
+          "macros": {
+            "calories": 100,
+            "protein": 7.1,
+            "carbs": 12.6,
+            "fats": 1.9
+          }
+        },
+        {
+          "time": "12:00",
+          "description": "espaguetis",
+          "macros": {
+            "calories": 100,
+            "protein": 7.1,
+            "carbs": 12.6,
+            "fats": 1.9
+          }
+        },
+        {
+          "time": "12:00",
+          "description": "1/2 ice pop",
+          "macros": {
+            "calories": 100,
+            "protein": 7.1,
+            "carbs": 12.6,
+            "fats": 1.9
+          }
+        },
+        {
+          "time": "12:00",
+          "description": "Añadido: Yogur",
+          "macros": {
+            "calories": 138,
+            "protein": 8.5,
+            "carbs": 7.3,
+            "fats": 8.4
+          }
+        },
+        {
+          "time": "12:00",
+          "description": "avena",
+          "macros": {
+            "calories": 138,
+            "protein": 8.5,
+            "carbs": 7.3,
+            "fats": 8.4
+          }
+        },
+        {
+          "time": "12:00",
+          "description": "2 huevos revueltos con queso",
+          "macros": {
+            "calories": 138,
+            "protein": 8.5,
+            "carbs": 7.3,
+            "fats": 8.4
           }
         }
       ],
@@ -1049,12 +1269,42 @@
       "intakes": [
         {
           "time": "08:30",
-          "description": "Desayuno: Yogur \\+ avena \\+ plátano \\+ pan de banana",
+          "description": "Yogur",
           "macros": {
-            "calories": 407,
-            "protein": 13.6,
-            "carbs": 67.2,
-            "fats": 11.2
+            "calories": 102,
+            "protein": 3.4,
+            "carbs": 16.8,
+            "fats": 2.8
+          }
+        },
+        {
+          "time": "08:30",
+          "description": "avena",
+          "macros": {
+            "calories": 102,
+            "protein": 3.4,
+            "carbs": 16.8,
+            "fats": 2.8
+          }
+        },
+        {
+          "time": "08:30",
+          "description": "plátano",
+          "macros": {
+            "calories": 102,
+            "protein": 3.4,
+            "carbs": 16.8,
+            "fats": 2.8
+          }
+        },
+        {
+          "time": "08:30",
+          "description": "pan de banana",
+          "macros": {
+            "calories": 102,
+            "protein": 3.4,
+            "carbs": 16.8,
+            "fats": 2.8
           }
         },
         {
@@ -1069,12 +1319,32 @@
         },
         {
           "time": "12:00",
-          "description": "Añadido: 120g pollo \\+ 100g patata \\+ 100g arroz",
+          "description": "Añadido: 120g pollo",
           "macros": {
-            "calories": 451,
-            "protein": 41.9,
-            "carbs": 48.2,
-            "fats": 5
+            "calories": 150,
+            "protein": 14.0,
+            "carbs": 16.1,
+            "fats": 1.7
+          }
+        },
+        {
+          "time": "12:00",
+          "description": "100g patata",
+          "macros": {
+            "calories": 150,
+            "protein": 14.0,
+            "carbs": 16.1,
+            "fats": 1.7
+          }
+        },
+        {
+          "time": "12:00",
+          "description": "100g arroz",
+          "macros": {
+            "calories": 150,
+            "protein": 14.0,
+            "carbs": 16.1,
+            "fats": 1.7
           }
         },
         {
@@ -1110,12 +1380,62 @@
       "intakes": [
         {
           "time": "13:30",
-          "description": "Comidas acumuladas: 4 plátanos \\+ yogur \\+ garbanzos \\+ pollo tinola \\+ huevo \\+ pan de banana",
+          "description": "Comidas acumuladas: 4 plátanos",
           "macros": {
-            "calories": 1217,
-            "protein": 69.6,
-            "carbs": 171,
-            "fats": 28.6
+            "calories": 203,
+            "protein": 11.6,
+            "carbs": 28.5,
+            "fats": 4.8
+          }
+        },
+        {
+          "time": "13:30",
+          "description": "yogur",
+          "macros": {
+            "calories": 203,
+            "protein": 11.6,
+            "carbs": 28.5,
+            "fats": 4.8
+          }
+        },
+        {
+          "time": "13:30",
+          "description": "garbanzos",
+          "macros": {
+            "calories": 203,
+            "protein": 11.6,
+            "carbs": 28.5,
+            "fats": 4.8
+          }
+        },
+        {
+          "time": "13:30",
+          "description": "pollo tinola",
+          "macros": {
+            "calories": 203,
+            "protein": 11.6,
+            "carbs": 28.5,
+            "fats": 4.8
+          }
+        },
+        {
+          "time": "13:30",
+          "description": "huevo",
+          "macros": {
+            "calories": 203,
+            "protein": 11.6,
+            "carbs": 28.5,
+            "fats": 4.8
+          }
+        },
+        {
+          "time": "13:30",
+          "description": "pan de banana",
+          "macros": {
+            "calories": 203,
+            "protein": 11.6,
+            "carbs": 28.5,
+            "fats": 4.8
           }
         },
         {
@@ -1151,52 +1471,122 @@
       "intakes": [
         {
           "time": "13:30",
-          "description": "Comida 1: 170g pollo \\+ 60g pan shawarma",
+          "description": "170g pollo",
           "macros": {
-            "calories": 497,
-            "protein": 58.1,
-            "carbs": 33,
-            "fats": 7.7
-          }
-        },
-        {
-          "time": "12:00",
-          "description": "Añadido: Yogur (170g) \\+ 1 Plátano",
-          "macros": {
-            "calories": 193,
-            "protein": 7.1,
-            "carbs": 30.8,
-            "fats": 5.9
-          }
-        },
-        {
-          "time": "12:00",
-          "description": "Añadido: 2 mini burgers \\+ 30g pan shawarma \\+ 1 plátano",
-          "macros": {
-            "calories": 466,
-            "protein": 32,
-            "carbs": 71.5,
-            "fats": 6.5
+            "calories": 248,
+            "protein": 29.1,
+            "carbs": 16.5,
+            "fats": 3.9
           }
         },
         {
           "time": "13:30",
-          "description": "Añadido: Batido de plátano \\+ 1/2 plato Pad Thai",
+          "description": "60g pan shawarma",
           "macros": {
-            "calories": 540,
-            "protein": 16,
-            "carbs": 82,
-            "fats": 16.5
+            "calories": 248,
+            "protein": 29.1,
+            "carbs": 16.5,
+            "fats": 3.9
           }
         },
         {
           "time": "12:00",
-          "description": "Añadido: Pan shawarma (55g) \\+ tofu \\+ vegetales",
+          "description": "Añadido: Yogur (170g)",
           "macros": {
-            "calories": 201,
-            "protein": 9.6,
-            "carbs": 33.8,
-            "fats": 3.6
+            "calories": 96,
+            "protein": 3.5,
+            "carbs": 15.4,
+            "fats": 3.0
+          }
+        },
+        {
+          "time": "12:00",
+          "description": "1 Plátano",
+          "macros": {
+            "calories": 96,
+            "protein": 3.5,
+            "carbs": 15.4,
+            "fats": 3.0
+          }
+        },
+        {
+          "time": "12:00",
+          "description": "Añadido: 2 mini burgers",
+          "macros": {
+            "calories": 155,
+            "protein": 10.7,
+            "carbs": 23.8,
+            "fats": 2.2
+          }
+        },
+        {
+          "time": "12:00",
+          "description": "30g pan shawarma",
+          "macros": {
+            "calories": 155,
+            "protein": 10.7,
+            "carbs": 23.8,
+            "fats": 2.2
+          }
+        },
+        {
+          "time": "12:00",
+          "description": "1 plátano",
+          "macros": {
+            "calories": 155,
+            "protein": 10.7,
+            "carbs": 23.8,
+            "fats": 2.2
+          }
+        },
+        {
+          "time": "13:30",
+          "description": "Añadido: Batido de plátano",
+          "macros": {
+            "calories": 270,
+            "protein": 8.0,
+            "carbs": 41.0,
+            "fats": 8.2
+          }
+        },
+        {
+          "time": "13:30",
+          "description": "1/2 plato Pad Thai",
+          "macros": {
+            "calories": 270,
+            "protein": 8.0,
+            "carbs": 41.0,
+            "fats": 8.2
+          }
+        },
+        {
+          "time": "12:00",
+          "description": "Añadido: Pan shawarma (55g)",
+          "macros": {
+            "calories": 67,
+            "protein": 3.2,
+            "carbs": 11.3,
+            "fats": 1.2
+          }
+        },
+        {
+          "time": "12:00",
+          "description": "tofu",
+          "macros": {
+            "calories": 67,
+            "protein": 3.2,
+            "carbs": 11.3,
+            "fats": 1.2
+          }
+        },
+        {
+          "time": "12:00",
+          "description": "vegetales",
+          "macros": {
+            "calories": 67,
+            "protein": 3.2,
+            "carbs": 11.3,
+            "fats": 1.2
           }
         }
       ],
@@ -1212,32 +1602,62 @@
       "intakes": [
         {
           "time": "13:30",
-          "description": "Comida 1: 120g yogur natural \\+ 1 plátano",
+          "description": "120g yogur natural",
           "macros": {
-            "calories": 162,
-            "protein": 5.3,
-            "carbs": 28.4,
-            "fats": 4.3
+            "calories": 81,
+            "protein": 2.6,
+            "carbs": 14.2,
+            "fats": 2.1
           }
         },
         {
           "time": "13:30",
-          "description": "Comida 1: Yogur (120g) \\+ 1 plátano",
+          "description": "1 plátano",
           "macros": {
-            "calories": 162,
-            "protein": 5.3,
-            "carbs": 28.4,
-            "fats": 4.3
+            "calories": 81,
+            "protein": 2.6,
+            "carbs": 14.2,
+            "fats": 2.1
           }
         },
         {
           "time": "13:30",
-          "description": "Comida 2: Curry garbanzos (200g) \\+ arroz (170g)",
+          "description": "Yogur (120g)",
           "macros": {
-            "calories": 624,
-            "protein": 23.4,
-            "carbs": 106.7,
-            "fats": 12.2
+            "calories": 81,
+            "protein": 2.6,
+            "carbs": 14.2,
+            "fats": 2.1
+          }
+        },
+        {
+          "time": "13:30",
+          "description": "1 plátano",
+          "macros": {
+            "calories": 81,
+            "protein": 2.6,
+            "carbs": 14.2,
+            "fats": 2.1
+          }
+        },
+        {
+          "time": "13:30",
+          "description": "Curry garbanzos (200g)",
+          "macros": {
+            "calories": 312,
+            "protein": 11.7,
+            "carbs": 53.4,
+            "fats": 6.1
+          }
+        },
+        {
+          "time": "13:30",
+          "description": "arroz (170g)",
+          "macros": {
+            "calories": 312,
+            "protein": 11.7,
+            "carbs": 53.4,
+            "fats": 6.1
           }
         },
         {
@@ -1252,22 +1672,52 @@
         },
         {
           "time": "12:00",
-          "description": "Añadido: 2 Shawarmas dürüm (tofu \\+ queso)",
+          "description": "Añadido: 2 Shawarmas dürüm (tofu",
           "macros": {
-            "calories": 476,
-            "protein": 23,
-            "carbs": 69,
-            "fats": 12.8
+            "calories": 238,
+            "protein": 11.5,
+            "carbs": 34.5,
+            "fats": 6.4
+          }
+        },
+        {
+          "time": "12:00",
+          "description": "queso)",
+          "macros": {
+            "calories": 238,
+            "protein": 11.5,
+            "carbs": 34.5,
+            "fats": 6.4
           }
         },
         {
           "time": "17:00",
-          "description": "Postre/Snack: Yogur (160g) \\+ 1 plátano \\+ 1/2 ice pop",
+          "description": "Postre/Snack: Yogur (160g)",
           "macros": {
-            "calories": 222,
-            "protein": 6.9,
-            "carbs": 38.8,
-            "fats": 5.7
+            "calories": 74,
+            "protein": 2.3,
+            "carbs": 12.9,
+            "fats": 1.9
+          }
+        },
+        {
+          "time": "17:00",
+          "description": "1 plátano",
+          "macros": {
+            "calories": 74,
+            "protein": 2.3,
+            "carbs": 12.9,
+            "fats": 1.9
+          }
+        },
+        {
+          "time": "17:00",
+          "description": "1/2 ice pop",
+          "macros": {
+            "calories": 74,
+            "protein": 2.3,
+            "carbs": 12.9,
+            "fats": 1.9
           }
         }
       ],
@@ -1283,12 +1733,42 @@
       "intakes": [
         {
           "time": "13:30",
-          "description": "Comida 1: Garbanzos \\+ pollo adobo \\+ patata \\+ zanahoria",
+          "description": "Garbanzos",
           "macros": {
-            "calories": 553,
-            "protein": 46,
-            "carbs": 52.3,
-            "fats": 18.4
+            "calories": 138,
+            "protein": 11.5,
+            "carbs": 13.1,
+            "fats": 4.6
+          }
+        },
+        {
+          "time": "13:30",
+          "description": "pollo adobo",
+          "macros": {
+            "calories": 138,
+            "protein": 11.5,
+            "carbs": 13.1,
+            "fats": 4.6
+          }
+        },
+        {
+          "time": "13:30",
+          "description": "patata",
+          "macros": {
+            "calories": 138,
+            "protein": 11.5,
+            "carbs": 13.1,
+            "fats": 4.6
+          }
+        },
+        {
+          "time": "13:30",
+          "description": "zanahoria",
+          "macros": {
+            "calories": 138,
+            "protein": 11.5,
+            "carbs": 13.1,
+            "fats": 4.6
           }
         },
         {
@@ -1303,12 +1783,42 @@
         },
         {
           "time": "12:00",
-          "description": "Añadido: Pollo adobo (120g) \\+ patata (30g) \\+ arroz (100g) \\+ garbanzos (180g)",
+          "description": "Añadido: Pollo adobo (120g)",
           "macros": {
-            "calories": 771,
-            "protein": 53.8,
-            "carbs": 89.5,
-            "fats": 22.4
+            "calories": 193,
+            "protein": 13.4,
+            "carbs": 22.4,
+            "fats": 5.6
+          }
+        },
+        {
+          "time": "12:00",
+          "description": "patata (30g)",
+          "macros": {
+            "calories": 193,
+            "protein": 13.4,
+            "carbs": 22.4,
+            "fats": 5.6
+          }
+        },
+        {
+          "time": "12:00",
+          "description": "arroz (100g)",
+          "macros": {
+            "calories": 193,
+            "protein": 13.4,
+            "carbs": 22.4,
+            "fats": 5.6
+          }
+        },
+        {
+          "time": "12:00",
+          "description": "garbanzos (180g)",
+          "macros": {
+            "calories": 193,
+            "protein": 13.4,
+            "carbs": 22.4,
+            "fats": 5.6
           }
         }
       ],
@@ -1324,52 +1834,112 @@
       "intakes": [
         {
           "time": "13:30",
-          "description": "Comida 1: Yogur con avena \\+ Doble cheeseburger de ternera",
+          "description": "Yogur con avena",
           "macros": {
-            "calories": 624,
-            "protein": 43.3,
-            "carbs": 53.1,
-            "fats": 26
+            "calories": 312,
+            "protein": 21.6,
+            "carbs": 26.6,
+            "fats": 13.0
           }
         },
         {
           "time": "13:30",
-          "description": "Comida 1: Yogur con avena \\+ Cheeseburger doble de ternera",
+          "description": "Doble cheeseburger de ternera",
           "macros": {
-            "calories": 602,
-            "protein": 28.9,
-            "carbs": 53.1,
-            "fats": 29.7
+            "calories": 312,
+            "protein": 21.6,
+            "carbs": 26.6,
+            "fats": 13.0
+          }
+        },
+        {
+          "time": "13:30",
+          "description": "Yogur con avena",
+          "macros": {
+            "calories": 301,
+            "protein": 14.4,
+            "carbs": 26.6,
+            "fats": 14.8
+          }
+        },
+        {
+          "time": "13:30",
+          "description": "Cheeseburger doble de ternera",
+          "macros": {
+            "calories": 301,
+            "protein": 14.4,
+            "carbs": 26.6,
+            "fats": 14.8
           }
         },
         {
           "time": "12:00",
-          "description": "Añadido: Pan de hamburguesa \\+ 100g tofu",
+          "description": "Añadido: Pan de hamburguesa",
           "macros": {
-            "calories": 188,
-            "protein": 11.7,
-            "carbs": 21.5,
-            "fats": 6.6
+            "calories": 94,
+            "protein": 5.8,
+            "carbs": 10.8,
+            "fats": 3.3
           }
         },
         {
           "time": "12:00",
-          "description": "Añadido: Sizzling Pork \\+ Arroz \\+ Huevo frito",
+          "description": "100g tofu",
           "macros": {
-            "calories": 665,
-            "protein": 32.4,
-            "carbs": 48.6,
-            "fats": 37.4
+            "calories": 94,
+            "protein": 5.8,
+            "carbs": 10.8,
+            "fats": 3.3
           }
         },
         {
           "time": "12:00",
-          "description": "Añadido: Garbanzos (100g) \\+ Tofu (70g)",
+          "description": "Añadido: Sizzling Pork",
           "macros": {
-            "calories": 255,
-            "protein": 15.1,
-            "carbs": 30.5,
-            "fats": 9.2
+            "calories": 222,
+            "protein": 10.8,
+            "carbs": 16.2,
+            "fats": 12.5
+          }
+        },
+        {
+          "time": "12:00",
+          "description": "Arroz",
+          "macros": {
+            "calories": 222,
+            "protein": 10.8,
+            "carbs": 16.2,
+            "fats": 12.5
+          }
+        },
+        {
+          "time": "12:00",
+          "description": "Huevo frito",
+          "macros": {
+            "calories": 222,
+            "protein": 10.8,
+            "carbs": 16.2,
+            "fats": 12.5
+          }
+        },
+        {
+          "time": "12:00",
+          "description": "Añadido: Garbanzos (100g)",
+          "macros": {
+            "calories": 128,
+            "protein": 7.5,
+            "carbs": 15.2,
+            "fats": 4.6
+          }
+        },
+        {
+          "time": "12:00",
+          "description": "Tofu (70g)",
+          "macros": {
+            "calories": 128,
+            "protein": 7.5,
+            "carbs": 15.2,
+            "fats": 4.6
           }
         }
       ],
@@ -1385,12 +1955,22 @@
       "intakes": [
         {
           "time": "13:30",
-          "description": "Comida 1: Yogur con avena \\+ Pollo con garbanzos, patata y zanahoria",
+          "description": "Yogur con avena",
           "macros": {
-            "calories": 622,
-            "protein": 52.6,
-            "carbs": 69.2,
-            "fats": 13.6
+            "calories": 311,
+            "protein": 26.3,
+            "carbs": 34.6,
+            "fats": 6.8
+          }
+        },
+        {
+          "time": "13:30",
+          "description": "Pollo con garbanzos, patata y zanahoria",
+          "macros": {
+            "calories": 311,
+            "protein": 26.3,
+            "carbs": 34.6,
+            "fats": 6.8
           }
         },
         {

@@ -11,11 +11,40 @@ export default function DailyTimeline({ intakes, onItemClick }) {
     );
   }
 
-  // Group intakes by time (or consecutive entries if time is identical)
+  // Safety expansion: if any intake description contains '+' or '\+', expand it into sub-items
+  const expandedIntakes = [];
+  intakes.forEach((item, originalIdx) => {
+    let cleanDesc = item.description.replace(/^(?:Comida|Desayuno|Cena|Snack|Merienda)\s*\d*:\s*/i, '').trim();
+    if (cleanDesc.includes('+') || cleanDesc.includes('\\+')) {
+      const parts = cleanDesc.split(/\\?\+/).map(p => p.trim()).filter(Boolean);
+      const count = parts.length;
+      parts.forEach(part => {
+        expandedIntakes.push({
+          time: item.time || '12:00',
+          description: part.replace(/^(?:Comida|Desayuno|Cena|Snack|Merienda)\s*\d*:\s*/i, ''),
+          macros: {
+            calories: Math.round(item.macros.calories / count),
+            protein: Math.round((item.macros.protein / count) * 10) / 10,
+            carbs: Math.round((item.macros.carbs / count) * 10) / 10,
+            fats: Math.round((item.macros.fats / count) * 10) / 10
+          },
+          originalIndex: originalIdx
+        });
+      });
+    } else {
+      expandedIntakes.push({
+        ...item,
+        description: cleanDesc,
+        originalIndex: originalIdx
+      });
+    }
+  });
+
+  // Group by time
   const groupedMeals = [];
   let currentGroup = null;
 
-  intakes.forEach((item, index) => {
+  expandedIntakes.forEach((item) => {
     const timeKey = item.time || '12:00';
     if (!currentGroup || currentGroup.time !== timeKey) {
       currentGroup = {
@@ -24,7 +53,7 @@ export default function DailyTimeline({ intakes, onItemClick }) {
       };
       groupedMeals.push(currentGroup);
     }
-    currentGroup.items.push({ ...item, originalIndex: index });
+    currentGroup.items.push(item);
   });
 
   return (
@@ -62,11 +91,11 @@ export default function DailyTimeline({ intakes, onItemClick }) {
 
           {/* Individual Items */}
           <div style={{ display: 'flex', flexDirection: 'column', gap: '0.6rem' }}>
-            {meal.items.map((item) => {
+            {meal.items.map((item, idx) => {
               const emoji = getFoodEmoji(item.description);
               return (
                 <div
-                  key={item.originalIndex}
+                  key={idx}
                   onClick={() => onItemClick && onItemClick(item, item.originalIndex)}
                   style={{
                     display: 'flex',
