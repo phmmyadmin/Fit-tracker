@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Calendar, ChevronLeft, ChevronRight, CheckCircle2 } from 'lucide-react';
 import MacroRing from './components/MacroRing';
 import DailyTimeline from './components/DailyTimeline';
@@ -18,6 +18,7 @@ export default function App() {
   const [activeTab, setActiveTab] = useState('dashboard');
   const [isLoading, setIsLoading] = useState(false);
   const [toastMessage, setToastMessage] = useState(null);
+  const dateInputRef = useRef(null);
   
   // Drawer editing state
   const [editingItem, setEditingItem] = useState(null);
@@ -239,9 +240,51 @@ export default function App() {
           <button className="nav-btn" onClick={prevDate} disabled={currentIndex === 0}>
             <ChevronLeft size={16} />
           </button>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
+          <div 
+            onClick={() => {
+              if (dateInputRef.current) {
+                if (dateInputRef.current.showPicker) {
+                  dateInputRef.current.showPicker();
+                } else {
+                  dateInputRef.current.click();
+                }
+              }
+            }}
+            style={{ 
+              display: 'flex', 
+              alignItems: 'center', 
+              gap: '0.4rem', 
+              cursor: 'pointer', 
+              position: 'relative',
+              padding: '0.2rem 0.5rem',
+              borderRadius: 'var(--radius-sm)',
+              background: 'var(--bg-subtle)',
+              border: '1px solid var(--border-subtle)',
+              transition: 'all 0.15s ease'
+            }}
+            title="Haz clic para abrir el calendario y seleccionar cualquier día"
+          >
             <Calendar size={16} color="var(--color-indigo)" />
-            <span>{selectedDate}</span>
+            <span style={{ fontWeight: 600, color: 'var(--text-main)' }}>{selectedDate}</span>
+            <input 
+              ref={dateInputRef}
+              type="date"
+              value={selectedDate}
+              onChange={(e) => {
+                if (e.target.value) {
+                  setSelectedDate(e.target.value);
+                }
+              }}
+              style={{
+                position: 'absolute',
+                top: 0,
+                left: 0,
+                width: '100%',
+                height: '100%',
+                opacity: 0,
+                cursor: 'pointer'
+              }}
+            />
           </div>
           <button className="nav-btn" onClick={nextDate} disabled={currentIndex === allDates.length - 1}>
             <ChevronRight size={16} />
