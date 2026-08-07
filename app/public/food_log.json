@@ -47,7 +47,7 @@
         },
         {
           "time": "12:00",
-          "name": "Plátanos (medida filipina",
+          "name": "Plátanos",
           "quantity": 2,
           "unit": "ud",
           "macros": {
@@ -109,7 +109,7 @@
       "intakes": [
         {
           "time": "12:00",
-          "name": "Plátano (medida filipina",
+          "name": "Plátano",
           "quantity": 1,
           "unit": "ud",
           "macros": {
@@ -121,9 +121,9 @@
         },
         {
           "time": "17:00",
-          "name": "Medio polo",
-          "quantity": 1,
-          "unit": "porcion",
+          "name": "Polo",
+          "quantity": 0.5,
+          "unit": "ud",
           "macros": {
             "calories": 38,
             "protein": 0.3,
@@ -133,9 +133,9 @@
         },
         {
           "time": "17:00",
-          "name": "70g de mango",
-          "quantity": 1,
-          "unit": "porcion",
+          "name": "Mango",
+          "quantity": 70,
+          "unit": "g",
           "macros": {
             "calories": 38,
             "protein": 0.3,
@@ -168,9 +168,9 @@
       "intakes": [
         {
           "time": "12:00",
-          "name": "147g de arroz cocido",
-          "quantity": 1,
-          "unit": "porcion",
+          "name": "Arroz cocido",
+          "quantity": 147,
+          "unit": "g",
           "macros": {
             "calories": 191,
             "protein": 3.9,
@@ -180,9 +180,9 @@
         },
         {
           "time": "12:00",
-          "name": "40g de pepino",
-          "quantity": 1,
-          "unit": "porcion",
+          "name": "Pepino",
+          "quantity": 40,
+          "unit": "g",
           "macros": {
             "calories": 6,
             "protein": 0.3,
@@ -192,9 +192,9 @@
         },
         {
           "time": "17:00",
-          "name": "70g de mango fresco",
-          "quantity": 1,
-          "unit": "porcion",
+          "name": "Mango fresco",
+          "quantity": 70,
+          "unit": "g",
           "macros": {
             "calories": 42,
             "protein": 0.6,
@@ -240,9 +240,9 @@
         },
         {
           "time": "12:00",
-          "name": "27g de Sitaw",
-          "quantity": 1,
-          "unit": "porcion",
+          "name": "Sitaw",
+          "quantity": 27,
+          "unit": "g",
           "macros": {
             "calories": 10,
             "protein": 0.5,
@@ -263,7 +263,7 @@
       "intakes": [
         {
           "time": "08:30",
-          "name": "Burger McDo (Datos reales",
+          "name": "Burger McDo",
           "quantity": 1,
           "unit": "porcion",
           "macros": {
@@ -275,9 +275,9 @@
         },
         {
           "time": "12:00",
-          "name": "108g de arroz blanco",
-          "quantity": 1,
-          "unit": "porcion",
+          "name": "Arroz blanco",
+          "quantity": 108,
+          "unit": "g",
           "macros": {
             "calories": 140,
             "protein": 2.9,
@@ -299,9 +299,9 @@
         },
         {
           "time": "12:00",
-          "name": "Medio Popstick helado",
-          "quantity": 1,
-          "unit": "porcion",
+          "name": "Popstick helado",
+          "quantity": 0.5,
+          "unit": "ud",
           "macros": {
             "calories": 110,
             "protein": 1.2,
@@ -311,9 +311,9 @@
         },
         {
           "time": "12:00",
-          "name": "Medio Popstick de hielo",
-          "quantity": 1,
-          "unit": "porcion",
+          "name": "Popstick de hielo",
+          "quantity": 0.5,
+          "unit": "ud",
           "macros": {
             "calories": 22,
             "protein": 0,
@@ -323,9 +323,9 @@
         },
         {
           "time": "17:00",
-          "name": "50g de mango fresco",
-          "quantity": 1,
-          "unit": "porcion",
+          "name": "Mango fresco",
+          "quantity": 50,
+          "unit": "g",
           "macros": {
             "calories": 30,
             "protein": 0.4,
@@ -385,21 +385,48 @@
       "intakes": [
         {
           "time": "08:30",
-          "name": "Huevos, 1.5 hot dogs y Milk Tea",
+          "dishName": "Desayuno",
+          "name": "Huevos",
+          "quantity": 2,
+          "unit": "ud",
+          "macros": {
+            "calories": 156,
+            "protein": 12.6,
+            "carbs": 1.2,
+            "fats": 10.6
+          }
+        },
+        {
+          "time": "08:30",
+          "dishName": "Desayuno",
+          "name": "Hot dog",
+          "quantity": 1.5,
+          "unit": "ud",
+          "macros": {
+            "calories": 225,
+            "protein": 7.5,
+            "carbs": 7.5,
+            "fats": 18
+          }
+        },
+        {
+          "time": "08:30",
+          "dishName": "Desayuno",
+          "name": "Milk Tea",
           "quantity": 1,
           "unit": "porcion",
           "macros": {
-            "calories": 743,
-            "protein": 27.1,
-            "carbs": 67.3,
-            "fats": 40.6
+            "calories": 200,
+            "protein": 2,
+            "carbs": 35,
+            "fats": 5
           }
         },
         {
           "time": "12:00",
-          "name": "Medio Ice Pop",
-          "quantity": 1,
-          "unit": "porcion",
+          "name": "Ice Pop",
+          "quantity": 0.5,
+          "unit": "ud",
           "macros": {
             "calories": 22,
             "protein": 0,
@@ -452,9 +479,9 @@
       "intakes": [
         {
           "time": "17:00",
-          "name": "100g de Mango fresco",
-          "quantity": 1,
-          "unit": "porcion",
+          "name": "Mango fresco",
+          "quantity": 100,
+          "unit": "g",
           "macros": {
             "calories": 60,
             "protein": 0.8,
@@ -537,26 +564,132 @@
       "intakes": [
         {
           "time": "08:30",
-          "name": "Mini burgers, 1 huevo cocido, 50g yogur, 40g avena y 1 plátano",
+          "dishName": "Desayuno",
+          "name": "Mini burgers",
           "quantity": 2,
           "unit": "ud",
           "macros": {
-            "calories": 596,
-            "protein": 33.2,
-            "carbs": 87.4,
-            "fats": 14.3
+            "calories": 300,
+            "protein": 20,
+            "carbs": 30,
+            "fats": 10
           }
         },
         {
           "time": "08:30",
-          "name": "Mini burgers, huevo, yogur, avena, plátano",
+          "dishName": "Desayuno",
+          "name": "Huevo cocido",
+          "quantity": 1,
+          "unit": "ud",
+          "macros": {
+            "calories": 78,
+            "protein": 6.3,
+            "carbs": 0.6,
+            "fats": 5.3
+          }
+        },
+        {
+          "time": "08:30",
+          "dishName": "Desayuno",
+          "name": "Yogur",
+          "quantity": 50,
+          "unit": "g",
+          "macros": {
+            "calories": 30,
+            "protein": 1.8,
+            "carbs": 2.4,
+            "fats": 1.7
+          }
+        },
+        {
+          "time": "08:30",
+          "dishName": "Desayuno",
+          "name": "Avena",
+          "quantity": 40,
+          "unit": "g",
+          "macros": {
+            "calories": 156,
+            "protein": 6.8,
+            "carbs": 26.5,
+            "fats": 2.8
+          }
+        },
+        {
+          "time": "08:30",
+          "dishName": "Desayuno",
+          "name": "Plátano",
+          "quantity": 1,
+          "unit": "ud",
+          "macros": {
+            "calories": 100,
+            "protein": 1,
+            "carbs": 25,
+            "fats": 0
+          }
+        },
+        {
+          "time": "08:30",
+          "dishName": "Desayuno",
+          "name": "Mini burgers",
           "quantity": 2,
           "unit": "ud",
           "macros": {
-            "calories": 596,
-            "protein": 33.2,
-            "carbs": 87.4,
-            "fats": 14.3
+            "calories": 300,
+            "protein": 20,
+            "carbs": 30,
+            "fats": 10
+          }
+        },
+        {
+          "time": "08:30",
+          "dishName": "Desayuno",
+          "name": "Huevo cocido",
+          "quantity": 1,
+          "unit": "ud",
+          "macros": {
+            "calories": 78,
+            "protein": 6.3,
+            "carbs": 0.6,
+            "fats": 5.3
+          }
+        },
+        {
+          "time": "08:30",
+          "dishName": "Desayuno",
+          "name": "Yogur",
+          "quantity": 50,
+          "unit": "g",
+          "macros": {
+            "calories": 30,
+            "protein": 1.8,
+            "carbs": 2.4,
+            "fats": 1.7
+          }
+        },
+        {
+          "time": "08:30",
+          "dishName": "Desayuno",
+          "name": "Avena",
+          "quantity": 40,
+          "unit": "g",
+          "macros": {
+            "calories": 156,
+            "protein": 6.8,
+            "carbs": 26.5,
+            "fats": 2.8
+          }
+        },
+        {
+          "time": "08:30",
+          "dishName": "Desayuno",
+          "name": "Plátano",
+          "quantity": 1,
+          "unit": "ud",
+          "macros": {
+            "calories": 100,
+            "protein": 1,
+            "carbs": 25,
+            "fats": 0
           }
         },
         {
@@ -573,14 +706,28 @@
         },
         {
           "time": "12:00",
-          "name": "Donut de chocolate y Pan de Ube con queso",
+          "dishName": "Dulces",
+          "name": "Donut de chocolate",
           "quantity": 1,
-          "unit": "porcion",
+          "unit": "ud",
           "macros": {
-            "calories": 370,
-            "protein": 7,
-            "carbs": 51,
-            "fats": 15.5
+            "calories": 250,
+            "protein": 3,
+            "carbs": 30,
+            "fats": 12
+          }
+        },
+        {
+          "time": "12:00",
+          "dishName": "Dulces",
+          "name": "Pan de Ube",
+          "quantity": 1,
+          "unit": "ud",
+          "macros": {
+            "calories": 200,
+            "protein": 5,
+            "carbs": 35,
+            "fats": 6
           }
         },
         {
@@ -656,14 +803,41 @@
       "intakes": [
         {
           "time": "08:30",
-          "name": "50g mango, 1 hot dog rojo sin aceite, 1 huevo cocido",
-          "quantity": 1,
-          "unit": "porcion",
+          "dishName": "Combinado",
+          "name": "Mango",
+          "quantity": 50,
+          "unit": "g",
           "macros": {
-            "calories": 248,
-            "protein": 12.2,
-            "carbs": 11.1,
-            "fats": 17
+            "calories": 30,
+            "protein": 0.4,
+            "carbs": 7.5,
+            "fats": 0.2
+          }
+        },
+        {
+          "time": "08:30",
+          "dishName": "Combinado",
+          "name": "Hot dog rojo",
+          "quantity": 1,
+          "unit": "ud",
+          "macros": {
+            "calories": 150,
+            "protein": 5,
+            "carbs": 5,
+            "fats": 12
+          }
+        },
+        {
+          "time": "08:30",
+          "dishName": "Combinado",
+          "name": "Huevo cocido",
+          "quantity": 1,
+          "unit": "ud",
+          "macros": {
+            "calories": 78,
+            "protein": 6.3,
+            "carbs": 0.6,
+            "fats": 5.3
           }
         },
         {
@@ -680,9 +854,9 @@
         },
         {
           "time": "17:00",
-          "name": "Cucharaditas de Mango Graham (\\~25g",
-          "quantity": 3,
-          "unit": "ud",
+          "name": "Mango Graham",
+          "quantity": 1,
+          "unit": "porcion",
           "macros": {
             "calories": 62,
             "protein": 0.9,
@@ -808,9 +982,9 @@
         },
         {
           "time": "17:00",
-          "name": "70g de Mango",
-          "quantity": 1,
-          "unit": "porcion",
+          "name": "Mango",
+          "quantity": 70,
+          "unit": "g",
           "macros": {
             "calories": 42,
             "protein": 0.6,
@@ -832,9 +1006,9 @@
         },
         {
           "time": "12:00",
-          "name": "Mini burger (receta de 11 uds",
+          "name": "Mini burger",
           "quantity": 1,
-          "unit": "ud",
+          "unit": "porcion",
           "macros": {
             "calories": 124,
             "protein": 11.9,
@@ -879,21 +1053,48 @@
       "intakes": [
         {
           "time": "08:30",
-          "name": "Cuch. Mango Graham, 1 mini burger, 1 plátano filipino",
-          "quantity": 2,
+          "dishName": "Combinado",
+          "name": "Mango Graham",
+          "quantity": 1,
+          "unit": "porcion",
+          "macros": {
+            "calories": 50,
+            "protein": 0.5,
+            "carbs": 7,
+            "fats": 2
+          }
+        },
+        {
+          "time": "08:30",
+          "dishName": "Combinado",
+          "name": "Mini burger",
+          "quantity": 1,
           "unit": "ud",
           "macros": {
-            "calories": 246,
-            "protein": 13.5,
-            "carbs": 39.2,
-            "fats": 4.6
+            "calories": 150,
+            "protein": 10,
+            "carbs": 15,
+            "fats": 5
+          }
+        },
+        {
+          "time": "08:30",
+          "dishName": "Combinado",
+          "name": "Plátano filipino",
+          "quantity": 1,
+          "unit": "ud",
+          "macros": {
+            "calories": 80,
+            "protein": 1,
+            "carbs": 20,
+            "fats": 0
           }
         },
         {
           "time": "12:00",
-          "name": "Bibingka (\\~100g",
+          "name": "Bibingka",
           "quantity": 1,
-          "unit": "ud",
+          "unit": "porcion",
           "macros": {
             "calories": 230,
             "protein": 4.5,
@@ -942,9 +1143,9 @@
         },
         {
           "time": "12:00",
-          "name": "100g de Arroz cocido",
-          "quantity": 1,
-          "unit": "porcion",
+          "name": "Arroz cocido",
+          "quantity": 100,
+          "unit": "g",
           "macros": {
             "calories": 130,
             "protein": 2.7,
@@ -1052,9 +1253,9 @@
         },
         {
           "time": "08:30",
-          "name": "Puto con queso (90g",
-          "quantity": 1,
-          "unit": "porcion",
+          "name": "Puto con queso",
+          "quantity": 90,
+          "unit": "g",
           "macros": {
             "calories": 234,
             "protein": 5.9,
@@ -1064,9 +1265,9 @@
         },
         {
           "time": "08:30",
-          "name": "Puto con queso (100g",
-          "quantity": 1,
-          "unit": "porcion",
+          "name": "Puto con queso",
+          "quantity": 100,
+          "unit": "g",
           "macros": {
             "calories": 260,
             "protein": 6.5,
@@ -1115,7 +1316,7 @@
         {
           "time": "12:00",
           "dishName": "Comida Combinada (Arroz, Guiso y Burger)",
-          "name": "Mini burger (1 ud)",
+          "name": "Mini burger",
           "quantity": 1,
           "unit": "porcion",
           "macros": {
@@ -1127,9 +1328,9 @@
         },
         {
           "time": "17:00",
-          "name": "40g de Mango Graham",
-          "quantity": 1,
-          "unit": "porcion",
+          "name": "Mango Graham",
+          "quantity": 40,
+          "unit": "g",
           "macros": {
             "calories": 100,
             "protein": 1.4,
@@ -1139,9 +1340,9 @@
         },
         {
           "time": "17:00",
-          "name": "100g mango",
-          "quantity": 1,
-          "unit": "porcion",
+          "name": "Mango",
+          "quantity": 100,
+          "unit": "g",
           "macros": {
             "calories": 64,
             "protein": 0.8,
@@ -1163,9 +1364,9 @@
         },
         {
           "time": "12:00",
-          "name": "Puto tradicional sin queso (70g",
-          "quantity": 1,
-          "unit": "ud",
+          "name": "Puto tradicional",
+          "quantity": 70,
+          "unit": "g",
           "macros": {
             "calories": 161,
             "protein": 2.8,
@@ -1210,9 +1411,9 @@
         },
         {
           "time": "08:30",
-          "name": "60g mango",
-          "quantity": 1,
-          "unit": "porcion",
+          "name": "Mango",
+          "quantity": 60,
+          "unit": "g",
           "macros": {
             "calories": 142,
             "protein": 12.2,
@@ -1337,9 +1538,9 @@
       "intakes": [
         {
           "time": "08:30",
-          "name": "120g Yogur natural",
-          "quantity": 1,
-          "unit": "porcion",
+          "name": "Yogur natural",
+          "quantity": 120,
+          "unit": "g",
           "macros": {
             "calories": 73,
             "protein": 4.2,
@@ -1425,9 +1626,9 @@
         },
         {
           "time": "12:00",
-          "name": "50g avena",
-          "quantity": 1,
-          "unit": "porcion",
+          "name": "Avena",
+          "quantity": 50,
+          "unit": "g",
           "macros": {
             "calories": 128,
             "protein": 6,
@@ -1437,9 +1638,9 @@
         },
         {
           "time": "12:00",
-          "name": "100g yogur natural",
-          "quantity": 1,
-          "unit": "porcion",
+          "name": "Yogur natural",
+          "quantity": 100,
+          "unit": "g",
           "macros": {
             "calories": 128,
             "protein": 6,
@@ -1449,9 +1650,9 @@
         },
         {
           "time": "12:00",
-          "name": "115g extras de espaguetis preparados",
-          "quantity": 1,
-          "unit": "porcion",
+          "name": "Extras de espaguetis preparados",
+          "quantity": 115,
+          "unit": "g",
           "macros": {
             "calories": 189,
             "protein": 7.7,
@@ -1472,9 +1673,9 @@
       "intakes": [
         {
           "time": "08:30",
-          "name": "115g yogur",
-          "quantity": 1,
-          "unit": "porcion",
+          "name": "Yogur",
+          "quantity": 115,
+          "unit": "g",
           "macros": {
             "calories": 145,
             "protein": 11,
@@ -1484,9 +1685,9 @@
         },
         {
           "time": "08:30",
-          "name": "30g avena",
-          "quantity": 1,
-          "unit": "porcion",
+          "name": "Avena",
+          "quantity": 30,
+          "unit": "g",
           "macros": {
             "calories": 145,
             "protein": 11,
@@ -1508,9 +1709,9 @@
         },
         {
           "time": "17:00",
-          "name": "1/2 Ice pop de mango",
-          "quantity": 1,
-          "unit": "porcion",
+          "name": "Ice pop de mango",
+          "quantity": 0.5,
+          "unit": "ud",
           "macros": {
             "calories": 40,
             "protein": 0.3,
@@ -1520,9 +1721,9 @@
         },
         {
           "time": "12:00",
-          "name": "Tortang talong (1 huevo",
+          "name": "Tortang talong",
           "quantity": 1,
-          "unit": "ud",
+          "unit": "porcion",
           "macros": {
             "calories": 159,
             "protein": 7.3,
@@ -1532,9 +1733,9 @@
         },
         {
           "time": "12:00",
-          "name": "150g de pasta preparada de ayer",
-          "quantity": 1,
-          "unit": "porcion",
+          "name": "Pasta preparada de ayer",
+          "quantity": 150,
+          "unit": "g",
           "macros": {
             "calories": 218,
             "protein": 9.2,
@@ -1544,9 +1745,9 @@
         },
         {
           "time": "12:00",
-          "name": "100g de pollo cocinado",
-          "quantity": 1,
-          "unit": "porcion",
+          "name": "Pollo cocinado",
+          "quantity": 100,
+          "unit": "g",
           "macros": {
             "calories": 195,
             "protein": 31,
@@ -1556,9 +1757,9 @@
         },
         {
           "time": "12:00",
-          "name": "100g yogur",
-          "quantity": 1,
-          "unit": "porcion",
+          "name": "Yogur",
+          "quantity": 100,
+          "unit": "g",
           "macros": {
             "calories": 102,
             "protein": 3.8,
@@ -1568,9 +1769,9 @@
         },
         {
           "time": "12:00",
-          "name": "40g avena",
-          "quantity": 1,
-          "unit": "porcion",
+          "name": "Avena",
+          "quantity": 40,
+          "unit": "g",
           "macros": {
             "calories": 102,
             "protein": 3.8,
@@ -1603,9 +1804,9 @@
       "intakes": [
         {
           "time": "08:30",
-          "name": "140g yogur",
-          "quantity": 1,
-          "unit": "porcion",
+          "name": "Yogur",
+          "quantity": 140,
+          "unit": "g",
           "macros": {
             "calories": 110,
             "protein": 4.3,
@@ -1615,9 +1816,9 @@
         },
         {
           "time": "08:30",
-          "name": "40g avena",
-          "quantity": 1,
-          "unit": "porcion",
+          "name": "Avena",
+          "quantity": 40,
+          "unit": "g",
           "macros": {
             "calories": 110,
             "protein": 4.3,
@@ -1639,9 +1840,9 @@
         },
         {
           "time": "12:00",
-          "name": "40g de pan de banana",
-          "quantity": 1,
-          "unit": "porcion",
+          "name": "Pan de banana",
+          "quantity": 40,
+          "unit": "g",
           "macros": {
             "calories": 130,
             "protein": 1.8,
@@ -1711,9 +1912,9 @@
         },
         {
           "time": "12:00",
-          "name": "1/2 ice pop",
-          "quantity": 1,
-          "unit": "porcion",
+          "name": "Ice pop",
+          "quantity": 0.5,
+          "unit": "ud",
           "macros": {
             "calories": 100,
             "protein": 7.1,
@@ -1830,9 +2031,9 @@
         },
         {
           "time": "12:00",
-          "name": "120g pollo",
-          "quantity": 1,
-          "unit": "porcion",
+          "name": "Pollo",
+          "quantity": 120,
+          "unit": "g",
           "macros": {
             "calories": 150,
             "protein": 14,
@@ -1842,9 +2043,9 @@
         },
         {
           "time": "12:00",
-          "name": "100g patata",
-          "quantity": 1,
-          "unit": "porcion",
+          "name": "Patata",
+          "quantity": 100,
+          "unit": "g",
           "macros": {
             "calories": 150,
             "protein": 14,
@@ -1854,9 +2055,9 @@
         },
         {
           "time": "12:00",
-          "name": "100g arroz",
-          "quantity": 1,
-          "unit": "porcion",
+          "name": "Arroz",
+          "quantity": 100,
+          "unit": "g",
           "macros": {
             "calories": 150,
             "protein": 14,
@@ -1973,7 +2174,7 @@
         },
         {
           "time": "17:00",
-          "name": "Recamara / Snack: 180g yogur natural",
+          "name": "Yogur natural",
           "quantity": 1,
           "unit": "porcion",
           "macros": {
@@ -2008,9 +2209,9 @@
       "intakes": [
         {
           "time": "13:30",
-          "name": "170g pollo",
-          "quantity": 1,
-          "unit": "porcion",
+          "name": "Pollo",
+          "quantity": 170,
+          "unit": "g",
           "macros": {
             "calories": 248,
             "protein": 29.1,
@@ -2020,9 +2221,9 @@
         },
         {
           "time": "13:30",
-          "name": "60g pan shawarma",
-          "quantity": 1,
-          "unit": "porcion",
+          "name": "Pan shawarma",
+          "quantity": 60,
+          "unit": "g",
           "macros": {
             "calories": 248,
             "protein": 29.1,
@@ -2032,9 +2233,9 @@
         },
         {
           "time": "12:00",
-          "name": "Yogur (170g",
-          "quantity": 1,
-          "unit": "porcion",
+          "name": "Yogur",
+          "quantity": 170,
+          "unit": "g",
           "macros": {
             "calories": 96,
             "protein": 3.5,
@@ -2068,9 +2269,9 @@
         },
         {
           "time": "12:00",
-          "name": "30g pan shawarma",
-          "quantity": 1,
-          "unit": "porcion",
+          "name": "Pan shawarma",
+          "quantity": 30,
+          "unit": "g",
           "macros": {
             "calories": 155,
             "protein": 10.7,
@@ -2104,9 +2305,9 @@
         },
         {
           "time": "13:30",
-          "name": "1/2 plato Pad Thai",
-          "quantity": 1,
-          "unit": "porcion",
+          "name": "Plato Pad Thai",
+          "quantity": 0.5,
+          "unit": "ud",
           "macros": {
             "calories": 270,
             "protein": 8,
@@ -2116,9 +2317,9 @@
         },
         {
           "time": "12:00",
-          "name": "Pan shawarma (55g",
-          "quantity": 1,
-          "unit": "porcion",
+          "name": "Pan shawarma",
+          "quantity": 55,
+          "unit": "g",
           "macros": {
             "calories": 67,
             "protein": 3.2,
@@ -2163,9 +2364,9 @@
       "intakes": [
         {
           "time": "13:30",
-          "name": "120g yogur natural",
-          "quantity": 1,
-          "unit": "porcion",
+          "name": "Yogur natural",
+          "quantity": 120,
+          "unit": "g",
           "macros": {
             "calories": 81,
             "protein": 2.6,
@@ -2187,9 +2388,9 @@
         },
         {
           "time": "13:30",
-          "name": "Yogur (120g",
-          "quantity": 1,
-          "unit": "porcion",
+          "name": "Yogur",
+          "quantity": 120,
+          "unit": "g",
           "macros": {
             "calories": 81,
             "protein": 2.6,
@@ -2211,9 +2412,9 @@
         },
         {
           "time": "13:30",
-          "name": "Curry garbanzos (200g",
-          "quantity": 1,
-          "unit": "porcion",
+          "name": "Curry garbanzos",
+          "quantity": 200,
+          "unit": "g",
           "macros": {
             "calories": 312,
             "protein": 11.7,
@@ -2223,9 +2424,9 @@
         },
         {
           "time": "13:30",
-          "name": "Arroz (170g",
-          "quantity": 1,
-          "unit": "porcion",
+          "name": "Arroz",
+          "quantity": 170,
+          "unit": "g",
           "macros": {
             "calories": 312,
             "protein": 11.7,
@@ -2247,7 +2448,7 @@
         },
         {
           "time": "12:00",
-          "name": "Shawarmas dürüm (tofu",
+          "name": "Shawarmas dürüm",
           "quantity": 2,
           "unit": "ud",
           "macros": {
@@ -2271,9 +2472,9 @@
         },
         {
           "time": "17:00",
-          "name": "Postre/Snack: Yogur (160g",
-          "quantity": 1,
-          "unit": "porcion",
+          "name": "Yogur",
+          "quantity": 160,
+          "unit": "g",
           "macros": {
             "calories": 74,
             "protein": 2.3,
@@ -2295,9 +2496,9 @@
         },
         {
           "time": "17:00",
-          "name": "1/2 ice pop",
-          "quantity": 1,
-          "unit": "porcion",
+          "name": "Ice pop",
+          "quantity": 0.5,
+          "unit": "ud",
           "macros": {
             "calories": 74,
             "protein": 2.3,
@@ -2378,9 +2579,9 @@
         },
         {
           "time": "12:00",
-          "name": "Pollo adobo (120g",
-          "quantity": 1,
-          "unit": "porcion",
+          "name": "Pollo adobo",
+          "quantity": 120,
+          "unit": "g",
           "macros": {
             "calories": 193,
             "protein": 13.4,
@@ -2390,9 +2591,9 @@
         },
         {
           "time": "12:00",
-          "name": "Patata (30g",
-          "quantity": 1,
-          "unit": "porcion",
+          "name": "Patata",
+          "quantity": 30,
+          "unit": "g",
           "macros": {
             "calories": 193,
             "protein": 13.4,
@@ -2402,9 +2603,9 @@
         },
         {
           "time": "12:00",
-          "name": "Arroz (100g",
-          "quantity": 1,
-          "unit": "porcion",
+          "name": "Arroz",
+          "quantity": 100,
+          "unit": "g",
           "macros": {
             "calories": 193,
             "protein": 13.4,
@@ -2414,9 +2615,9 @@
         },
         {
           "time": "12:00",
-          "name": "Garbanzos (180g",
-          "quantity": 1,
-          "unit": "porcion",
+          "name": "Garbanzos",
+          "quantity": 180,
+          "unit": "g",
           "macros": {
             "calories": 193,
             "protein": 13.4,
@@ -2460,18 +2661,6 @@
           }
         },
         {
-          "time": "13:30",
-          "name": "Yogur con avena",
-          "quantity": 1,
-          "unit": "porcion",
-          "macros": {
-            "calories": 301,
-            "protein": 14.4,
-            "carbs": 26.6,
-            "fats": 14.8
-          }
-        },
-        {
           "time": "12:00",
           "name": "Pan de hamburguesa",
           "quantity": 1,
@@ -2485,9 +2674,9 @@
         },
         {
           "time": "12:00",
-          "name": "100g tofu",
-          "quantity": 1,
-          "unit": "porcion",
+          "name": "Tofu",
+          "quantity": 100,
+          "unit": "g",
           "macros": {
             "calories": 94,
             "protein": 5.8,
@@ -2533,9 +2722,9 @@
         },
         {
           "time": "12:00",
-          "name": "Garbanzos (100g",
-          "quantity": 1,
-          "unit": "porcion",
+          "name": "Garbanzos",
+          "quantity": 100,
+          "unit": "g",
           "macros": {
             "calories": 128,
             "protein": 7.5,
@@ -2545,9 +2734,9 @@
         },
         {
           "time": "12:00",
-          "name": "Tofu (70g",
-          "quantity": 1,
-          "unit": "porcion",
+          "name": "Tofu",
+          "quantity": 70,
+          "unit": "g",
           "macros": {
             "calories": 128,
             "protein": 7.5,
@@ -2557,10 +2746,10 @@
         }
       ],
       "dailyTotals": {
-        "calories": 2035,
-        "protein": 116.6,
-        "carbs": 180.4,
-        "fats": 94.1
+        "calories": 1734,
+        "protein": 102.2,
+        "carbs": 153.8,
+        "fats": 79.3
       }
     },
     {
