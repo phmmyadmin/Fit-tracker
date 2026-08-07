@@ -19,6 +19,16 @@ export default function WeeklyChart({ logs, selectedDate, onSelectDate, targetMa
   const visibleDays = logs.slice(startIndex, endIndex);
   const maxOffset = Math.ceil(logs.length / 7) - 1;
 
+  const formatShortDate = (dateStr) => {
+    if (!dateStr) return '';
+    const d = new Date(dateStr);
+    return d.toLocaleDateString('es-ES', { day: 'numeric', month: 'short' });
+  };
+  
+  const dateRangeStr = visibleDays.length > 0 
+    ? `${formatShortDate(visibleDays[0].date)} - ${formatShortDate(visibleDays[visibleDays.length - 1].date)}`
+    : '';
+
   return (
     <div className="health-card" style={{ marginTop: '1.5rem' }}>
       <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem', gap: '1rem' }}>
@@ -58,9 +68,14 @@ export default function WeeklyChart({ logs, selectedDate, onSelectDate, targetMa
         >
           <ChevronLeft size={20} />
         </button>
-        <span style={{ fontSize: '0.9rem', fontWeight: 600, color: 'var(--text-muted)' }}>
-          Objetivo: {currentConfig.target} {activeMacro === 'calories' ? 'kcal' : 'g'}
-        </span>
+        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+          <span style={{ fontSize: '0.9rem', fontWeight: 700, color: 'var(--text-main)' }}>
+            {dateRangeStr}
+          </span>
+          <span style={{ fontSize: '0.8rem', fontWeight: 500, color: 'var(--text-muted)' }}>
+            Objetivo: {currentConfig.target} {activeMacro === 'calories' ? 'kcal' : 'g'}
+          </span>
+        </div>
         <button 
           onClick={() => setWeekOffset(prev => Math.max(0, prev - 1))}
           disabled={weekOffset === 0}

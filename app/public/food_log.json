@@ -1921,13 +1921,53 @@
             "carbs": 1.2,
             "fats": 10.6
           }
+        },
+        {
+          "time": "21:00",
+          "description": "Jollibee Combo (Chickenjoy, Arroz, Spaghetti, Yumburger)",
+          "macros": {
+            "calories": 1040,
+            "protein": 45,
+            "carbs": 125,
+            "fats": 38.5
+          }
+        },
+        {
+          "time": "21:00",
+          "description": "Jolly Hotdog",
+          "macros": {
+            "calories": 310,
+            "protein": 11,
+            "carbs": 28,
+            "fats": 16
+          }
+        },
+        {
+          "time": "21:00",
+          "description": "Peach Mango Pie",
+          "macros": {
+            "calories": 270,
+            "protein": 3,
+            "carbs": 32,
+            "fats": 14
+          }
+        },
+        {
+          "time": "21:00",
+          "description": "Dunkin' Cookies & Cream Donut",
+          "macros": {
+            "calories": 290,
+            "protein": 4,
+            "carbs": 38,
+            "fats": 14
+          }
         }
       ],
       "dailyTotals": {
-        "calories": 778,
-        "protein": 65.2,
-        "carbs": 70.4,
-        "fats": 24.2
+        "calories": 2688,
+        "protein": 128.2,
+        "carbs": 293.4,
+        "fats": 106.7
       }
     },
     {
