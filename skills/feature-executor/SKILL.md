@@ -5,9 +5,10 @@ description: Implements tasks on isolated Git feature branches, moves GitHub Pro
 
 # Feature Executor Skill (Phase 3)
 
-This skill handles the actual coding, Git branch orchestration, commit hygiene, PR creation, and project status progression.
+This skill handles the actual coding, Git branch orchestration, commit hygiene, PR creation, and project status progression in GitHub Projects V2.
 
-## GitHub Project Status Tracking
+## GitHub Project Details
+- **Owner**: `phmmyadmin`
 - **Project ID**: `PVT_kwHOAkgXus4BfhjX`
 - **Status Field ID**: `PVTSSF_lAHOAkgXus4BfhjXzhZz28U`
 - **Option IDs**:
@@ -25,28 +26,42 @@ import json
 import os
 import urllib.request
 
-token = os.environ.get("GITHUB_PERSONAL_ACCESS_TOKEN")
+token = os.environ.get("GITHUB_PERSONAL_ACCESS_TOKEN", "")
 url = "https://api.github.com/graphql"
+project_id = "PVT_kwHOAkgXus4BfhjX"
+status_field_id = "PVTSSF_lAHOAkgXus4BfhjXzhZz28U"
+in_progress_option_id = "47fc9ee4"
+item_id = "<item_id>"
 
-query = """
-mutation($projectId: ID!, $itemId: ID!, $fieldId: ID!, $optionId: String!) {
-  updateProjectV2ItemFieldValue(input: {
-    projectId: $projectId,
-    itemId: $itemId,
-    fieldId: $fieldId,
-    value: { singleSelectOptionId: $optionId }
-  }) {
-    projectV2Item { id }
-  }
-}
-"""
+mutation = f"""mutation {{
+  updateProjectV2ItemFieldValue(
+    input: {{
+      projectId: "{project_id}"
+      itemId: "{item_id}"
+      fieldId: "{status_field_id}"
+      value: {{
+        singleSelectOptionId: "{in_progress_option_id}"
+      }}
+    }}
+  ) {{
+    projectV2Item {{
+      id
+    }}
+  }}
+}}"""
 
-variables = {
-    "projectId": "PVT_kwHOAkgXus4BfhjX",
-    "itemId": "<item_id>",
-    "fieldId": "PVTSSF_lAHOAkgXus4BfhjXzhZz28U",
-    "optionId": "47fc9ee4",  # In Progress
-}
+req = urllib.request.Request(
+    url,
+    data=json.dumps({"query": mutation}).encode("utf-8"),
+    headers={
+        "Authorization": f"bearer {token}",
+        "Content-Type": "application/json",
+        "User-Agent": "Antigravity",
+    },
+)
+with urllib.request.urlopen(req) as resp:
+  res = json.loads(resp.read().decode("utf-8"))
+  print(res)
 ```
 
 ### 2. Branch Management
@@ -60,7 +75,9 @@ variables = {
 
 ### 3. Code Implementation & Verification
 - Modify code according to specification.
-- Adhere strictly to project styling (Warm Light Mode palette, cards, clean typography, zero broken imports).
+- Adhere strictly to project styling (Light glassmorphism, clean typography, responsive layout, zero broken imports).
+- For Gemini LLM prompts: Always instruct Gemini to calculate **TOTAL accumulated macros for the entire requested quantity** across all foods in the world.
+- For Supabase & GitHub Pages: Always implement direct client-side Supabase operations (`saveIntakesToSupabase`, `deleteIntakeFromSupabase`, `updateIntakeInSupabase`, `saveWeightToSupabase`) so static hosting works without a local node backend server.
 - Verify changes by running build:
   ```bash
   npm run build

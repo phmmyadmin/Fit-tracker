@@ -5,7 +5,16 @@ description: Audits code diffs, performs refactorings/improvements if needed, ve
 
 # Feature Reviewer Skill (Phase 4)
 
-This skill performs a rigorous, automated code review, refactors code if necessary, verifies the build, merges the Pull Request on GitHub, and marks the project task as "Done".
+This skill performs automated code review, refactors code if necessary, verifies the build, merges the Pull Request on GitHub, and marks the project task as "Done" in GitHub Projects V2.
+
+## GitHub Project Details
+- **Owner**: `phmmyadmin`
+- **Project ID**: `PVT_kwHOAkgXus4BfhjX`
+- **Status Field ID**: `PVTSSF_lAHOAkgXus4BfhjXzhZz28U`
+- **Option IDs**:
+  - `Todo`: `f75ad846`
+  - `In Progress`: `47fc9ee4`
+  - `Done`: `98236657`
 
 ## 5-Step Review & Merge Pipeline
 
@@ -13,7 +22,8 @@ This skill performs a rigorous, automated code review, refactors code if necessa
 - Inspect all changed files in the branch/PR using `git diff main...HEAD` or GitHub MCP tools (`pull_request_read`).
 - Check for:
   - Code cleanliness, readability, and adherence to project style.
-  - Potential runtime errors, memory leaks, unhandled null/undefined edge cases.
+  - Architectural cleanliness: NO hardcoding specific foods or individual hacks.
+  - Edge cases: Null checks on arrays, non-empty text validation, serverless Supabase fallback for static hosting.
   - Accessibility standards (WCAG 2.1 AA: focus-visible, labels, aria attributes).
   - Unused imports, console logs, or redundant code.
 
@@ -55,26 +65,40 @@ import json
 import os
 import urllib.request
 
-token = os.environ.get("GITHUB_PERSONAL_ACCESS_TOKEN")
+token = os.environ.get("GITHUB_PERSONAL_ACCESS_TOKEN", "")
 url = "https://api.github.com/graphql"
+project_id = "PVT_kwHOAkgXus4BfhjX"
+status_field_id = "PVTSSF_lAHOAkgXus4BfhjXzhZz28U"
+done_option_id = "98236657"
+item_id = "<item_id>"
 
-query = """
-mutation($projectId: ID!, $itemId: ID!, $fieldId: ID!, $optionId: String!) {
-  updateProjectV2ItemFieldValue(input: {
-    projectId: $projectId,
-    itemId: $itemId,
-    fieldId: $fieldId,
-    value: { singleSelectOptionId: $optionId }
-  }) {
-    projectV2Item { id }
-  }
-}
-"""
+mutation = f"""mutation {{
+  updateProjectV2ItemFieldValue(
+    input: {{
+      projectId: "{project_id}"
+      itemId: "{item_id}"
+      fieldId: "{status_field_id}"
+      value: {{
+        singleSelectOptionId: "{done_option_id}"
+      }}
+    }}
+  ) {{
+    projectV2Item {{
+      id
+    }}
+  }}
+}}"""
 
-variables = {
-    "projectId": "PVT_kwHOAkgXus4BfhjX",
-    "itemId": "<item_id>",
-    "fieldId": "PVTSSF_lAHOAkgXus4BfhjXzhZz28U",
-    "optionId": "98236657",  # Done
-}
+req = urllib.request.Request(
+    url,
+    data=json.dumps({"query": mutation}).encode("utf-8"),
+    headers={
+        "Authorization": f"bearer {token}",
+        "Content-Type": "application/json",
+        "User-Agent": "Antigravity",
+    },
+)
+with urllib.request.urlopen(req) as resp:
+  res = json.loads(resp.read().decode("utf-8"))
+  print(res)
 ```
