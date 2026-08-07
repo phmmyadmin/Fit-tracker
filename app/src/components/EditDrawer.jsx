@@ -2,57 +2,30 @@ import React, { useState, useEffect } from 'react';
 import { Trash2, X, Check } from 'lucide-react';
 
 export default function EditDrawer({ item, itemIndex, onClose, onDelete, onUpdate }) {
-  const [mode, setMode] = useState('grams'); // 'grams' | 'multiplier'
-  const [grams, setGrams] = useState(100);
-  const [initialGrams, setInitialGrams] = useState(100);
-  const [multiplier, setMultiplier] = useState(1);
-  const [initialMultiplier, setInitialMultiplier] = useState(1);
+  const [quantity, setQuantity] = useState(1);
+  const [initialQuantity, setInitialQuantity] = useState(1);
 
   useEffect(() => {
     if (item) {
-      const gMatch = item.description.match(/\((\d+)g\)/);
-      const mMatch = item.description.match(/\(x([\d.]+)\)/);
-      if (gMatch) {
-        const g = parseInt(gMatch[1], 10);
-        setGrams(g);
-        setInitialGrams(g);
-        setMode('grams');
-      } else if (mMatch) {
-        const m = parseFloat(mMatch[1]);
-        setMultiplier(m);
-        setInitialMultiplier(m);
-        setMode('multiplier');
-      } else {
-        setMultiplier(1);
-        setInitialMultiplier(1);
-        setMode('multiplier');
-      }
+      setQuantity(item.quantity || 1);
+      setInitialQuantity(item.quantity || 1);
     }
   }, [item]);
 
   if (!item) return null;
 
-  const rawName = item.description.replace(/\s*\(\d+g\)/, '').replace(/\s*\(x[\d.]+\)/, '');
+  const rawName = item.name || item.description || '';
+  const unit = item.unit || 'porcion';
+  
+  const ratio = initialQuantity > 0 ? quantity / initialQuantity : 1;
 
-  const gRatio = initialGrams > 0 ? grams / initialGrams : 1;
-  const mRatio = initialMultiplier > 0 ? multiplier / initialMultiplier : 1;
-  const finalRatio = mode === 'grams' ? gRatio : mRatio;
-
-  const newCals = Math.round(item.macros.calories * finalRatio);
-  const newProt = Math.round(item.macros.protein * finalRatio * 10) / 10;
-  const newCarbs = Math.round(item.macros.carbs * finalRatio * 10) / 10;
-  const newFats = Math.round(item.macros.fats * finalRatio * 10) / 10;
+  const newCals = Math.round(item.macros.calories * ratio);
+  const newProt = Math.round(item.macros.protein * ratio * 10) / 10;
+  const newCarbs = Math.round(item.macros.carbs * ratio * 10) / 10;
+  const newFats = Math.round(item.macros.fats * ratio * 10) / 10;
 
   const handleSave = () => {
-    let newDesc = rawName;
-    if (mode === 'grams') {
-      newDesc = `${rawName} (${grams}g)`;
-    } else {
-      if (multiplier !== 1) {
-        newDesc = `${rawName} (x${multiplier})`;
-      }
-    }
-    onUpdate(itemIndex, newDesc, { calories: newCals, protein: newProt, carbs: newCarbs, fats: newFats });
+    onUpdate(itemIndex, quantity, { calories: newCals, protein: newProt, carbs: newCarbs, fats: newFats });
   };
 
   return (
@@ -75,19 +48,35 @@ export default function EditDrawer({ item, itemIndex, onClose, onDelete, onUpdat
 
         {/* Slider Controls */}
         <div style={{ marginBottom: '1.5rem' }}>
-          {mode === 'grams' ? (
+          {unit === 'g' ? (
             <>
               <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.5rem', fontWeight: 600 }}>
-                <span>Cantidad en gramos:</span>
-                <span style={{ color: 'var(--color-indigo)', fontSize: '1.1rem', fontWeight: 700 }}>{grams}g</span>
+                <span>Cantidad:</span>
+                <span style={{ color: 'var(--color-indigo)', fontSize: '1.1rem', fontWeight: 700 }}>{quantity}g</span>
               </div>
               <input
                 type="range"
                 min="10"
                 max="600"
                 step="5"
-                value={grams}
-                onChange={(e) => setGrams(parseInt(e.target.value, 10))}
+                value={quantity}
+                onChange={(e) => setQuantity(parseInt(e.target.value, 10))}
+                style={{ width: '100%', accentColor: 'var(--color-indigo)', cursor: 'pointer', height: 6 }}
+              />
+            </>
+          ) : unit === 'ud' ? (
+            <>
+              <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.5rem', fontWeight: 600 }}>
+                <span>Unidades:</span>
+                <span style={{ color: 'var(--color-indigo)', fontSize: '1.1rem', fontWeight: 700 }}>{quantity} ud</span>
+              </div>
+              <input
+                type="range"
+                min="0.5"
+                max="10"
+                step="0.5"
+                value={quantity}
+                onChange={(e) => setQuantity(parseFloat(e.target.value))}
                 style={{ width: '100%', accentColor: 'var(--color-indigo)', cursor: 'pointer', height: 6 }}
               />
             </>
@@ -95,15 +84,15 @@ export default function EditDrawer({ item, itemIndex, onClose, onDelete, onUpdat
             <>
               <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.5rem', fontWeight: 600 }}>
                 <span>Multiplicador de ración:</span>
-                <span style={{ color: 'var(--color-indigo)', fontSize: '1.1rem', fontWeight: 700 }}>x{multiplier}</span>
+                <span style={{ color: 'var(--color-indigo)', fontSize: '1.1rem', fontWeight: 700 }}>x{quantity}</span>
               </div>
               <input
                 type="range"
                 min="0.25"
                 max="3"
                 step="0.25"
-                value={multiplier}
-                onChange={(e) => setMultiplier(parseFloat(e.target.value))}
+                value={quantity}
+                onChange={(e) => setQuantity(parseFloat(e.target.value))}
                 style={{ width: '100%', accentColor: 'var(--color-indigo)', cursor: 'pointer', height: 6 }}
               />
               <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.75rem', color: 'var(--text-muted)', marginTop: '0.25rem' }}>

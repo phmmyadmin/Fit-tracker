@@ -11,17 +11,23 @@ export default function DailyTimeline({ intakes, onItemClick }) {
     );
   }
 
-  // Safety expansion: if any intake description contains '+' or '\+', expand it into sub-items
+  // Safety expansion: if any intake name contains '+' or '\+', expand it into sub-items
   const expandedIntakes = [];
   intakes.forEach((item, originalIdx) => {
-    let cleanDesc = item.description.replace(/^(?:Comida|Desayuno|Cena|Snack|Merienda)\s*\d*:\s*/i, '').trim();
-    if (cleanDesc.includes('+') || cleanDesc.includes('\\+')) {
-      const parts = cleanDesc.split(/\\?\+/).map(p => p.trim()).filter(Boolean);
+    // For backwards compatibility, use item.name or fallback to item.description
+    const rawName = item.name || item.description || '';
+    let cleanName = rawName.replace(/^(?:Comida|Desayuno|Cena|Snack|Merienda)\s*\d*:\s*/i, '').trim();
+    
+    if (cleanName.includes('+') || cleanName.includes('\\+')) {
+      const parts = cleanName.split(/\\?\+/).map(p => p.trim()).filter(Boolean);
       const count = parts.length;
       parts.forEach(part => {
         expandedIntakes.push({
           time: item.time || '12:00',
-          description: part.replace(/^(?:Comida|Desayuno|Cena|Snack|Merienda)\s*\d*:\s*/i, ''),
+          dishName: item.dishName,
+          name: part.replace(/^(?:Comida|Desayuno|Cena|Snack|Merienda)\s*\d*:\s*/i, ''),
+          quantity: 1,
+          unit: 'porcion',
           macros: {
             calories: Math.round(item.macros.calories / count),
             protein: Math.round((item.macros.protein / count) * 10) / 10,
@@ -34,7 +40,7 @@ export default function DailyTimeline({ intakes, onItemClick }) {
     } else {
       expandedIntakes.push({
         ...item,
-        description: cleanDesc,
+        name: cleanName,
         originalIndex: originalIdx
       });
     }
@@ -59,6 +65,13 @@ export default function DailyTimeline({ intakes, onItemClick }) {
     }
     currentGroup.items.push(item);
   });
+
+  const getFormatDisplay = (item) => {
+    if (item.unit === 'g') return `${item.name} (${item.quantity}g)`;
+    if (item.unit === 'ud') return `${item.name} (${item.quantity} ud)`;
+    if (item.unit === 'porcion' && item.quantity !== 1) return `${item.name} (x${item.quantity})`;
+    return item.name;
+  };
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
@@ -98,7 +111,8 @@ export default function DailyTimeline({ intakes, onItemClick }) {
           {/* Individual Items */}
           <div style={{ display: 'flex', flexDirection: 'column', gap: '0.6rem' }}>
             {meal.items.map((item, idx) => {
-              const emoji = getFoodEmoji(item.description);
+              const displayTitle = getFormatDisplay(item);
+              const emoji = getFoodEmoji(item.name);
               return (
                 <div
                   key={idx}
@@ -119,7 +133,7 @@ export default function DailyTimeline({ intakes, onItemClick }) {
                     <span style={{ fontSize: '1.4rem' }}>{emoji}</span>
                     <div>
                       <div style={{ fontWeight: 600, fontSize: '0.9rem', color: 'var(--text-main)' }}>
-                        {item.description}
+                        {displayTitle}
                       </div>
                       <div style={{ display: 'flex', gap: '0.6rem', fontSize: '0.75rem', marginTop: '0.15rem' }}>
                         <span style={{ color: 'var(--color-calories)', fontWeight: 600 }}>{item.macros.calories} kcal</span>
