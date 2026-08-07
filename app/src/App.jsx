@@ -8,7 +8,8 @@ import ProgressTracker from './components/ProgressTracker';
 import ChatInputBar from './components/ChatInputBar';
 import EditDrawer from './components/EditDrawer';
 import { parseFoodWithGemini } from './lib/gemini';
-import { supabase, fetchDailyLogsFromSupabase, saveIntakesToSupabase } from './lib/supabase';
+import { parseFoodTextLocal } from './lib/parser';
+import { supabase, fetchDailyLogsFromSupabase, saveIntakesToSupabase, deleteIntakeFromSupabase } from './lib/supabase';
 import './index.css';
 
 export default function App() {
@@ -56,17 +57,16 @@ export default function App() {
     setIsLoading(true);
     try {
       const parsedItems = await parseFoodWithGemini(text);
+      const itemsToSave = (parsedItems && parsedItems.length > 0)
+        ? parsedItems
+        : parseFoodTextLocal(text);
 
       if (supabase) {
-        const itemsToSave = (parsedItems && parsedItems.length > 0)
-          ? parsedItems
-          : [{ name: text, quantity: 1, unit: 'porcion', calories: 150, protein: 10, carbs: 15, fats: 5 }];
-
         const res = await saveIntakesToSupabase({ date: selectedDate, items: itemsToSave });
         if (res && res.success) {
           await loadData();
           const summary = itemsToSave.map(i => `${i.name} (${i.calories} kcal)`).join(', ');
-          showToast(`Añadido (${parsedItems ? 'Gemini 1.5 Flash' : 'Supabase'}): ${summary}`);
+          showToast(`Añadido (${parsedItems ? 'Gemini 1.5 Flash' : 'Local'}): ${summary}`);
           return;
         }
       }
@@ -74,7 +74,7 @@ export default function App() {
       const res = await fetch('/api/log-food', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ text, parsedItems, date: selectedDate })
+        body: JSON.stringify({ text, parsedItems: itemsToSave, date: selectedDate })
       });
       const result = await res.json();
       if (result.success) {
@@ -92,17 +92,24 @@ export default function App() {
 
   const handleDeleteItem = async (index) => {
     try {
+      if (supabase) {
+        const res = await deleteIntakeFromSupabase({ date: selectedDate, index });
+        if (res && res.success) {
+          await loadData();
+          showToast("Alimento eliminado");
+          return;
+        }
+      }
+
       await fetch('/api/intake', {
         method: 'DELETE',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ date: selectedDate, index })
       });
+      await loadData();
       showToast("Alimento eliminado");
     } catch (err) {
-      console.warn(err);
-    } finally {
-      setEditingItem(null);
-      loadData();
+      console.error(err);
     }
   };
 

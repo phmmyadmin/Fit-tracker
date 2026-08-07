@@ -170,3 +170,48 @@ export async function deleteWeightFromSupabase({ date, time }) {
     return null;
   }
 }
+
+export async function deleteIntakeFromSupabase({ date, index }) {
+  if (!supabase) return null;
+
+  try {
+    const { data: dayLog } = await supabase
+      .from('daily_logs')
+      .select('*, intakes(*)')
+      .eq('date', date)
+      .maybeSingle();
+
+    if (!dayLog || !dayLog.intakes || !dayLog.intakes[index]) return null;
+
+    const intakeToDelete = dayLog.intakes[index];
+    const { error: delErr } = await supabase
+      .from('intakes')
+      .delete()
+      .eq('id', intakeToDelete.id);
+
+    if (delErr) throw delErr;
+
+    // Recalculate daily totals
+    const { data: remainingIntakes } = await supabase
+      .from('intakes')
+      .select('*')
+      .eq('date', date);
+
+    const totals = (remainingIntakes || []).reduce((acc, curr) => ({
+      calories: Math.round(acc.calories + curr.calories),
+      protein: Math.round((acc.protein + curr.protein) * 10) / 10,
+      carbs: Math.round((acc.carbs + curr.carbs) * 10) / 10,
+      fats: Math.round((acc.fats + curr.fats) * 10) / 10
+    }), { calories: 0, protein: 0, carbs: 0, fats: 0 });
+
+    await supabase
+      .from('daily_logs')
+      .update(totals)
+      .eq('date', date);
+
+    return { success: true };
+  } catch (err) {
+    console.error('Supabase delete intake error:', err);
+    return null;
+  }
+}
