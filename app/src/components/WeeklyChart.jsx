@@ -37,7 +37,7 @@ export default function WeeklyChart({ logs, selectedDate, onSelectDate, targetMa
           Tendencia Semanal
         </h2>
         
-        <div style={{ display: 'flex', gap: '0.5rem', background: 'var(--bg-subtle)', padding: '4px', borderRadius: 'var(--radius-md)' }}>
+        <div style={{ display: 'flex', gap: '0.35rem', background: 'var(--bg-subtle)', padding: '4px', borderRadius: 'var(--radius-md)', maxWidth: '100%', overflowX: 'auto', scrollbarWidth: 'none' }}>
           {Object.entries(macrosConfig).map(([key, config]) => (
             <button
               key={key}
@@ -46,11 +46,12 @@ export default function WeeklyChart({ logs, selectedDate, onSelectDate, targetMa
                 background: activeMacro === key ? 'var(--bg-surface)' : 'transparent',
                 color: activeMacro === key ? config.color : 'var(--text-muted)',
                 border: 'none',
-                padding: '0.4rem 0.8rem',
+                padding: '0.35rem 0.65rem',
                 borderRadius: '8px',
                 fontWeight: 600,
-                fontSize: '0.8rem',
+                fontSize: '0.78rem',
                 cursor: 'pointer',
+                whiteSpace: 'nowrap',
                 boxShadow: activeMacro === key ? '0 2px 4px rgba(0,0,0,0.05)' : 'none'
               }}
             >
@@ -85,7 +86,7 @@ export default function WeeklyChart({ logs, selectedDate, onSelectDate, targetMa
         </button>
       </div>
 
-      <div style={{ display: 'flex', alignItems: 'flex-end', justifyContent: 'space-between', height: 210, gap: '0.75rem', paddingTop: '1rem' }}>
+      <div style={{ display: 'flex', alignItems: 'flex-end', justifyContent: 'space-between', height: 210, gap: '0.35rem', paddingTop: '1rem' }}>
         {visibleDays.map((d, idx) => {
           const val = d.dailyTotals[activeMacro];
           const target = currentConfig.target;
@@ -101,6 +102,10 @@ export default function WeeklyChart({ logs, selectedDate, onSelectDate, targetMa
              targetMet = val >= target * 0.8;
           }
 
+          // Format YYYY-MM-DD to DD/MM
+          const parts = d.date.split('-');
+          const formattedLabel = parts.length === 3 ? `${parts[2]}/${parts[1]}` : d.date.slice(5);
+
           return (
             <div
               key={idx}
@@ -110,13 +115,14 @@ export default function WeeklyChart({ logs, selectedDate, onSelectDate, targetMa
                 display: 'flex',
                 flexDirection: 'column',
                 alignItems: 'center',
-                gap: '0.5rem',
+                gap: '0.4rem',
                 height: '100%',
                 justifyContent: 'flex-end',
-                cursor: 'pointer'
+                cursor: 'pointer',
+                minWidth: 0
               }}
             >
-              <span style={{ fontSize: '0.75rem', fontWeight: 700, color: targetMet ? currentConfig.color : 'var(--text-muted)' }}>
+              <span style={{ fontSize: '0.72rem', fontWeight: 700, color: targetMet ? currentConfig.color : 'var(--text-muted)', whiteSpace: 'nowrap' }}>
                 {Math.round(val)}
               </span>
               <div
@@ -145,8 +151,14 @@ export default function WeeklyChart({ logs, selectedDate, onSelectDate, targetMa
                   }}
                 />
               </div>
-              <span style={{ fontSize: '0.7rem', fontWeight: isSelected ? 700 : 500, color: isSelected ? 'var(--text-main)' : 'var(--text-muted)' }}>
-                {d.date.slice(5)}
+              <span style={{ 
+                fontSize: '0.68rem', 
+                fontWeight: isSelected ? 700 : 500, 
+                color: isSelected ? 'var(--text-main)' : 'var(--text-muted)',
+                whiteSpace: 'nowrap',
+                letterSpacing: '-0.02em'
+              }}>
+                {formattedLabel}
               </span>
             </div>
           );
