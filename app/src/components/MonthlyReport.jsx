@@ -75,11 +75,17 @@ const MonthlyReport = ({ data }) => {
       monthLost = startWeight - latestWeight; // fallback to overall if only 1 data point this month
     }
 
-    const estimatedLostKg = totalDeficit > 0 ? (totalDeficit / 7700) : 0;
-    const estimatedCurrentWeight = latestWeight - estimatedLostKg;
+    // All-time cumulative deficit calculation across all months
+    const totalCumulativeDeficit = monthlyStats.reduce((acc, m) => {
+      const monthDeficit = (m.daysLogged * m.maintenanceCaloriesPerDay) - m.totalCaloriesConsumed;
+      return acc + monthDeficit;
+    }, 0);
+
+    const cumulativeEstimatedLostKg = totalCumulativeDeficit > 0 ? (totalCumulativeDeficit / 7700) : 0;
+    const estimatedCurrentWeight = startWeight - cumulativeEstimatedLostKg;
     const remainingToTarget = Math.max(0, estimatedCurrentWeight - targetWeight);
-    const totalGoalToLose = latestWeight - targetWeight;
-    const progressPercent = totalGoalToLose > 0 ? Math.min(100, Math.max(0, (estimatedLostKg / totalGoalToLose) * 100)) : 0;
+    const totalGoalToLose = startWeight - targetWeight;
+    const progressPercent = totalGoalToLose > 0 ? Math.min(100, Math.max(0, (cumulativeEstimatedLostKg / totalGoalToLose) * 100)) : 0;
 
     weightCard = (
       <div className="health-card" style={{ marginTop: '1.5rem' }}>
@@ -88,20 +94,20 @@ const MonthlyReport = ({ data }) => {
             <Scale color="var(--color-protein)" size={24} />
           </div>
           <div>
-            <h2 style={{ fontSize: '1.25rem', margin: 0, fontWeight: 600 }}>Estimación de Peso & Progreso</h2>
-            <div style={{ fontSize: '0.85rem', color: 'var(--text-muted)' }}>Calculado a partir de tu déficit calórico acumulado</div>
+            <h2 style={{ fontSize: '1.25rem', margin: 0, fontWeight: 600 }}>Estimación de Peso & Progreso Global</h2>
+            <div style={{ fontSize: '0.85rem', color: 'var(--text-muted)' }}>Calculado a partir de la suma del déficit calórico de todos los meses</div>
           </div>
         </div>
         
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(130px, 1fr))', gap: '1rem', textAlign: 'center', marginBottom: '1.5rem' }}>
           <div style={{ background: 'var(--bg-card)', padding: '1.25rem', borderRadius: '16px', border: '1px solid var(--border-light)' }}>
             <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)', marginBottom: '0.5rem', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Peso Inicial</div>
-            <div style={{ fontSize: '1.4rem', fontWeight: 700, color: 'var(--text-main)' }}>{latestWeight} <span style={{fontSize: '0.9rem', color: 'var(--text-muted)'}}>kg</span></div>
+            <div style={{ fontSize: '1.4rem', fontWeight: 700, color: 'var(--text-main)' }}>{startWeight} <span style={{fontSize: '0.9rem', color: 'var(--text-muted)'}}>kg</span></div>
           </div>
           <div style={{ background: 'var(--bg-card)', padding: '1.25rem', borderRadius: '16px', border: '1px solid var(--border-light)' }}>
-            <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)', marginBottom: '0.5rem', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Perdido Estimado</div>
+            <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)', marginBottom: '0.5rem', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Perdido Acumulado</div>
             <div style={{ fontSize: '1.4rem', fontWeight: 700, color: 'var(--color-carbs)' }}>
-              -{estimatedLostKg.toFixed(1)} <span style={{fontSize: '0.9rem', color: 'var(--text-muted)'}}>kg</span>
+              -{cumulativeEstimatedLostKg.toFixed(1)} <span style={{fontSize: '0.9rem', color: 'var(--text-muted)'}}>kg</span>
             </div>
           </div>
           <div style={{ background: 'var(--bg-card)', padding: '1.25rem', borderRadius: '16px', border: '1px solid var(--border-light)' }}>
