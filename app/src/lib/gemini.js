@@ -10,12 +10,11 @@ export async function parseFoodWithGemini(userText) {
   }
 
   const modelsToTry = [
-    'gemini-2.5-flash',
-    'gemini-2.0-flash',
-    'gemini-1.5-flash-latest',
-    'gemini-1.5-pro-latest',
-    'gemini-1.5-flash-002',
-    'gemini-1.5-flash'
+    'gemini-flash-latest',
+    'gemini-3.6-flash',
+    'gemini-flash-lite-latest',
+    'gemini-2.0-flash-lite',
+    'gemini-2.5-flash'
   ];
 
   for (const modelName of modelsToTry) {
@@ -64,6 +63,6 @@ Devuelve ÚNICAMENTE la estructura JSON en este formato:
     }
   }
 
-  console.info('Gemini API key no válida o inalcanzable. Usando parser nutricional local.');
+  console.info('Gemini API unreachable. Usando parser nutricional local.');
   return null;
 }
