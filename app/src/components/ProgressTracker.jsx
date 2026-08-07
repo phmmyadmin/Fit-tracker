@@ -3,7 +3,9 @@ import { Scale, Plus, Trash2, TrendingDown, Target, Info, Check } from 'lucide-r
 
 const ProgressTracker = ({ data, onUpdateProfile }) => {
   const todayStr = new Date().toISOString().slice(0, 10);
+  const currentTimeStr = new Date().toTimeString().slice(0, 5);
   const [inputDate, setInputDate] = useState(todayStr);
+  const [inputTime, setInputTime] = useState(currentTimeStr);
   const [inputWeight, setInputWeight] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [feedback, setFeedback] = useState(null);
@@ -41,10 +43,10 @@ const ProgressTracker = ({ data, onUpdateProfile }) => {
 
     setIsSubmitting(true);
     try {
-      const res = await fetch('/api/weight', {
+      const res = await fetch('http://localhost:3001/api/weight', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ date: inputDate, weight: parseFloat(inputWeight) })
+        body: JSON.stringify({ date: inputDate, time: inputTime, weight: parseFloat(inputWeight) })
       });
       const result = await res.json();
       if (result.success) {
@@ -60,12 +62,12 @@ const ProgressTracker = ({ data, onUpdateProfile }) => {
     }
   };
 
-  const handleDeleteWeight = async (dateToDelete) => {
+  const handleDeleteWeight = async (item, originalIndex) => {
     try {
-      const res = await fetch('/api/weight', {
+      const res = await fetch('http://localhost:3001/api/weight', {
         method: 'DELETE',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ date: dateToDelete })
+        body: JSON.stringify({ date: item.date, time: item.time, index: originalIndex })
       });
       const result = await res.json();
       if (result.success) {
@@ -95,7 +97,7 @@ const ProgressTracker = ({ data, onUpdateProfile }) => {
         </div>
 
         <form onSubmit={handleAddWeight} style={{ display: 'flex', flexWrap: 'wrap', gap: '1rem', alignItems: 'center' }}>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '0.25rem', flex: '1 1 140px' }}>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '0.25rem', flex: '1 1 130px' }}>
             <label style={{ fontSize: '0.8rem', color: 'var(--text-muted)', fontWeight: 600 }}>Fecha</label>
             <input
               type="date"
@@ -113,7 +115,25 @@ const ProgressTracker = ({ data, onUpdateProfile }) => {
             />
           </div>
 
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '0.25rem', flex: '1 1 140px' }}>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '0.25rem', flex: '1 1 100px' }}>
+            <label style={{ fontSize: '0.8rem', color: 'var(--text-muted)', fontWeight: 600 }}>Hora</label>
+            <input
+              type="time"
+              value={inputTime}
+              onChange={(e) => setInputTime(e.target.value)}
+              style={{
+                padding: '0.65rem 0.85rem',
+                borderRadius: '12px',
+                border: '1px solid var(--border-light)',
+                background: 'var(--bg-body)',
+                color: 'var(--text-main)',
+                fontSize: '0.9rem',
+                outline: 'none'
+              }}
+            />
+          </div>
+
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '0.25rem', flex: '1 1 130px' }}>
             <label style={{ fontSize: '0.8rem', color: 'var(--text-muted)', fontWeight: 600 }}>Peso Báscula (kg)</label>
             <input
               type="number"
@@ -190,7 +210,7 @@ const ProgressTracker = ({ data, onUpdateProfile }) => {
             {latestRealWeight} <span style={{ fontSize: '0.9rem', color: 'var(--text-muted)' }}>kg</span>
           </div>
           <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)', marginTop: '0.2rem' }}>
-            {latestRealEntry ? latestRealEntry.date : 'Sin pesajes registrados'}
+            {latestRealEntry ? `${latestRealEntry.date} ${latestRealEntry.time || '08:00'}` : 'Sin pesajes registrados'}
           </div>
         </div>
 
@@ -237,7 +257,7 @@ const ProgressTracker = ({ data, onUpdateProfile }) => {
             <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left', fontSize: '0.9rem' }}>
               <thead>
                 <tr style={{ borderBottom: '1px solid var(--border-light)', color: 'var(--text-muted)' }}>
-                  <th style={{ padding: '0.75rem 0.5rem', fontWeight: 600 }}>Fecha</th>
+                  <th style={{ padding: '0.75rem 0.5rem', fontWeight: 600 }}>Fecha y Hora</th>
                   <th style={{ padding: '0.75rem 0.5rem', fontWeight: 600 }}>Peso Real</th>
                   <th style={{ padding: '0.75rem 0.5rem', fontWeight: 600 }}>Estimado ese día</th>
                   <th style={{ padding: '0.75rem 0.5rem', fontWeight: 600 }}>Diferencia</th>
@@ -245,14 +265,18 @@ const ProgressTracker = ({ data, onUpdateProfile }) => {
                 </tr>
               </thead>
               <tbody>
-                {history.slice().reverse().map((item) => {
+                {history.map((item, idx) => ({ item, originalIndex: idx }))
+                  .reverse()
+                  .map(({ item, originalIndex }) => {
                   const dayDeficit = getCumulativeDeficitUpToDate(item.date);
                   const dayEstimatedWeight = startWeight - (dayDeficit > 0 ? (dayDeficit / 7700) : 0);
                   const diff = item.weight - dayEstimatedWeight;
 
                   return (
-                    <tr key={item.date} style={{ borderBottom: '1px solid var(--border-light)' }}>
-                      <td style={{ padding: '0.75rem 0.5rem', fontWeight: 600 }}>{item.date}</td>
+                    <tr key={`${item.date}-${item.time || idx}`} style={{ borderBottom: '1px solid var(--border-light)' }}>
+                      <td style={{ padding: '0.75rem 0.5rem', fontWeight: 600 }}>
+                        {item.date} <span style={{ color: 'var(--text-muted)', fontSize: '0.85rem' }}>({item.time || '08:00'})</span>
+                      </td>
                       <td style={{ padding: '0.75rem 0.5rem', fontWeight: 700, color: 'var(--color-indigo)' }}>{item.weight} kg</td>
                       <td style={{ padding: '0.75rem 0.5rem', color: 'var(--color-protein)' }}>{dayEstimatedWeight.toFixed(1)} kg</td>
                       <td style={{ padding: '0.75rem 0.5rem', fontWeight: 600, color: diff <= 0 ? 'var(--color-carbs)' : '#f59e0b' }}>
@@ -260,7 +284,7 @@ const ProgressTracker = ({ data, onUpdateProfile }) => {
                       </td>
                       <td style={{ padding: '0.75rem 0.5rem', textAlign: 'right' }}>
                         <button
-                          onClick={() => handleDeleteWeight(item.date)}
+                          onClick={() => handleDeleteWeight(item, originalIndex)}
                           style={{
                             background: 'transparent',
                             border: 'none',
