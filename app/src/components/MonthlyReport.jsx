@@ -80,7 +80,7 @@ const MonthlyReport = ({ data }) => {
     const progressPercent = Math.min(100, Math.max(0, (totalLost / (startWeight - targetWeight)) * 100));
 
     weightCard = (
-      <div className="health-card" style={{ marginTop: '1.5rem', background: 'linear-gradient(145deg, #1f2937, #111827)' }}>
+      <div className="health-card" style={{ marginTop: '1.5rem' }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '1.5rem' }}>
           <div style={{ background: 'var(--color-protein-bg)', padding: '0.6rem', borderRadius: '12px' }}>
             <Scale color="var(--color-protein)" size={24} />
@@ -91,7 +91,7 @@ const MonthlyReport = ({ data }) => {
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '1rem', textAlign: 'center', marginBottom: '1.5rem' }}>
           <div style={{ background: 'var(--bg-card)', padding: '1.25rem', borderRadius: '16px', border: '1px solid var(--border-light)' }}>
             <div style={{ fontSize: '0.85rem', color: 'var(--text-muted)', marginBottom: '0.5rem', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Actual</div>
-            <div style={{ fontSize: '1.5rem', fontWeight: 700, color: '#fff' }}>{latestWeight} <span style={{fontSize: '1rem', color: 'var(--text-muted)'}}>kg</span></div>
+            <div style={{ fontSize: '1.5rem', fontWeight: 700, color: 'var(--text-main)' }}>{latestWeight} <span style={{fontSize: '1rem', color: 'var(--text-muted)'}}>kg</span></div>
           </div>
           <div style={{ background: 'var(--bg-card)', padding: '1.25rem', borderRadius: '16px', border: '1px solid var(--border-light)' }}>
             <div style={{ fontSize: '0.85rem', color: 'var(--text-muted)', marginBottom: '0.5rem', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Perdido</div>
