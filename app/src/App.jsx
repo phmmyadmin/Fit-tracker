@@ -4,6 +4,7 @@ import MacroRing from './components/MacroRing';
 import DailyTimeline from './components/DailyTimeline';
 import WeeklyChart from './components/WeeklyChart';
 import MonthlyReport from './components/MonthlyReport';
+import ProgressTracker from './components/ProgressTracker';
 import ChatInputBar from './components/ChatInputBar';
 import EditDrawer from './components/EditDrawer';
 import './index.css';
@@ -98,6 +99,11 @@ export default function App() {
       showToast(`Cantidad actualizada`);
     }
     setEditingItem(null);
+  };
+
+  const handleUpdateProfile = (updatedProfile) => {
+    setData((prev) => ({ ...prev, userProfile: updatedProfile }));
+    showToast('Historial de peso actualizado');
   };
 
   if (!data) {
@@ -223,6 +229,12 @@ export default function App() {
         >
           Reporte Mensual
         </button>
+        <button
+          className={`tab-item ${activeTab === 'progress' ? 'active' : ''}`}
+          onClick={() => setActiveTab('progress')}
+        >
+          Progreso de Peso
+        </button>
       </div>
 
       {activeTab === 'dashboard' && (
@@ -297,6 +309,10 @@ export default function App() {
 
       {activeTab === 'monthly' && (
         <MonthlyReport data={data} />
+      )}
+
+      {activeTab === 'progress' && (
+        <ProgressTracker data={data} onUpdateProfile={handleUpdateProfile} />
       )}
 
       {/* iMessage Style Bottom Input Bar */}

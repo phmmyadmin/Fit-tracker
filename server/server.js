@@ -196,6 +196,51 @@ const server = http.createServer((req, res) => {
         res.end(JSON.stringify({ error: err.message }));
       }
     });
+  } else if (req.method === 'POST' && req.url === '/api/weight') {
+    let body = '';
+    req.on('data', chunk => { body += chunk.toString(); });
+    req.on('end', () => {
+      try {
+        const { date, weight } = JSON.parse(body);
+        let data = JSON.parse(fs.readFileSync(jsonPath, 'utf-8'));
+        if (!data.userProfile.weightLog) {
+          data.userProfile.weightLog = { startWeight: 73.0, targetWeight: 68.0, history: [] };
+        }
+        
+        data.userProfile.weightLog.history = data.userProfile.weightLog.history.filter(h => h.date !== date);
+        data.userProfile.weightLog.history.push({ date, weight: parseFloat(weight) });
+        data.userProfile.weightLog.history.sort((a, b) => a.date.localeCompare(b.date));
+
+        fs.writeFileSync(jsonPath, JSON.stringify(data, null, 2), 'utf-8');
+        fs.writeFileSync(publicJsonPath, JSON.stringify(data, null, 2), 'utf-8');
+
+        res.writeHead(200, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({ success: true, userProfile: data.userProfile }));
+      } catch (err) {
+        res.writeHead(500, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({ error: err.message }));
+      }
+    });
+  } else if (req.method === 'DELETE' && req.url === '/api/weight') {
+    let body = '';
+    req.on('data', chunk => { body += chunk.toString(); });
+    req.on('end', () => {
+      try {
+        const { date } = JSON.parse(body);
+        let data = JSON.parse(fs.readFileSync(jsonPath, 'utf-8'));
+        if (data.userProfile.weightLog) {
+          data.userProfile.weightLog.history = data.userProfile.weightLog.history.filter(h => h.date !== date);
+          fs.writeFileSync(jsonPath, JSON.stringify(data, null, 2), 'utf-8');
+          fs.writeFileSync(publicJsonPath, JSON.stringify(data, null, 2), 'utf-8');
+        }
+
+        res.writeHead(200, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({ success: true, userProfile: data.userProfile }));
+      } catch (err) {
+        res.writeHead(500, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({ error: err.message }));
+      }
+    });
   } else {
     res.writeHead(404);
     res.end();
