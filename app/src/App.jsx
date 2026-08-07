@@ -3,6 +3,7 @@ import { Calendar, ChevronLeft, ChevronRight, CheckCircle2 } from 'lucide-react'
 import MacroRing from './components/MacroRing';
 import DailyTimeline from './components/DailyTimeline';
 import WeeklyChart from './components/WeeklyChart';
+import MonthlyReport from './components/MonthlyReport';
 import ChatInputBar from './components/ChatInputBar';
 import EditDrawer from './components/EditDrawer';
 import './index.css';
@@ -216,6 +217,12 @@ export default function App() {
         >
           Tendencias Semanales
         </button>
+        <button
+          className={`tab-item ${activeTab === 'monthly' ? 'active' : ''}`}
+          onClick={() => setActiveTab('monthly')}
+        >
+          Reporte Mensual
+        </button>
       </div>
 
       {activeTab === 'dashboard' && (
@@ -286,6 +293,10 @@ export default function App() {
           onSelectDate={setSelectedDate}
           targetMacros={targetMacros}
         />
+      )}
+
+      {activeTab === 'monthly' && (
+        <MonthlyReport data={data} />
       )}
 
       {/* iMessage Style Bottom Input Bar */}

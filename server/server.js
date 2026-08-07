@@ -56,16 +56,24 @@ function parseFoodText(text) {
     if (foundKey) {
       const info = foodMaster100g[foundKey];
       let grams = info.default_g;
+      let unit = 'g';
+      let quantity = grams;
+
       if (gramsMatch && gramsMatch[2].includes(foundKey)) {
-        grams = parseFloat(gramsMatch[1]);
+        quantity = parseFloat(gramsMatch[1]);
+        grams = quantity;
       } else if (qtyMatch && qtyMatch[2].includes(foundKey)) {
-        grams = info.default_g * parseFloat(qtyMatch[1]);
+        // e.g. "2 huevos" -> quantity 2, unit 'ud'
+        quantity = parseFloat(qtyMatch[1]);
+        unit = 'ud';
+        grams = info.default_g * quantity; // for macro calculation
       }
 
       const factor = grams / 100;
       matches.push({
-        name: seg.charAt(0).toUpperCase() + seg.slice(1),
-        grams: grams,
+        name: seg.charAt(0).toUpperCase() + seg.slice(1).replace(/\s*\(\d+g\)$/i, ''),
+        quantity: quantity,
+        unit: unit,
         calories: Math.round(info.calories * factor),
         protein: Math.round(info.protein * factor * 10) / 10,
         carbs: Math.round(info.carbs * factor * 10) / 10,
@@ -75,7 +83,8 @@ function parseFoodText(text) {
       // Fallback
       matches.push({
         name: seg.charAt(0).toUpperCase() + seg.slice(1),
-        grams: 100,
+        quantity: 1,
+        unit: 'porcion',
         calories: 180,
         protein: 12,
         carbs: 15,
@@ -130,7 +139,9 @@ const server = http.createServer((req, res) => {
         for (const item of items) {
           dayLog.intakes.push({
             time: timeStr,
-            description: `${item.name} (${item.grams}g)`,
+            name: item.name,
+            quantity: item.quantity,
+            unit: item.unit,
             macros: {
               calories: item.calories,
               protein: item.protein,
