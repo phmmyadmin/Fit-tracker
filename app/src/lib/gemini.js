@@ -5,7 +5,7 @@ const genAI = apiKey ? new GoogleGenerativeAI(apiKey) : null;
 
 export async function parseFoodWithGemini(userText) {
   if (!genAI || !apiKey) {
-    console.warn('VITE_GEMINI_API_KEY not configured. Falling back to rule-based parser.');
+    console.warn('VITE_GEMINI_API_KEY not configured. Falling back to generic parser.');
     return null;
   }
 
@@ -28,13 +28,15 @@ export async function parseFoodWithGemini(userText) {
 Eres un nutricionista experto en conteo de calorías y macronutrientes.
 Analiza el siguiente texto de comida del usuario y devuelve un array JSON estricto con los alimentos parseados.
 
-Reglas estrictas de parseo:
-1. "name": Nombre estándar del alimento (singulares preferidos, sin prefijos de cantidad como "100g de", "2 raciones de").
-2. "quantity": Número (ej: 2, 100, 1.5).
-3. "unit": 'g' (gramos), 'ud' (unidades) o 'porcion'. Si es líquido, usa 'ml' o 'porcion'.
-4. "calories", "protein", "carbs", "fats": Cálculo preciso de macros para la cantidad especificada en el texto.
-5. Para platos cerrados (ej: "Jollibee Combo", "Chickenjoy"), no los deshagas a menos que el usuario especifique ingredientes sueltos.
-6. Para platos caseros con varios ingredientes especificados (ej: "2 huevos cocidos y 50g de avena"), genera un objeto independiente por cada ingrediente.
+Reglas estrictas de parseo para CUALQUIER alimento del mundo:
+1. "name": Nombre estándar y limpio del alimento (en singular, sin verbos como "añade" o "comí", y sin prefijos de cantidad como "100g de" o "2 ").
+2. "quantity": Número exacto de unidades o gramos especificados (ej: para "2 huevos", quantity = 2; para "150g arroz", quantity = 150).
+3. "unit": 'ud' (para piezas/unidades), 'g' (para gramos), 'ml' (para mililitros) o 'porcion'.
+4. "calories", "protein", "carbs", "fats": IMPORTANTE: Debes calcular el TOTAL de macronutrientes para TODA la cantidad especificada en el texto del usuario (NO por 1 unidad ni por 100g).
+   - Ejemplo 1: "2 huevos cocidos" -> quantity: 2, unit: "ud", calories: 155, protein: 13.0, carbs: 1.1, fats: 11.0 (macros TOTALES acumulados por las 2 unidades).
+   - Ejemplo 2: "150g pechuga de pollo" -> quantity: 150, unit: "g", calories: 247, protein: 46.5, carbs: 0, fats: 5.4 (macros TOTALES para los 150g).
+   - Ejemplo 3: "1 manzana" -> quantity: 1, unit: "ud", calories: 80, protein: 0.4, carbs: 21, fats: 0.2.
+5. Para textos con múltiples ingredientes (ej: "2 huevos cocidos y 50g de avena"), genera un objeto independiente por cada alimento.
 
 Texto del usuario: "${userText}"
 
@@ -43,7 +45,7 @@ Devuelve ÚNICAMENTE la estructura JSON en este formato:
   {
     "name": "Nombre Alimento",
     "quantity": 1,
-    "unit": "ud|g|porcion",
+    "unit": "ud|g|porcion|ml",
     "calories": 100,
     "protein": 10,
     "carbs": 15,
@@ -63,6 +65,6 @@ Devuelve ÚNICAMENTE la estructura JSON en este formato:
     }
   }
 
-  console.info('Gemini API unreachable. Usando parser nutricional local.');
+  console.info('Gemini API unreachable. Usando parser nutricional genérico.');
   return null;
 }
