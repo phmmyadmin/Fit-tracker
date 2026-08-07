@@ -201,15 +201,21 @@ const server = http.createServer((req, res) => {
     req.on('data', chunk => { body += chunk.toString(); });
     req.on('end', () => {
       try {
-        const { date, weight } = JSON.parse(body);
+        const { date, time, weight } = JSON.parse(body);
         let data = JSON.parse(fs.readFileSync(jsonPath, 'utf-8'));
         if (!data.userProfile.weightLog) {
           data.userProfile.weightLog = { startWeight: 73.0, targetWeight: 68.0, history: [] };
         }
         
-        data.userProfile.weightLog.history = data.userProfile.weightLog.history.filter(h => h.date !== date);
-        data.userProfile.weightLog.history.push({ date, weight: parseFloat(weight) });
-        data.userProfile.weightLog.history.sort((a, b) => a.date.localeCompare(b.date));
+        const entryTime = time || '08:00';
+        // Remove existing entry for same date and time if present
+        data.userProfile.weightLog.history = data.userProfile.weightLog.history.filter(h => !(h.date === date && (h.time || '08:00') === entryTime));
+        data.userProfile.weightLog.history.push({ date, time: entryTime, weight: parseFloat(weight) });
+        data.userProfile.weightLog.history.sort((a, b) => {
+          const dtA = `${a.date} ${a.time || '00:00'}`;
+          const dtB = `${b.date} ${b.time || '00:00'}`;
+          return dtA.localeCompare(dtB);
+        });
 
         fs.writeFileSync(jsonPath, JSON.stringify(data, null, 2), 'utf-8');
         fs.writeFileSync(publicJsonPath, JSON.stringify(data, null, 2), 'utf-8');
@@ -226,10 +232,14 @@ const server = http.createServer((req, res) => {
     req.on('data', chunk => { body += chunk.toString(); });
     req.on('end', () => {
       try {
-        const { date } = JSON.parse(body);
+        const { date, time, index } = JSON.parse(body);
         let data = JSON.parse(fs.readFileSync(jsonPath, 'utf-8'));
-        if (data.userProfile.weightLog) {
-          data.userProfile.weightLog.history = data.userProfile.weightLog.history.filter(h => h.date !== date);
+        if (data.userProfile.weightLog && data.userProfile.weightLog.history) {
+          if (index !== undefined && index >= 0 && index < data.userProfile.weightLog.history.length) {
+            data.userProfile.weightLog.history.splice(index, 1);
+          } else {
+            data.userProfile.weightLog.history = data.userProfile.weightLog.history.filter(h => !(h.date === date && (h.time || '08:00') === (time || '08:00')));
+          }
           fs.writeFileSync(jsonPath, JSON.stringify(data, null, 2), 'utf-8');
           fs.writeFileSync(publicJsonPath, JSON.stringify(data, null, 2), 'utf-8');
         }
