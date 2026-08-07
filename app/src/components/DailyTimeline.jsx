@@ -96,27 +96,30 @@ export default function DailyTimeline({ intakes, onItemClick }) {
                 justifyContent: 'space-between',
                 marginBottom: '0.75rem',
                 paddingBottom: '0.4rem',
-                borderBottom: '1px solid var(--border-subtle)'
+                borderBottom: '1px solid var(--border-subtle)',
+                gap: '0.5rem',
+                flexWrap: 'wrap'
               }}
             >
-              <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', fontSize: '0.8rem', color: 'var(--color-indigo)', fontWeight: 700 }}>
-                <Clock size={14} />
-                <span>
-                  {meal.dishName ? `${meal.time} - ${meal.dishName}` : `Toma de las ${meal.time}`}
+              <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', fontSize: '0.8rem', color: 'var(--color-indigo)', fontWeight: 700, flex: '1 1 auto', minWidth: 0 }}>
+                <Clock size={14} style={{ flexShrink: 0 }} />
+                <span style={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                  {meal.dishName ? `${meal.time} - ${meal.dishName}` : `Toma ${meal.time}`}
                 </span>
               </div>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '0.35rem', flexShrink: 0 }}>
                 <span style={{
-                  fontSize: '0.78rem',
+                  fontSize: '0.75rem',
                   background: 'rgba(239, 68, 68, 0.12)',
                   color: 'var(--color-calories)',
                   fontWeight: 700,
                   padding: '0.15rem 0.55rem',
-                  borderRadius: '12px'
+                  borderRadius: '12px',
+                  whiteSpace: 'nowrap'
                 }}>
                   {groupTotalCalories} kcal
                 </span>
-                <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)', fontWeight: 500 }}>
+                <span style={{ fontSize: '0.72rem', color: 'var(--text-muted)', fontWeight: 500, whiteSpace: 'nowrap' }}>
                   ({meal.items.length} {meal.items.length === 1 ? 'alimento' : 'alimentos'})
                 </span>
               </div>
@@ -140,16 +143,17 @@ export default function DailyTimeline({ intakes, onItemClick }) {
                     borderRadius: 'var(--radius-sm)',
                     border: '1px solid var(--border-subtle)',
                     cursor: 'pointer',
-                    transition: 'transform 0.15s ease'
+                    transition: 'transform 0.15s ease',
+                    gap: '0.5rem'
                   }}
                 >
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '0.65rem' }}>
-                    <span style={{ fontSize: '1.4rem' }}>{emoji}</span>
-                    <div>
-                      <div style={{ fontWeight: 600, fontSize: '0.9rem', color: 'var(--text-main)' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '0.65rem', flex: 1, minWidth: 0 }}>
+                    <span style={{ fontSize: '1.4rem', flexShrink: 0 }}>{emoji}</span>
+                    <div style={{ minWidth: 0, flex: 1 }}>
+                      <div style={{ fontWeight: 600, fontSize: '0.88rem', color: 'var(--text-main)', wordBreak: 'break-word' }}>
                         {displayTitle}
                       </div>
-                      <div style={{ display: 'flex', gap: '0.6rem', fontSize: '0.75rem', marginTop: '0.15rem' }}>
+                      <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.45rem', fontSize: '0.73rem', marginTop: '0.15rem', whiteSpace: 'nowrap' }}>
                         <span style={{ color: 'var(--color-calories)', fontWeight: 600 }}>{item.macros.calories} kcal</span>
                         <span style={{ color: 'var(--color-protein)', fontWeight: 600 }}>{item.macros.protein}g P</span>
                         <span style={{ color: 'var(--color-carbs)', fontWeight: 600 }}>{item.macros.carbs}g C</span>
@@ -158,7 +162,7 @@ export default function DailyTimeline({ intakes, onItemClick }) {
                     </div>
                   </div>
 
-                  <Edit2 size={15} color="var(--text-subtle)" />
+                  <Edit2 size={15} color="var(--text-subtle)" style={{ flexShrink: 0 }} />
                 </div>
               );
             })}
