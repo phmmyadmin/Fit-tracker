@@ -8,7 +8,7 @@ import ProgressTracker from './components/ProgressTracker';
 import ChatInputBar from './components/ChatInputBar';
 import EditDrawer from './components/EditDrawer';
 import { parseFoodWithGemini } from './lib/gemini';
-import { fetchDailyLogsFromSupabase } from './lib/supabase';
+import { supabase, fetchDailyLogsFromSupabase, saveIntakesToSupabase } from './lib/supabase';
 import './index.css';
 
 export default function App() {
@@ -57,6 +57,20 @@ export default function App() {
     try {
       const parsedItems = await parseFoodWithGemini(text);
 
+      if (supabase) {
+        const itemsToSave = (parsedItems && parsedItems.length > 0)
+          ? parsedItems
+          : [{ name: text, quantity: 1, unit: 'porcion', calories: 150, protein: 10, carbs: 15, fats: 5 }];
+
+        const res = await saveIntakesToSupabase({ date: selectedDate, items: itemsToSave });
+        if (res && res.success) {
+          await loadData();
+          const summary = itemsToSave.map(i => `${i.name} (${i.calories} kcal)`).join(', ');
+          showToast(`Añadido (${parsedItems ? 'Gemini 1.5 Flash' : 'Supabase'}): ${summary}`);
+          return;
+        }
+      }
+
       const res = await fetch('/api/log-food', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -69,7 +83,7 @@ export default function App() {
         showToast(`Añadido (${parsedItems ? 'Gemini 1.5 Flash' : 'Local'}): ${summary}`);
       }
     } catch (err) {
-      console.warn("Backend local no disponible, simulando inserción local...", err);
+      console.warn("Backend no disponible...", err);
       showToast(`Añadido (modo local): ${text}`);
     } finally {
       setIsLoading(false);
