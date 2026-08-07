@@ -1,14 +1,16 @@
 import React, { useState, useEffect } from 'react';
-import { Trash2, X, Check } from 'lucide-react';
+import { Trash2, X, Check, Clock } from 'lucide-react';
 
 export default function EditDrawer({ item, itemIndex, onClose, onDelete, onUpdate }) {
   const [quantity, setQuantity] = useState(1);
   const [initialQuantity, setInitialQuantity] = useState(1);
+  const [time, setTime] = useState('12:00');
 
   useEffect(() => {
     if (item) {
       setQuantity(item.quantity || 1);
       setInitialQuantity(item.quantity || 1);
+      setTime(item.time || '12:00');
     }
   }, [item]);
 
@@ -25,7 +27,7 @@ export default function EditDrawer({ item, itemIndex, onClose, onDelete, onUpdat
   const newFats = Math.round(item.macros.fats * ratio * 10) / 10;
 
   const handleSave = () => {
-    onUpdate(itemIndex, quantity, { calories: newCals, protein: newProt, carbs: newCarbs, fats: newFats });
+    onUpdate(itemIndex, quantity, { calories: newCals, protein: newProt, carbs: newCarbs, fats: newFats }, time);
   };
 
   return (
@@ -44,6 +46,29 @@ export default function EditDrawer({ item, itemIndex, onClose, onDelete, onUpdat
           >
             <X size={18} />
           </button>
+        </div>
+
+        {/* Hora de consumo */}
+        <div style={{ marginBottom: '1.25rem', display: 'flex', alignItems: 'center', justifyContent: 'space-between', background: 'var(--bg-subtle)', padding: '0.6rem 0.85rem', borderRadius: 'var(--radius-md)' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontWeight: 600, fontSize: '0.88rem', color: 'var(--text-main)' }}>
+            <Clock size={16} color="var(--color-indigo)" />
+            <span>Hora de consumo:</span>
+          </div>
+          <input
+            type="time"
+            value={time}
+            onChange={(e) => setTime(e.target.value)}
+            style={{
+              padding: '0.35rem 0.6rem',
+              borderRadius: 'var(--radius-sm)',
+              border: '1px solid var(--border-subtle)',
+              fontFamily: 'inherit',
+              fontWeight: 700,
+              fontSize: '0.95rem',
+              color: 'var(--color-indigo)',
+              background: 'var(--bg-surface)'
+            }}
+          />
         </div>
 
         {/* Slider Controls */}
