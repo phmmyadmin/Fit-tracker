@@ -28,28 +28,36 @@ export async function fetchDailyLogsFromSupabase() {
       .select('*')
       .order('date', { ascending: true });
 
-    const formattedLogs = (logs || []).map(l => ({
-      date: l.date,
-      intakes: (l.intakes || []).map(i => ({
-        time: i.time || '12:00',
-        name: i.name,
-        dishName: i.dish_name,
-        quantity: i.quantity,
-        unit: i.unit,
-        macros: {
-          calories: i.calories,
-          protein: i.protein,
-          carbs: i.carbs,
-          fats: i.fats
+    const formattedLogs = (logs || []).map(l => {
+      // Sort intakes by created_at ascending
+      const rawIntakes = [...(l.intakes || [])].sort((a, b) => 
+        (a.created_at || '').localeCompare(b.created_at || '')
+      );
+
+      return {
+        date: l.date,
+        intakes: rawIntakes.map(i => ({
+          id: i.id,
+          time: i.time || '12:00',
+          name: i.name,
+          dishName: i.dish_name,
+          quantity: i.quantity,
+          unit: i.unit,
+          macros: {
+            calories: i.calories,
+            protein: i.protein,
+            carbs: i.carbs,
+            fats: i.fats
+          }
+        })),
+        dailyTotals: {
+          calories: l.calories,
+          protein: l.protein,
+          carbs: l.carbs,
+          fats: l.fats
         }
-      })),
-      dailyTotals: {
-        calories: l.calories,
-        protein: l.protein,
-        carbs: l.carbs,
-        fats: l.fats
-      }
-    }));
+      };
+    });
 
     // Sort logs by date ascending
     formattedLogs.sort((a, b) => a.date.localeCompare(b.date));
@@ -76,7 +84,6 @@ export async function saveIntakesToSupabase({ date, items }) {
   if (!supabase) return null;
 
   try {
-    // 1. Ensure daily_log exists
     let { data: dayLog } = await supabase
       .from('daily_logs')
       .select('*')
@@ -96,7 +103,6 @@ export async function saveIntakesToSupabase({ date, items }) {
     const now = new Date();
     const timeStr = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
 
-    // 2. Insert intakes
     const intakeRows = items.map(i => ({
       daily_log_id: dayLog.id,
       date: date,
@@ -114,7 +120,6 @@ export async function saveIntakesToSupabase({ date, items }) {
     const { error: insertErr } = await supabase.from('intakes').insert(intakeRows);
     if (insertErr) throw insertErr;
 
-    // 3. Recalculate daily totals
     const { data: allIntakes } = await supabase
       .from('intakes')
       .select('*')
@@ -171,27 +176,38 @@ export async function deleteWeightFromSupabase({ date, time }) {
   }
 }
 
-export async function deleteIntakeFromSupabase({ date, index }) {
+export async function deleteIntakeFromSupabase({ date, index, item }) {
   if (!supabase) return null;
 
   try {
-    const { data: dayLog } = await supabase
-      .from('daily_logs')
-      .select('*, intakes(*)')
-      .eq('date', date)
-      .maybeSingle();
+    let targetId = item?.id;
 
-    if (!dayLog || !dayLog.intakes || !dayLog.intakes[index]) return null;
+    if (!targetId) {
+      const { data: dayLog } = await supabase
+        .from('daily_logs')
+        .select('*, intakes(*)')
+        .eq('date', date)
+        .maybeSingle();
 
-    const intakeToDelete = dayLog.intakes[index];
+      if (!dayLog || !dayLog.intakes) return null;
+
+      const sorted = [...dayLog.intakes].sort((a, b) => 
+        (a.created_at || '').localeCompare(b.created_at || '')
+      );
+      if (sorted[index]) {
+        targetId = sorted[index].id;
+      }
+    }
+
+    if (!targetId) return null;
+
     const { error: delErr } = await supabase
       .from('intakes')
       .delete()
-      .eq('id', intakeToDelete.id);
+      .eq('id', targetId);
 
     if (delErr) throw delErr;
 
-    // Recalculate daily totals
     const { data: remainingIntakes } = await supabase
       .from('intakes')
       .select('*')
@@ -212,6 +228,68 @@ export async function deleteIntakeFromSupabase({ date, index }) {
     return { success: true };
   } catch (err) {
     console.error('Supabase delete intake error:', err);
+    return null;
+  }
+}
+
+export async function updateIntakeInSupabase({ date, index, item, quantity, macros }) {
+  if (!supabase) return null;
+
+  try {
+    let targetId = item?.id;
+
+    if (!targetId) {
+      const { data: dayLog } = await supabase
+        .from('daily_logs')
+        .select('*, intakes(*)')
+        .eq('date', date)
+        .maybeSingle();
+
+      if (!dayLog || !dayLog.intakes) return null;
+
+      const sorted = [...dayLog.intakes].sort((a, b) => 
+        (a.created_at || '').localeCompare(b.created_at || '')
+      );
+      if (sorted[index]) {
+        targetId = sorted[index].id;
+      }
+    }
+
+    if (!targetId) return null;
+
+    const { error: updateErr } = await supabase
+      .from('intakes')
+      .update({
+        quantity: quantity,
+        calories: macros.calories,
+        protein: macros.protein,
+        carbs: macros.carbs,
+        fats: macros.fats
+      })
+      .eq('id', targetId);
+
+    if (updateErr) throw updateErr;
+
+    const { data: remainingIntakes } = await supabase
+      .from('intakes')
+      .select('*')
+      .eq('date', date);
+
+    const totals = (remainingIntakes || []).reduce((acc, curr) => ({
+      calories: Math.round(acc.calories + curr.calories),
+      protein: Math.round((acc.protein + curr.protein) * 10) / 10,
+      carbs: Math.round((acc.carbs + curr.carbs) * 10) / 10,
+      fats: Math.round((acc.fats + curr.fats) * 10) / 10
+    }), { calories: 0, protein: 0, carbs: 0, fats: 0 });
+
+    await supabase
+      .from('daily_logs')
+      .update(totals)
+      .eq('date', date);
+
+    return { success: true };
+  } catch (err) {
+    console.error('Supabase update intake error:', err);
     return null;
   }
 }

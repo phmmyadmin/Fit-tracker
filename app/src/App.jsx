@@ -9,7 +9,7 @@ import ChatInputBar from './components/ChatInputBar';
 import EditDrawer from './components/EditDrawer';
 import { parseFoodWithGemini } from './lib/gemini';
 import { parseFoodTextLocal } from './lib/parser';
-import { supabase, fetchDailyLogsFromSupabase, saveIntakesToSupabase, deleteIntakeFromSupabase } from './lib/supabase';
+import { supabase, fetchDailyLogsFromSupabase, saveIntakesToSupabase, deleteIntakeFromSupabase, updateIntakeInSupabase } from './lib/supabase';
 import './index.css';
 
 export default function App() {
@@ -92,8 +92,11 @@ export default function App() {
 
   const handleDeleteItem = async (index) => {
     try {
+      const targetItem = editingItem;
+      setEditingItem(null);
+
       if (supabase) {
-        const res = await deleteIntakeFromSupabase({ date: selectedDate, index });
+        const res = await deleteIntakeFromSupabase({ date: selectedDate, index, item: targetItem });
         if (res && res.success) {
           await loadData();
           showToast("Alimento eliminado");
@@ -114,24 +117,44 @@ export default function App() {
   };
 
   const handleUpdateIntake = async (index, newQuantity, newMacros) => {
-    if (!data) return;
-    const dayLog = data.dailyLogs.find(l => l.date === selectedDate);
-    if (dayLog && dayLog.intakes[index]) {
-      dayLog.intakes[index].quantity = newQuantity;
-      dayLog.intakes[index].macros = newMacros;
-      
-      // Recalculate totals
-      dayLog.dailyTotals = dayLog.intakes.reduce((acc, curr) => ({
-        calories: Math.round(acc.calories + curr.macros.calories),
-        protein: Math.round((acc.protein + curr.macros.protein) * 10) / 10,
-        carbs: Math.round((acc.carbs + curr.macros.carbs) * 10) / 10,
-        fats: Math.round((acc.fats + curr.macros.fats) * 10) / 10
-      }), { calories: 0, protein: 0, carbs: 0, fats: 0 });
+    try {
+      const targetItem = editingItem;
+      setEditingItem(null);
 
-      setData({ ...data });
-      showToast(`Cantidad actualizada`);
+      if (supabase) {
+        const res = await updateIntakeInSupabase({
+          date: selectedDate,
+          index,
+          item: targetItem,
+          quantity: newQuantity,
+          macros: newMacros
+        });
+        if (res && res.success) {
+          await loadData();
+          showToast("Cantidad actualizada");
+          return;
+        }
+      }
+
+      if (data) {
+        const dayLog = data.dailyLogs.find(l => l.date === selectedDate);
+        if (dayLog && dayLog.intakes[index]) {
+          dayLog.intakes[index].quantity = newQuantity;
+          dayLog.intakes[index].macros = newMacros;
+          dayLog.dailyTotals = dayLog.intakes.reduce((acc, curr) => ({
+            calories: Math.round(acc.calories + curr.macros.calories),
+            protein: Math.round((acc.protein + curr.macros.protein) * 10) / 10,
+            carbs: Math.round((acc.carbs + curr.macros.carbs) * 10) / 10,
+            fats: Math.round((acc.fats + curr.macros.fats) * 10) / 10
+          }), { calories: 0, protein: 0, carbs: 0, fats: 0 });
+
+          setData({ ...data });
+          showToast("Cantidad actualizada");
+        }
+      }
+    } catch (err) {
+      console.error(err);
     }
-    setEditingItem(null);
   };
 
   const handleUpdateProfile = (updatedProfile) => {
