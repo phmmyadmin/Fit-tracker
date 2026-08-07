@@ -273,7 +273,7 @@ const ProgressTracker = ({ data, onUpdateProfile }) => {
                   const diff = item.weight - dayEstimatedWeight;
 
                   return (
-                    <tr key={`${item.date}-${item.time || idx}`} style={{ borderBottom: '1px solid var(--border-light)' }}>
+                    <tr key={`${item.date}-${item.time || originalIndex}`} style={{ borderBottom: '1px solid var(--border-light)' }}>
                       <td style={{ padding: '0.75rem 0.5rem', fontWeight: 600 }}>
                         {item.date} <span style={{ color: 'var(--text-muted)', fontSize: '0.85rem' }}>({item.time || '08:00'})</span>
                       </td>
