@@ -9,7 +9,6 @@ const __dirname = path.dirname(__filename);
 const jsonPath = path.join(__dirname, '../data/food_log.json');
 const publicJsonPath = path.join(__dirname, '../app/public/food_log.json');
 
-// Local food DB per 100g lookup
 const foodMaster100g = {
   "platano": { calories: 89, protein: 1.1, carbs: 22.8, fats: 0.3, default_g: 100 },
   "platano saba": { calories: 92, protein: 1.1, carbs: 23.0, fats: 0.3, default_g: 65 },
@@ -22,58 +21,73 @@ const foodMaster100g = {
   "mango": { calories: 60, protein: 0.8, carbs: 15.0, fats: 0.4, default_g: 80 },
   "pan": { calories: 265, protein: 9.0, carbs: 49.0, fats: 3.2, default_g: 50 },
   "pandesal": { calories: 287, protein: 7.5, carbs: 45.0, fats: 7.5, default_g: 40 },
-  "atun": { calories: 130, protein: 28.0, carbs: 0.0, fats: 1.0, default_g: 100 }
+  "atun": { calories: 130, protein: 28.0, carbs: 0.0, fats: 1.0, default_g: 100 },
+  "yogur": { calories: 60, protein: 3.5, carbs: 4.7, fats: 3.3, default_g: 125 },
+  "avena": { calories: 389, protein: 16.9, carbs: 66.3, fats: 6.9, default_g: 40 },
+  "hamburguesa": { calories: 250, protein: 18.0, carbs: 20.0, fats: 12.0, default_g: 150 },
+  "cheeseburger": { calories: 280, protein: 19.0, carbs: 22.0, fats: 14.0, default_g: 160 },
+  "ternera": { calories: 250, protein: 26.0, carbs: 0.0, fats: 15.0, default_g: 150 }
 };
 
+function cleanFoodName(text) {
+  return text.replace(/^(?:Comida|Desayuno|Cena|Snack|Merienda)\s*\d*:\s*/i, '').trim();
+}
+
 function parseFoodText(text) {
-  const lower = text.toLowerCase();
+  const cleaned = cleanFoodName(text);
+  // Split on '+', '\+', ' y ' (with spaces)
+  const segments = cleaned.split(/\\?\+|\s+y\s+/i).map(s => s.trim()).filter(Boolean);
+  
   let matches = [];
 
-  // Grams regex check (e.g. 150g pollo)
-  const gramsMatch = lower.match(/(\d+)\s*g(?:ramos)?\s+(?:de\s+)?([a-z\s]+)/i);
-  const qtyMatch = lower.match(/(\d+)\s+([a-z\s]+)/i);
+  for (const seg of segments) {
+    const lower = seg.toLowerCase();
+    const gramsMatch = lower.match(/(\d+)\s*g(?:ramos)?\s+(?:de\s+)?([a-z\s]+)/i);
+    const qtyMatch = lower.match(/(\d+)\s+([a-z\s]+)/i);
 
-  let foundAny = false;
-  for (const [key, info] of Object.entries(foodMaster100g)) {
-    if (lower.includes(key)) {
-      foundAny = true;
+    let foundKey = null;
+    for (const key of Object.keys(foodMaster100g)) {
+      if (lower.includes(key)) {
+        foundKey = key;
+        break;
+      }
+    }
+
+    if (foundKey) {
+      const info = foodMaster100g[foundKey];
       let grams = info.default_g;
-      if (gramsMatch && gramsMatch[2].includes(key)) {
+      if (gramsMatch && gramsMatch[2].includes(foundKey)) {
         grams = parseFloat(gramsMatch[1]);
-      } else if (qtyMatch && qtyMatch[2].includes(key)) {
-        const qty = parseFloat(qtyMatch[1]);
-        grams = info.default_g * qty;
+      } else if (qtyMatch && qtyMatch[2].includes(foundKey)) {
+        grams = info.default_g * parseFloat(qtyMatch[1]);
       }
 
       const factor = grams / 100;
       matches.push({
-        name: key.charAt(0).toUpperCase() + key.slice(1),
+        name: seg.charAt(0).toUpperCase() + seg.slice(1),
         grams: grams,
         calories: Math.round(info.calories * factor),
         protein: Math.round(info.protein * factor * 10) / 10,
         carbs: Math.round(info.carbs * factor * 10) / 10,
         fats: Math.round(info.fats * factor * 10) / 10
       });
+    } else {
+      // Fallback
+      matches.push({
+        name: seg.charAt(0).toUpperCase() + seg.slice(1),
+        grams: 100,
+        calories: 180,
+        protein: 12,
+        carbs: 15,
+        fats: 5
+      });
     }
-  }
-
-  if (!foundAny) {
-    // Fallback estimation
-    matches.push({
-      name: text,
-      grams: 100,
-      calories: 200,
-      protein: 15,
-      carbs: 20,
-      fats: 5
-    });
   }
 
   return matches;
 }
 
 const server = http.createServer((req, res) => {
-  // CORS
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, DELETE, PUT');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
@@ -126,7 +140,6 @@ const server = http.createServer((req, res) => {
           });
         }
 
-        // Recalculate daily totals
         dayLog.dailyTotals = dayLog.intakes.reduce((acc, curr) => ({
           calories: Math.round(acc.calories + curr.macros.calories),
           protein: Math.round((acc.protein + curr.macros.protein) * 10) / 10,
@@ -145,7 +158,6 @@ const server = http.createServer((req, res) => {
       }
     });
   } else if (req.method === 'DELETE' && req.url.startsWith('/api/intake')) {
-    // Delete intake logic
     let body = '';
     req.on('data', chunk => { body += chunk.toString(); });
     req.on('end', () => {
