@@ -1,9 +1,11 @@
 import React, { useState } from 'react';
-import { TrendingUp, ChevronLeft, ChevronRight } from 'lucide-react';
+import { TrendingUp, ChevronLeft, ChevronRight, PieChart, X } from 'lucide-react';
+import { getCategoryInfo } from '../utils/category';
 
 export default function WeeklyChart({ logs, selectedDate, onSelectDate, targetMacros }) {
   const [activeMacro, setActiveMacro] = useState('calories');
   const [weekOffset, setWeekOffset] = useState(0);
+  const [selectedCategoryModal, setSelectedCategoryModal] = useState(null);
 
   const macrosConfig = {
     calories: { label: 'Kcal', color: 'var(--color-calories)', target: targetMacros.calories },
@@ -164,6 +166,170 @@ export default function WeeklyChart({ logs, selectedDate, onSelectDate, targetMa
           );
         })}
       </div>
+
+      {/* Categorías de Alimentos Consumidos esta Semana */}
+      {(() => {
+        const categoryStats = {};
+        visibleDays.forEach((dayLog) => {
+          (dayLog.intakes || []).forEach((item) => {
+            const catKey = (item.category || 'other').toLowerCase().trim();
+            if (!categoryStats[catKey]) {
+              categoryStats[catKey] = {
+                key: catKey,
+                totalCount: 0,
+                totalCalories: 0,
+                foodItems: {}
+              };
+            }
+            categoryStats[catKey].totalCount += 1;
+            categoryStats[catKey].totalCalories += item.macros?.calories || 0;
+
+            const rawName = item.name || 'Alimento';
+            let cleanName = rawName.replace(/^(?:Comida|Desayuno|Cena|Snack|Merienda)\s*\d*:\s*/i, '').trim();
+            if (!categoryStats[catKey].foodItems[cleanName]) {
+              categoryStats[catKey].foodItems[cleanName] = {
+                name: cleanName,
+                count: 0,
+                totalCalories: 0
+              };
+            }
+            categoryStats[catKey].foodItems[cleanName].count += 1;
+            categoryStats[catKey].foodItems[cleanName].totalCalories += (item.macros?.calories || 0);
+          });
+        });
+
+        const sortedCategories = Object.values(categoryStats).sort((a, b) => b.totalCount - a.totalCount);
+
+        return (
+          <div style={{ marginTop: '2rem', paddingTop: '1.25rem', borderTop: '1px solid var(--border-subtle)' }}>
+            <h3 style={{ fontFamily: 'var(--font-heading)', fontSize: '1.05rem', display: 'flex', alignItems: 'center', gap: '0.4rem', marginBottom: '1rem', color: 'var(--text-main)', margin: 0 }}>
+              <PieChart size={18} color="var(--color-indigo)" />
+              Frecuencia por Categorías ({dateRangeStr})
+            </h3>
+
+            {sortedCategories.length === 0 ? (
+              <div style={{ fontSize: '0.85rem', color: 'var(--text-muted)', textAlign: 'center', padding: '1rem' }}>
+                No hay alimentos registrados en esta semana.
+              </div>
+            ) : (
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(130px, 1fr))', gap: '0.65rem', marginTop: '0.85rem' }}>
+                {sortedCategories.map((catStat) => {
+                  const catInfo = getCategoryInfo(catStat.key);
+                  return (
+                    <div
+                      key={catStat.key}
+                      onClick={() => setSelectedCategoryModal(catStat)}
+                      style={{
+                        background: 'var(--bg-subtle)',
+                        border: '1px solid var(--border-subtle)',
+                        borderRadius: 'var(--radius-md)',
+                        padding: '0.75rem 0.85rem',
+                        cursor: 'pointer',
+                        transition: 'all 0.15s ease',
+                        display: 'flex',
+                        flexDirection: 'column',
+                        justifyContent: 'space-between',
+                        gap: '0.4rem'
+                      }}
+                      title="Haz clic para ver el desglose de alimentos"
+                    >
+                      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                        <span style={{ fontSize: '1.3rem' }}>{catInfo.emoji}</span>
+                        <span style={{
+                          fontSize: '0.72rem',
+                          fontWeight: 700,
+                          background: catInfo.bg,
+                          color: catInfo.color,
+                          padding: '0.1rem 0.45rem',
+                          borderRadius: '10px'
+                        }}>
+                          {catStat.totalCount} {catStat.totalCount === 1 ? 'vez' : 'veces'}
+                        </span>
+                      </div>
+                      <div>
+                        <div style={{ fontWeight: 700, fontSize: '0.85rem', color: 'var(--text-main)' }}>
+                          {catInfo.label}
+                        </div>
+                        <div style={{ fontSize: '0.73rem', color: 'var(--text-muted)' }}>
+                          {catStat.totalCalories} kcal
+                        </div>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            )}
+          </div>
+        );
+      })()}
+
+      {/* Modal Desglose por Categoría */}
+      {selectedCategoryModal && (() => {
+        const catInfo = getCategoryInfo(selectedCategoryModal.key);
+        const foodList = Object.values(selectedCategoryModal.foodItems).sort((a, b) => b.count - a.count);
+        return (
+          <div className="bottom-sheet-overlay" onClick={() => setSelectedCategoryModal(null)}>
+            <div className="bottom-sheet" onClick={(e) => e.stopPropagation()}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.25rem' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                  <span style={{ fontSize: '1.6rem' }}>{catInfo.emoji}</span>
+                  <div>
+                    <h3 style={{ fontFamily: 'var(--font-heading)', fontSize: '1.15rem', fontWeight: 700, margin: 0 }}>
+                      {catInfo.label}
+                    </h3>
+                    <span style={{ fontSize: '0.78rem', color: 'var(--text-muted)' }}>
+                      {selectedCategoryModal.totalCount} consumo(s) • {selectedCategoryModal.totalCalories} kcal totales ({dateRangeStr})
+                    </span>
+                  </div>
+                </div>
+                <button
+                  onClick={() => setSelectedCategoryModal(null)}
+                  style={{ background: 'var(--bg-subtle)', border: 'none', borderRadius: '50%', width: 32, height: 32, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+                >
+                  <X size={18} />
+                </button>
+              </div>
+
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '0.6rem', maxHeight: '55vh', overflowY: 'auto' }}>
+                {foodList.map((food, fIdx) => (
+                  <div
+                    key={fIdx}
+                    style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'space-between',
+                      padding: '0.65rem 0.85rem',
+                      background: 'var(--bg-subtle)',
+                      borderRadius: 'var(--radius-sm)',
+                      border: '1px solid var(--border-subtle)'
+                    }}
+                  >
+                    <div style={{ fontWeight: 600, fontSize: '0.88rem', color: 'var(--text-main)', flex: 1, minWidth: 0, paddingRight: '0.5rem' }}>
+                      {food.name}
+                    </div>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', flexShrink: 0 }}>
+                      <span style={{ fontSize: '0.75rem', color: 'var(--color-calories)', fontWeight: 600 }}>
+                        {food.totalCalories} kcal
+                      </span>
+                      <span style={{
+                        fontSize: '0.75rem',
+                        fontWeight: 700,
+                        background: 'var(--bg-surface)',
+                        padding: '0.15rem 0.55rem',
+                        borderRadius: '10px',
+                        border: '1px solid var(--border-subtle)',
+                        color: 'var(--color-indigo)'
+                      }}>
+                        {food.count} {food.count === 1 ? 'vez' : 'veces'}
+                      </span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        );
+      })()}
     </div>
   );
 }
