@@ -23,12 +23,14 @@ export default function DailyTimeline({ intakes, onItemClick }) {
       const parts = cleanName.split(/\\?\+/).map(p => p.trim()).filter(Boolean);
       const count = parts.length;
       parts.forEach(part => {
+        const subName = part.replace(/^(?:Comida|Desayuno|Cena|Snack|Merienda)\s*\d*:\s*/i, '');
         expandedIntakes.push({
           time: item.time || '12:00',
           dishName: item.dishName,
-          name: part.replace(/^(?:Comida|Desayuno|Cena|Snack|Merienda)\s*\d*:\s*/i, ''),
+          name: subName,
           quantity: 1,
           unit: 'porcion',
+          category: item.category || 'other',
           macros: {
             calories: Math.round(item.macros.calories / count),
             protein: Math.round((item.macros.protein / count) * 10) / 10,
