@@ -133,6 +133,40 @@ export default function App() {
       showToast("Alimento eliminado");
     } catch (err) {
       console.error(err);
+      showToast("Error al actualizar ingesta");
+    }
+  };
+
+  const handleUpdateCategoryFromWeekly = async (rawItems, newCategory) => {
+    if (!rawItems || rawItems.length === 0) return;
+
+    try {
+      const itemIds = rawItems.map(r => r.id).filter(Boolean);
+
+      setData(prev => {
+        if (!prev || !prev.dailyLogs) return prev;
+        const updatedLogs = prev.dailyLogs.map(log => {
+          const newIntakes = log.intakes?.map(item => {
+            if (rawItems.some(r => r === item || (r.id && r.id === item.id))) {
+              return { ...item, category: newCategory };
+            }
+            return item;
+          });
+          return { ...log, intakes: newIntakes };
+        });
+        return { ...prev, dailyLogs: updatedLogs };
+      });
+
+      if (supabase && itemIds.length > 0) {
+        await supabase
+          .from('intakes')
+          .update({ category: newCategory })
+          .in('id', itemIds);
+      }
+
+      showToast('Categoría actualizada');
+    } catch (err) {
+      console.error('Error updating categories from weekly:', err);
     }
   };
 
@@ -428,6 +462,7 @@ export default function App() {
           selectedDate={selectedDate}
           onSelectDate={setSelectedDate}
           targetMacros={targetMacros}
+          onUpdateCategory={handleUpdateCategoryFromWeekly}
         />
       )}
 
