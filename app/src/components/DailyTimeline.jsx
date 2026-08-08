@@ -1,6 +1,7 @@
 import React from 'react';
 import { Clock, Edit2 } from 'lucide-react';
 import { getFoodEmoji } from '../utils/emoji';
+import { getCategoryInfo } from '../utils/category';
 
 export default function DailyTimeline({ intakes, onItemClick }) {
   if (!intakes || intakes.length === 0) {
@@ -130,6 +131,7 @@ export default function DailyTimeline({ intakes, onItemClick }) {
             {meal.items.map((item, idx) => {
               const displayTitle = getFormatDisplay(item);
               const emoji = getFoodEmoji(item.name);
+              const catInfo = getCategoryInfo(item.category);
               return (
                 <div
                   key={idx}
@@ -150,8 +152,21 @@ export default function DailyTimeline({ intakes, onItemClick }) {
                   <div style={{ display: 'flex', alignItems: 'center', gap: '0.65rem', flex: 1, minWidth: 0 }}>
                     <span style={{ fontSize: '1.4rem', flexShrink: 0 }}>{emoji}</span>
                     <div style={{ minWidth: 0, flex: 1 }}>
-                      <div style={{ fontWeight: 600, fontSize: '0.88rem', color: 'var(--text-main)', wordBreak: 'break-word' }}>
-                        {displayTitle}
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', flexWrap: 'wrap' }}>
+                        <span style={{ fontWeight: 600, fontSize: '0.88rem', color: 'var(--text-main)', wordBreak: 'break-word' }}>
+                          {displayTitle}
+                        </span>
+                        <span style={{
+                          fontSize: '0.68rem',
+                          fontWeight: 600,
+                          background: catInfo.bg,
+                          color: catInfo.color,
+                          padding: '0.08rem 0.45rem',
+                          borderRadius: '10px',
+                          whiteSpace: 'nowrap'
+                        }}>
+                          {catInfo.emoji} {catInfo.label}
+                        </span>
                       </div>
                       <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.45rem', fontSize: '0.73rem', marginTop: '0.15rem', whiteSpace: 'nowrap' }}>
                         <span style={{ color: 'var(--color-calories)', fontWeight: 600 }}>{item.macros.calories} kcal</span>
