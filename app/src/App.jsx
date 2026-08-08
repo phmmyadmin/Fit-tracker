@@ -12,6 +12,25 @@ import { parseFoodTextLocal } from './lib/parser';
 import { supabase, fetchDailyLogsFromSupabase, saveIntakesToSupabase, deleteIntakeFromSupabase, updateIntakeInSupabase } from './lib/supabase';
 import './index.css';
 
+const getLocalDateStr = () => {
+  const d = new Date();
+  const year = d.getFullYear();
+  const month = String(d.getMonth() + 1).padStart(2, '0');
+  const day = String(d.getDate()).padStart(2, '0');
+  return `${year}-${month}-${day}`;
+};
+
+const addDays = (dateStr, days) => {
+  if (!dateStr) return getLocalDateStr();
+  const [y, m, d] = dateStr.split('-').map(Number);
+  const date = new Date(y, m - 1, d);
+  date.setDate(date.getDate() + days);
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, '0');
+  const day = String(date.getDate()).padStart(2, '0');
+  return `${year}-${month}-${day}`;
+};
+
 export default function App() {
   const [data, setData] = useState(null);
   const [selectedDate, setSelectedDate] = useState('');
@@ -28,8 +47,8 @@ export default function App() {
     const supabaseData = await fetchDailyLogsFromSupabase();
     if (supabaseData) {
       setData(supabaseData);
-      if (supabaseData.dailyLogs && supabaseData.dailyLogs.length > 0 && !selectedDate) {
-        setSelectedDate(supabaseData.dailyLogs[supabaseData.dailyLogs.length - 1].date);
+      if (!selectedDate) {
+        setSelectedDate(getLocalDateStr());
       }
       return;
     }
@@ -38,8 +57,8 @@ export default function App() {
       .then((res) => res.json())
       .then((json) => {
         setData(json);
-        if (json.dailyLogs && json.dailyLogs.length > 0 && !selectedDate) {
-          setSelectedDate(json.dailyLogs[json.dailyLogs.length - 1].date);
+        if (!selectedDate) {
+          setSelectedDate(getLocalDateStr());
         }
       })
       .catch((err) => console.error("Error al cargar food_log.json", err));
@@ -188,17 +207,15 @@ export default function App() {
     allDates.sort(); // keep it sorted
   }
   
-  const currentIndex = allDates.indexOf(selectedDate);
-
   const prevDate = () => {
-    if (currentIndex > 0) setSelectedDate(allDates[currentIndex - 1]);
+    setSelectedDate((prev) => addDays(prev || getLocalDateStr(), -1));
   };
 
   const nextDate = () => {
-    if (currentIndex < allDates.length - 1) setSelectedDate(allDates[currentIndex + 1]);
+    setSelectedDate((prev) => addDays(prev || getLocalDateStr(), 1));
   };
 
-  const goToToday = () => setSelectedDate(todayStr);
+  const goToToday = () => setSelectedDate(getLocalDateStr());
 
   return (
     <div className="app-container">
@@ -237,7 +254,7 @@ export default function App() {
         </div>
 
         <div className="date-selector">
-          <button className="nav-btn" onClick={prevDate} disabled={currentIndex === 0}>
+          <button className="nav-btn" onClick={prevDate} title="Día anterior">
             <ChevronLeft size={16} />
           </button>
           <div 
@@ -286,7 +303,7 @@ export default function App() {
               }}
             />
           </div>
-          <button className="nav-btn" onClick={nextDate} disabled={currentIndex === allDates.length - 1}>
+          <button className="nav-btn" onClick={nextDate} title="Día siguiente">
             <ChevronRight size={16} />
           </button>
           <button 
