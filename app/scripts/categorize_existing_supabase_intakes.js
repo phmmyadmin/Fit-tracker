@@ -28,16 +28,22 @@ const supabase = createClient(supabaseUrl, supabaseAnonKey);
 function classifyFoodName(name) {
   const n = (name || '').toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
 
-  if (/pizza|burger|mcdonald|kfc|kebab|burrito|patata.*frita|croqueta|churro|empanada|hot.*dog|donuts|doritos|snack/i.test(n)) {
+  if (/donut|croissant|pandesal|magdalena|bizcocho|galleta|tarta|pastel|bollo|bolleria|waffle|crepe|muffin|brownie|pancakes|pancake/i.test(n)) {
+    return 'bakery';
+  }
+  if (/patata|papa|boniato|camote|yuca|tuberculo|sweet.*potato|potato/i.test(n)) {
+    return 'tubers';
+  }
+  if (/pizza|burger|mcdonald|kfc|kebab|burrito|croqueta|churro|empanada|hot.*dog|doritos|snack/i.test(n)) {
     return 'fast_food';
   }
-  if (/pollo|pavo|ternera|cerdo|carne|lomo|entrecot|jamon|bacon|pescado|atun|salmon|merluza|huevo|tortilla|clara|gamba|calamar|pulpo|bacalao|solomillo|chuleton/i.test(n)) {
+  if (/pollo|pavo|ternera|cerdo|carne|lomo|entrecot|jamon|bacon|pescado|atun|salmon|merluza|huevo|tortilla|clara|gamba|calamar|pulpo|bacalao|solomillo|chuleton|yema/i.test(n)) {
     return 'meat';
   }
   if (/lenteja|garbanzo|alubia|judia|frijol|soja|edamame|tofu|hummus/i.test(n)) {
     return 'legumes';
   }
-  if (/ensalada|lechuga|tomate|pepino|cebolla|zanahoria|espinaca|brocoli|coliflor|calabacin|pimiento|champinon|seta|verdura|canonigo|rucula|esparrago/i.test(n)) {
+  if (/ensalada|lechuga|tomate|pepino|cebolla|zanahoria|espinaca|brocoli|coliflor|calabacin|pimiento|champinon|seta|verdura|canonigo|rucula|esparrago|ajo/i.test(n)) {
     return 'vegetables';
   }
   if (/manzana|platano|banana|fresa|naranja|mandarina|uva|melon|sandia|pina|kiwi|melocoton|mango|fruta|arandano|frambuesa/i.test(n)) {
@@ -70,13 +76,16 @@ async function categorizeAll() {
   console.log(`Found ${intakes.length} total intakes.`);
 
   let updatedCount = 0;
+  const counts = {};
   for (const item of intakes) {
     const category = classifyFoodName(item.name);
+    counts[category] = (counts[category] || 0) + 1;
     const { error: upErr } = await supabase.from('intakes').update({ category }).eq('id', item.id);
     if (!upErr) updatedCount++;
   }
 
   console.log(`Successfully categorized ${updatedCount} intakes in Supabase!`);
+  console.log('New category breakdown:', counts);
 }
 
 categorizeAll();
