@@ -29,7 +29,7 @@ Eres un nutricionista experto en conteo de calorías y macronutrientes.
 Analiza el siguiente texto de comida del usuario y devuelve un array JSON estricto con los alimentos parseados.
 
 Reglas estrictas de parseo para CUALQUIER alimento del mundo:
-1. "name": Nombre estándar y limpio del alimento (en singular, sin verbos como "añade" o "comí", y sin prefijos de cantidad como "100g de" o "2 ").
+1. "name": Nombre estándar, limpio y unificado del alimento OBLIGATORIAMENTE EN SINGULAR y en español con tildes (ej: "Plátano" en vez de "platanos" o "banana", "Huevo" en vez de "huevos" o "huevos cocidos", "Hamburguesa" en vez de "mini burgers", "Yogur natural" en vez de "yogurt", "Patata" en vez de "patatas", "Pollo" en vez de "tu pollo").
 2. "quantity": Número exacto de unidades o gramos especificados (ej: para "2 huevos", quantity = 2; para "150g arroz", quantity = 150).
 3. "unit": 'ud' (para piezas/unidades), 'g' (para gramos), 'ml' (para mililitros) o 'porcion'.
 4. "category": OBLIGATORIO. Categoriza el alimento en una de las siguientes opciones exactas en formato English snake_case:
