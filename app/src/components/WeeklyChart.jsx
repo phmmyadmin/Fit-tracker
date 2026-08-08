@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { TrendingUp, ChevronLeft, ChevronRight, PieChart, X } from 'lucide-react';
-import { getCategoryInfo } from '../utils/category';
+import { FOOD_CATEGORIES, getCategoryInfo } from '../utils/category';
 
-export default function WeeklyChart({ logs, selectedDate, onSelectDate, targetMacros }) {
+export default function WeeklyChart({ logs, selectedDate, onSelectDate, targetMacros, onUpdateCategory }) {
   const [activeMacro, setActiveMacro] = useState('calories');
   const [weekOffset, setWeekOffset] = useState(0);
   const [selectedCategoryModal, setSelectedCategoryModal] = useState(null);
@@ -190,11 +190,14 @@ export default function WeeklyChart({ logs, selectedDate, onSelectDate, targetMa
               categoryStats[catKey].foodItems[cleanName] = {
                 name: cleanName,
                 count: 0,
-                totalCalories: 0
+                totalCalories: 0,
+                categoryKey: catKey,
+                rawItems: []
               };
             }
             categoryStats[catKey].foodItems[cleanName].count += 1;
             categoryStats[catKey].foodItems[cleanName].totalCalories += (item.macros?.calories || 0);
+            categoryStats[catKey].foodItems[cleanName].rawItems.push(item);
           });
         });
 
@@ -231,7 +234,7 @@ export default function WeeklyChart({ logs, selectedDate, onSelectDate, targetMa
                         justifyContent: 'space-between',
                         gap: '0.4rem'
                       }}
-                      title="Haz clic para ver el desglose de alimentos"
+                      title="Haz clic para ver el desglose y editar categorías"
                     >
                       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
                         <span style={{ fontSize: '1.3rem' }}>{catInfo.emoji}</span>
@@ -291,40 +294,91 @@ export default function WeeklyChart({ logs, selectedDate, onSelectDate, targetMa
               </div>
 
               <div style={{ display: 'flex', flexDirection: 'column', gap: '0.6rem', maxHeight: '55vh', overflowY: 'auto' }}>
-                {foodList.map((food, fIdx) => (
-                  <div
-                    key={fIdx}
-                    style={{
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'space-between',
-                      padding: '0.65rem 0.85rem',
-                      background: 'var(--bg-subtle)',
-                      borderRadius: 'var(--radius-sm)',
-                      border: '1px solid var(--border-subtle)'
-                    }}
-                  >
-                    <div style={{ fontWeight: 600, fontSize: '0.88rem', color: 'var(--text-main)', flex: 1, minWidth: 0, paddingRight: '0.5rem' }}>
-                      {food.name}
-                    </div>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', flexShrink: 0 }}>
-                      <span style={{ fontSize: '0.75rem', color: 'var(--color-calories)', fontWeight: 600 }}>
-                        {food.totalCalories} kcal
-                      </span>
-                      <span style={{
-                        fontSize: '0.75rem',
-                        fontWeight: 700,
-                        background: 'var(--bg-surface)',
-                        padding: '0.15rem 0.55rem',
-                        borderRadius: '10px',
-                        border: '1px solid var(--border-subtle)',
-                        color: 'var(--color-indigo)'
-                      }}>
-                        {food.count} {food.count === 1 ? 'vez' : 'veces'}
-                      </span>
-                    </div>
+                {foodList.length === 0 ? (
+                  <div style={{ fontSize: '0.85rem', color: 'var(--text-muted)', textAlign: 'center', padding: '1rem' }}>
+                    Todos los alimentos de esta categoría han sido recategorizados.
                   </div>
-                ))}
+                ) : (
+                  foodList.map((food, fIdx) => (
+                    <div
+                      key={fIdx}
+                      style={{
+                        display: 'flex',
+                        flexDirection: 'column',
+                        gap: '0.4rem',
+                        padding: '0.75rem 0.85rem',
+                        background: 'var(--bg-subtle)',
+                        borderRadius: 'var(--radius-sm)',
+                        border: '1px solid var(--border-subtle)'
+                      }}
+                    >
+                      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                        <div style={{ fontWeight: 600, fontSize: '0.88rem', color: 'var(--text-main)', flex: 1, minWidth: 0, paddingRight: '0.5rem' }}>
+                          {food.name}
+                        </div>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', flexShrink: 0 }}>
+                          <span style={{ fontSize: '0.75rem', color: 'var(--color-calories)', fontWeight: 600 }}>
+                            {food.totalCalories} kcal
+                          </span>
+                          <span style={{
+                            fontSize: '0.75rem',
+                            fontWeight: 700,
+                            background: 'var(--bg-surface)',
+                            padding: '0.15rem 0.55rem',
+                            borderRadius: '10px',
+                            border: '1px solid var(--border-subtle)',
+                            color: 'var(--color-indigo)'
+                          }}>
+                            {food.count} {food.count === 1 ? 'vez' : 'veces'}
+                          </span>
+                        </div>
+                      </div>
+
+                      {/* Dropdown Selector para Cambiar Categoría Directamente */}
+                      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end', gap: '0.4rem', marginTop: '0.2rem' }}>
+                        <span style={{ fontSize: '0.72rem', color: 'var(--text-muted)' }}>Categoría:</span>
+                        <select
+                          value={food.categoryKey}
+                          onChange={(e) => {
+                            const newCat = e.target.value;
+                            if (newCat === food.categoryKey) return;
+                            if (onUpdateCategory) {
+                              onUpdateCategory(food.rawItems, newCat);
+                            }
+                            setSelectedCategoryModal(prev => {
+                              if (!prev) return null;
+                              const updatedFoodItems = { ...prev.foodItems };
+                              delete updatedFoodItems[food.name];
+                              return {
+                                ...prev,
+                                totalCount: Math.max(0, prev.totalCount - food.count),
+                                totalCalories: Math.max(0, prev.totalCalories - food.totalCalories),
+                                foodItems: updatedFoodItems
+                              };
+                            });
+                          }}
+                          style={{
+                            background: 'var(--bg-surface)',
+                            color: 'var(--text-main)',
+                            border: '1px solid var(--border-subtle)',
+                            borderRadius: 'var(--radius-sm)',
+                            padding: '0.25rem 0.5rem',
+                            fontSize: '0.75rem',
+                            fontWeight: 600,
+                            cursor: 'pointer',
+                            outline: 'none'
+                          }}
+                        >
+                          {Object.entries(FOOD_CATEGORIES).map(([catKey, catMeta]) => (
+                            <option key={catKey} value={catKey}>
+                              {catMeta.emoji} {catMeta.label}
+                            </option>
+                          ))}
+                        </select>
+                      </div>
+                    </div>
+                  ))
+                )}
               </div>
             </div>
           </div>
