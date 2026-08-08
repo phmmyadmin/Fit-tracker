@@ -43,6 +43,7 @@ export async function fetchDailyLogsFromSupabase() {
           dishName: i.dish_name,
           quantity: i.quantity,
           unit: i.unit,
+          category: i.category || 'other',
           macros: {
             calories: i.calories,
             protein: i.protein,
@@ -111,6 +112,7 @@ export async function saveIntakesToSupabase({ date, items }) {
       dish_name: i.dishName || null,
       quantity: i.quantity || 1,
       unit: i.unit || 'porcion',
+      category: i.category || 'other',
       calories: i.calories || i.macros?.calories || 0,
       protein: i.protein || i.macros?.protein || 0,
       carbs: i.carbs || i.macros?.carbs || 0,
@@ -232,7 +234,7 @@ export async function deleteIntakeFromSupabase({ date, index, item }) {
   }
 }
 
-export async function updateIntakeInSupabase({ date, index, item, quantity, macros }) {
+export async function updateIntakeInSupabase({ date, index, item, quantity, macros, category, time }) {
   if (!supabase) return null;
 
   try {
@@ -257,15 +259,20 @@ export async function updateIntakeInSupabase({ date, index, item, quantity, macr
 
     if (!targetId) return null;
 
+    const updatePayload = {
+      quantity: quantity,
+      calories: macros.calories,
+      protein: macros.protein,
+      carbs: macros.carbs,
+      fats: macros.fats
+    };
+
+    if (category) updatePayload.category = category;
+    if (time) updatePayload.time = time;
+
     const { error: updateErr } = await supabase
       .from('intakes')
-      .update({
-        quantity: quantity,
-        calories: macros.calories,
-        protein: macros.protein,
-        carbs: macros.carbs,
-        fats: macros.fats
-      })
+      .update(updatePayload)
       .eq('id', targetId);
 
     if (updateErr) throw updateErr;

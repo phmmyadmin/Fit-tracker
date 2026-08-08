@@ -136,7 +136,7 @@ export default function App() {
     }
   };
 
-  const handleUpdateIntake = async (index, newQuantity, newMacros) => {
+  const handleUpdateIntake = async (index, newQuantity, newMacros, newTime, newCategory) => {
     try {
       const targetItem = editingItem;
       setEditingItem(null);
@@ -147,11 +147,13 @@ export default function App() {
           index,
           item: targetItem,
           quantity: newQuantity,
-          macros: newMacros
+          macros: newMacros,
+          category: newCategory,
+          time: newTime
         });
         if (res && res.success) {
           await loadData();
-          showToast("Cantidad actualizada");
+          showToast("Ingesta actualizada");
           return;
         }
       }
@@ -161,6 +163,8 @@ export default function App() {
         if (dayLog && dayLog.intakes[index]) {
           dayLog.intakes[index].quantity = newQuantity;
           dayLog.intakes[index].macros = newMacros;
+          if (newTime) dayLog.intakes[index].time = newTime;
+          if (newCategory) dayLog.intakes[index].category = newCategory;
           dayLog.dailyTotals = dayLog.intakes.reduce((acc, curr) => ({
             calories: Math.round(acc.calories + curr.macros.calories),
             protein: Math.round((acc.protein + curr.macros.protein) * 10) / 10,
@@ -169,7 +173,7 @@ export default function App() {
           }), { calories: 0, protein: 0, carbs: 0, fats: 0 });
 
           setData({ ...data });
-          showToast("Cantidad actualizada");
+          showToast("Ingesta actualizada");
         }
       }
     } catch (err) {

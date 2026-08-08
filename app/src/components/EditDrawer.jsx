@@ -1,16 +1,19 @@
 import React, { useState, useEffect } from 'react';
-import { Trash2, X, Check, Clock } from 'lucide-react';
+import { Trash2, X, Check, Clock, Tag } from 'lucide-react';
+import { FOOD_CATEGORIES } from '../utils/category';
 
 export default function EditDrawer({ item, itemIndex, onClose, onDelete, onUpdate }) {
   const [quantity, setQuantity] = useState(1);
   const [initialQuantity, setInitialQuantity] = useState(1);
   const [time, setTime] = useState('12:00');
+  const [category, setCategory] = useState('other');
 
   useEffect(() => {
     if (item) {
       setQuantity(item.quantity || 1);
       setInitialQuantity(item.quantity || 1);
       setTime(item.time || '12:00');
+      setCategory(item.category || 'other');
     }
   }, [item]);
 
@@ -27,7 +30,7 @@ export default function EditDrawer({ item, itemIndex, onClose, onDelete, onUpdat
   const newFats = Math.round(item.macros.fats * ratio * 10) / 10;
 
   const handleSave = () => {
-    onUpdate(itemIndex, quantity, { calories: newCals, protein: newProt, carbs: newCarbs, fats: newFats }, time);
+    onUpdate(itemIndex, quantity, { calories: newCals, protein: newProt, carbs: newCarbs, fats: newFats }, time, category);
   };
 
   return (
@@ -48,27 +51,56 @@ export default function EditDrawer({ item, itemIndex, onClose, onDelete, onUpdat
           </button>
         </div>
 
-        {/* Hora de consumo */}
-        <div style={{ marginBottom: '1.25rem', display: 'flex', alignItems: 'center', justifyContent: 'space-between', background: 'var(--bg-subtle)', padding: '0.6rem 0.85rem', borderRadius: 'var(--radius-md)' }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontWeight: 600, fontSize: '0.88rem', color: 'var(--text-main)' }}>
-            <Clock size={16} color="var(--color-indigo)" />
-            <span>Hora de consumo:</span>
+        {/* Hora y Categoría */}
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.75rem', marginBottom: '1.25rem' }}>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', background: 'var(--bg-subtle)', padding: '0.6rem 0.75rem', borderRadius: 'var(--radius-md)' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', fontWeight: 600, fontSize: '0.8rem', color: 'var(--text-main)' }}>
+              <Clock size={15} color="var(--color-indigo)" />
+              <span>Hora:</span>
+            </div>
+            <input
+              type="time"
+              value={time}
+              onChange={(e) => setTime(e.target.value)}
+              style={{
+                padding: '0.25rem 0.4rem',
+                borderRadius: 'var(--radius-sm)',
+                border: '1px solid var(--border-subtle)',
+                fontFamily: 'inherit',
+                fontWeight: 700,
+                fontSize: '0.85rem',
+                color: 'var(--color-indigo)',
+                background: 'var(--bg-surface)'
+              }}
+            />
           </div>
-          <input
-            type="time"
-            value={time}
-            onChange={(e) => setTime(e.target.value)}
-            style={{
-              padding: '0.35rem 0.6rem',
-              borderRadius: 'var(--radius-sm)',
-              border: '1px solid var(--border-subtle)',
-              fontFamily: 'inherit',
-              fontWeight: 700,
-              fontSize: '0.95rem',
-              color: 'var(--color-indigo)',
-              background: 'var(--bg-surface)'
-            }}
-          />
+
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', background: 'var(--bg-subtle)', padding: '0.6rem 0.75rem', borderRadius: 'var(--radius-md)' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', fontWeight: 600, fontSize: '0.8rem', color: 'var(--text-main)' }}>
+              <Tag size={15} color="var(--color-indigo)" />
+              <span>Cat:</span>
+            </div>
+            <select
+              value={category}
+              onChange={(e) => setCategory(e.target.value)}
+              style={{
+                padding: '0.25rem 0.4rem',
+                borderRadius: 'var(--radius-sm)',
+                border: '1px solid var(--border-subtle)',
+                fontFamily: 'inherit',
+                fontWeight: 600,
+                fontSize: '0.82rem',
+                color: 'var(--text-main)',
+                background: 'var(--bg-surface)'
+              }}
+            >
+              {Object.entries(FOOD_CATEGORIES).map(([key, cat]) => (
+                <option key={key} value={key}>
+                  {cat.emoji} {cat.label}
+                </option>
+              ))}
+            </select>
+          </div>
         </div>
 
         {/* Slider Controls */}
