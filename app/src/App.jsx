@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Calendar, ChevronLeft, ChevronRight, CheckCircle2, LayoutDashboard, TrendingUp, CalendarRange, LineChart } from 'lucide-react';
+import { Calendar, ChevronLeft, ChevronRight, CheckCircle2, LayoutDashboard, TrendingUp, CalendarRange, LineChart, User } from 'lucide-react';
 import MacroRing from './components/MacroRing';
 import DailyTimeline from './components/DailyTimeline';
 import WeeklyChart from './components/WeeklyChart';
@@ -7,9 +7,10 @@ import MonthlyReport from './components/MonthlyReport';
 import ProgressTracker from './components/ProgressTracker';
 import ChatInputBar from './components/ChatInputBar';
 import EditDrawer from './components/EditDrawer';
+import ProfileView from './components/ProfileView';
 import { parseFoodWithGemini } from './lib/gemini';
 import { parseFoodTextLocal } from './lib/parser';
-import { supabase, fetchDailyLogsFromSupabase, saveIntakesToSupabase, deleteIntakeFromSupabase, updateIntakeInSupabase } from './lib/supabase';
+import { supabase, fetchDailyLogsFromSupabase, saveIntakesToSupabase, deleteIntakeFromSupabase, updateIntakeInSupabase, fetchProfiles } from './lib/supabase';
 import './index.css';
 
 const getLocalDateStr = () => {
@@ -43,16 +44,37 @@ export default function App() {
   const [editingItem, setEditingItem] = useState(null);
   const [editingIndex, setEditingIndex] = useState(null);
 
-  const loadData = async () => {
-    const supabaseData = await fetchDailyLogsFromSupabase();
-    if (supabaseData) {
-      setData(supabaseData);
-      if (!selectedDate) {
-        setSelectedDate(getLocalDateStr());
+  const [profiles, setProfiles] = useState([]);
+  const [activeProfileId, setActiveProfileId] = useState(null);
+
+  const loadData = async (forceProfileId = null) => {
+    let currentProfileId = forceProfileId || activeProfileId;
+    
+    if (supabase) {
+      let currentProfiles = profiles;
+      if (currentProfiles.length === 0) {
+        currentProfiles = await fetchProfiles();
+        setProfiles(currentProfiles);
       }
-      return;
+      
+      if (!currentProfileId && currentProfiles.length > 0) {
+        currentProfileId = currentProfiles[0].id;
+        setActiveProfileId(currentProfileId);
+      }
+
+      if (currentProfileId) {
+        const supabaseData = await fetchDailyLogsFromSupabase(currentProfileId);
+        if (supabaseData) {
+          setData(supabaseData);
+          if (!selectedDate) {
+            setSelectedDate(getLocalDateStr());
+          }
+          return;
+        }
+      }
     }
 
+    // Fallback local
     fetch('/food_log.json?t=' + Date.now())
       .then((res) => res.json())
       .then((json) => {
@@ -68,6 +90,13 @@ export default function App() {
     loadData();
   }, []);
 
+  // Reload data when active profile changes manually
+  const handleProfileChange = (newProfileId) => {
+    setActiveProfileId(newProfileId);
+    setData(null); // Show loading state
+    loadData(newProfileId);
+  };
+
   const showToast = (msg) => {
     setToastMessage(msg);
     setTimeout(() => setToastMessage(null), 3500);
@@ -82,7 +111,7 @@ export default function App() {
         : parseFoodTextLocal(text);
 
       if (supabase) {
-        const res = await saveIntakesToSupabase({ date: selectedDate, items: itemsToSave });
+        const res = await saveIntakesToSupabase({ date: selectedDate, items: itemsToSave, profileId: activeProfileId });
         if (res && res.success) {
           await loadData();
           const summary = itemsToSave.map(i => `${i.name} (${i.calories} kcal)`).join(', ');
@@ -116,7 +145,7 @@ export default function App() {
       setEditingItem(null);
 
       if (supabase) {
-        const res = await deleteIntakeFromSupabase({ date: selectedDate, index, item: targetItem });
+        const res = await deleteIntakeFromSupabase({ date: selectedDate, index, item: targetItem, profileId: activeProfileId });
         if (res && res.success) {
           await loadData();
           showToast("Alimento eliminado");
@@ -183,7 +212,8 @@ export default function App() {
           quantity: newQuantity,
           macros: newMacros,
           category: newCategory,
-          time: newTime
+          time: newTime,
+          profileId: activeProfileId
         });
         if (res && res.success) {
           await loadData();
@@ -285,10 +315,37 @@ export default function App() {
       )}
 
       {/* Header */}
-      <header className="app-header">
+      <header className="app-header" style={{ alignItems: 'flex-start' }}>
         <div>
           <h1 className="app-title">Fit Tracker</h1>
-          <p className="app-subtitle">Control Nutricional & Déficit Calórico</p>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginTop: '0.2rem' }}>
+            <User size={14} color="var(--text-muted)" />
+            <select 
+              value={activeProfileId || ''} 
+              onChange={(e) => {
+                if (e.target.value === 'new') {
+                  setActiveProfileId(null);
+                  setActiveTab('profile');
+                } else {
+                  handleProfileChange(e.target.value);
+                }
+              }}
+              style={{
+                background: 'transparent',
+                border: 'none',
+                color: 'var(--text-muted)',
+                fontSize: '0.85rem',
+                fontWeight: 600,
+                outline: 'none',
+                cursor: 'pointer'
+              }}
+            >
+              {profiles.map(p => (
+                <option key={p.id} value={p.id}>{p.name}</option>
+              ))}
+              <option value="new">+ Nuevo Perfil</option>
+            </select>
+          </div>
         </div>
 
         <div className="date-selector">
@@ -393,6 +450,13 @@ export default function App() {
           <LineChart size={16} />
           <span>Progreso</span>
         </button>
+        <button
+          className={`tab-item ${activeTab === 'profile' ? 'active' : ''}`}
+          onClick={() => setActiveTab('profile')}
+        >
+          <User size={16} />
+          <span>Perfil</span>
+        </button>
       </div>
 
       {activeTab === 'dashboard' && (
@@ -471,7 +535,20 @@ export default function App() {
       )}
 
       {activeTab === 'progress' && (
-        <ProgressTracker data={data} onUpdateProfile={handleUpdateProfile} />
+        <ProgressTracker data={data} activeProfileId={activeProfileId} onUpdateProfile={handleUpdateProfile} />
+      )}
+
+      {activeTab === 'profile' && (
+        <ProfileView 
+          profile={profiles.find(p => p.id === activeProfileId) || null} 
+          onProfileSaved={async (savedProfile) => {
+            const updatedProfiles = await fetchProfiles();
+            setProfiles(updatedProfiles);
+            handleProfileChange(savedProfile.id);
+            setActiveTab('dashboard');
+            showToast('Perfil guardado con éxito');
+          }}
+        />
       )}
 
       {/* iMessage Style Bottom Input Bar */}

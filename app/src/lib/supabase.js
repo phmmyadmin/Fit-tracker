@@ -7,25 +7,58 @@ export const supabase = (supabaseUrl && supabaseAnonKey && !supabaseUrl.includes
   ? createClient(supabaseUrl, supabaseAnonKey)
   : null;
 
-export async function fetchDailyLogsFromSupabase() {
+export async function fetchProfiles() {
+  if (!supabase) return [];
+  try {
+    const { data, error } = await supabase.from('profiles').select('*').order('created_at', { ascending: true });
+    if (error) throw error;
+    return data || [];
+  } catch (err) {
+    console.error('Error fetching profiles:', err);
+    return [];
+  }
+}
+
+export async function saveProfile(profile) {
   if (!supabase) return null;
+  try {
+    // Si no tiene id, lo insertamos
+    if (!profile.id) {
+      const { data, error } = await supabase.from('profiles').insert(profile).select().single();
+      if (error) throw error;
+      return data;
+    }
+    // Si tiene id, hacemos update
+    const { data, error } = await supabase.from('profiles').update(profile).eq('id', profile.id).select().single();
+    if (error) throw error;
+    return data;
+  } catch (err) {
+    console.error('Error saving profile:', err);
+    return null;
+  }
+}
+
+export async function fetchDailyLogsFromSupabase(profileId) {
+  if (!supabase || !profileId) return null;
 
   try {
     const { data: logs, error: logsErr } = await supabase
       .from('daily_logs')
-      .select('*, intakes(*)');
+      .select('*, intakes(*)')
+      .eq('profile_id', profileId);
 
     if (logsErr) throw logsErr;
 
     const { data: profile } = await supabase
-      .from('user_profile')
+      .from('profiles')
       .select('*')
-      .limit(1)
+      .eq('id', profileId)
       .maybeSingle();
 
     const { data: weights } = await supabase
       .from('weight_logs')
       .select('*')
+      .eq('profile_id', profileId)
       .order('date', { ascending: true });
 
     const formattedLogs = (logs || []).map(l => {
@@ -65,11 +98,14 @@ export async function fetchDailyLogsFromSupabase() {
 
     return {
       userProfile: {
-        targetMacros: profile?.target_macros || { calories: 1950, protein: 145, carbs: 195, fats: 65 },
-        maintenanceCalories: profile?.maintenance_calories || 2450,
+        targetMacros: {
+          calories: profile?.target_calories || 2000,
+          protein: profile?.target_protein || 150,
+          carbs: profile?.target_carbs || 200,
+          fats: profile?.target_fats || 60
+        },
         weightLog: {
-          startWeight: profile?.start_weight || 73.0,
-          targetWeight: profile?.target_weight || 68.0,
+          startWeight: profile?.weight || 70.0,
           history: (weights || []).map(w => ({ date: w.date, time: w.time || '08:00', weight: w.weight }))
         }
       },
@@ -81,20 +117,21 @@ export async function fetchDailyLogsFromSupabase() {
   }
 }
 
-export async function saveIntakesToSupabase({ date, items }) {
-  if (!supabase) return null;
+export async function saveIntakesToSupabase({ date, items, profileId }) {
+  if (!supabase || !profileId) return null;
 
   try {
     let { data: dayLog } = await supabase
       .from('daily_logs')
       .select('*')
       .eq('date', date)
+      .eq('profile_id', profileId)
       .maybeSingle();
 
     if (!dayLog) {
       const { data: newLog, error: createErr } = await supabase
         .from('daily_logs')
-        .insert({ date, calories: 0, protein: 0, carbs: 0, fats: 0 })
+        .insert({ date, profile_id: profileId, calories: 0, protein: 0, carbs: 0, fats: 0 })
         .select()
         .single();
       if (createErr) throw createErr;
@@ -106,6 +143,7 @@ export async function saveIntakesToSupabase({ date, items }) {
 
     const intakeRows = items.map(i => ({
       daily_log_id: dayLog.id,
+      profile_id: profileId,
       date: date,
       time: timeStr,
       name: i.name,
@@ -122,22 +160,7 @@ export async function saveIntakesToSupabase({ date, items }) {
     const { error: insertErr } = await supabase.from('intakes').insert(intakeRows);
     if (insertErr) throw insertErr;
 
-    const { data: allIntakes } = await supabase
-      .from('intakes')
-      .select('*')
-      .eq('date', date);
-
-    const totals = (allIntakes || []).reduce((acc, curr) => ({
-      calories: Math.round(acc.calories + curr.calories),
-      protein: Math.round((acc.protein + curr.protein) * 10) / 10,
-      carbs: Math.round((acc.carbs + curr.carbs) * 10) / 10,
-      fats: Math.round((acc.fats + curr.fats) * 10) / 10
-    }), { calories: 0, protein: 0, carbs: 0, fats: 0 });
-
-    await supabase
-      .from('daily_logs')
-      .update(totals)
-      .eq('date', date);
+    await updateDailyLogTotals(date, profileId);
 
     return { success: true, addedItems: items };
   } catch (err) {
@@ -146,14 +169,16 @@ export async function saveIntakesToSupabase({ date, items }) {
   }
 }
 
-export async function saveWeightToSupabase({ date, time, weight }) {
-  if (!supabase) return null;
+export async function saveWeightToSupabase({ date, time, weight, profileId }) {
+  if (!supabase || !profileId) return null;
 
   try {
     const entryTime = time || '08:00';
+    await supabase.from('weight_logs').delete().eq('date', date).eq('time', entryTime).eq('profile_id', profileId);
+    
     const { error } = await supabase
       .from('weight_logs')
-      .upsert({ date, time: entryTime, weight: parseFloat(weight) }, { onConflict: 'date,time' });
+      .insert({ date, time: entryTime, weight: parseFloat(weight), profile_id: profileId });
 
     if (error) throw error;
     return { success: true };
@@ -163,11 +188,11 @@ export async function saveWeightToSupabase({ date, time, weight }) {
   }
 }
 
-export async function deleteWeightFromSupabase({ date, time }) {
-  if (!supabase) return null;
+export async function deleteWeightFromSupabase({ date, time, profileId }) {
+  if (!supabase || !profileId) return null;
 
   try {
-    const query = supabase.from('weight_logs').delete().eq('date', date);
+    const query = supabase.from('weight_logs').delete().eq('date', date).eq('profile_id', profileId);
     if (time) query.eq('time', time);
     const { error } = await query;
     if (error) throw error;
@@ -178,8 +203,8 @@ export async function deleteWeightFromSupabase({ date, time }) {
   }
 }
 
-export async function deleteIntakeFromSupabase({ date, index, item }) {
-  if (!supabase) return null;
+export async function deleteIntakeFromSupabase({ date, index, item, profileId }) {
+  if (!supabase || !profileId) return null;
 
   try {
     let targetId = item?.id;
@@ -189,6 +214,7 @@ export async function deleteIntakeFromSupabase({ date, index, item }) {
         .from('daily_logs')
         .select('*, intakes(*)')
         .eq('date', date)
+        .eq('profile_id', profileId)
         .maybeSingle();
 
       if (!dayLog || !dayLog.intakes) return null;
@@ -210,22 +236,7 @@ export async function deleteIntakeFromSupabase({ date, index, item }) {
 
     if (delErr) throw delErr;
 
-    const { data: remainingIntakes } = await supabase
-      .from('intakes')
-      .select('*')
-      .eq('date', date);
-
-    const totals = (remainingIntakes || []).reduce((acc, curr) => ({
-      calories: Math.round(acc.calories + curr.calories),
-      protein: Math.round((acc.protein + curr.protein) * 10) / 10,
-      carbs: Math.round((acc.carbs + curr.carbs) * 10) / 10,
-      fats: Math.round((acc.fats + curr.fats) * 10) / 10
-    }), { calories: 0, protein: 0, carbs: 0, fats: 0 });
-
-    await supabase
-      .from('daily_logs')
-      .update(totals)
-      .eq('date', date);
+    await updateDailyLogTotals(date, profileId);
 
     return { success: true };
   } catch (err) {
@@ -234,8 +245,8 @@ export async function deleteIntakeFromSupabase({ date, index, item }) {
   }
 }
 
-export async function updateIntakeInSupabase({ date, index, item, quantity, macros, category, time }) {
-  if (!supabase) return null;
+export async function updateIntakeInSupabase({ date, index, item, quantity, macros, category, time, profileId }) {
+  if (!supabase || !profileId) return null;
 
   try {
     let targetId = item?.id;
@@ -245,6 +256,7 @@ export async function updateIntakeInSupabase({ date, index, item, quantity, macr
         .from('daily_logs')
         .select('*, intakes(*)')
         .eq('date', date)
+        .eq('profile_id', profileId)
         .maybeSingle();
 
       if (!dayLog || !dayLog.intakes) return null;
@@ -277,26 +289,32 @@ export async function updateIntakeInSupabase({ date, index, item, quantity, macr
 
     if (updateErr) throw updateErr;
 
-    const { data: remainingIntakes } = await supabase
-      .from('intakes')
-      .select('*')
-      .eq('date', date);
-
-    const totals = (remainingIntakes || []).reduce((acc, curr) => ({
-      calories: Math.round(acc.calories + curr.calories),
-      protein: Math.round((acc.protein + curr.protein) * 10) / 10,
-      carbs: Math.round((acc.carbs + curr.carbs) * 10) / 10,
-      fats: Math.round((acc.fats + curr.fats) * 10) / 10
-    }), { calories: 0, protein: 0, carbs: 0, fats: 0 });
-
-    await supabase
-      .from('daily_logs')
-      .update(totals)
-      .eq('date', date);
+    await updateDailyLogTotals(date, profileId);
 
     return { success: true };
   } catch (err) {
     console.error('Supabase update intake error:', err);
     return null;
   }
+}
+
+async function updateDailyLogTotals(date, profileId) {
+  const { data: allIntakes } = await supabase
+    .from('intakes')
+    .select('*')
+    .eq('date', date)
+    .eq('profile_id', profileId);
+
+  const totals = (allIntakes || []).reduce((acc, curr) => ({
+    calories: Math.round(acc.calories + curr.calories),
+    protein: Math.round((acc.protein + curr.protein) * 10) / 10,
+    carbs: Math.round((acc.carbs + curr.carbs) * 10) / 10,
+    fats: Math.round((acc.fats + curr.fats) * 10) / 10
+  }), { calories: 0, protein: 0, carbs: 0, fats: 0 });
+
+  await supabase
+    .from('daily_logs')
+    .update(totals)
+    .eq('date', date)
+    .eq('profile_id', profileId);
 }
