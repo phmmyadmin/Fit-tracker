@@ -138,41 +138,102 @@ export default function App() {
 
   const handleSendFood = async (text) => {
     setIsLoading(true);
+    const targetDate = selectedDate || getLocalDateStr();
+    const targetProfileId = activeProfileId || (profiles && profiles[0]?.id);
+
     try {
-      const rawParsed = await parseFoodWithGemini(text);
+      let rawParsed = null;
+      try {
+        const geminiPromise = parseFoodWithGemini(text);
+        const timeoutPromise = new Promise((_, reject) => 
+          setTimeout(() => reject(new Error('Gemini timeout')), 6000)
+        );
+        rawParsed = await Promise.race([geminiPromise, timeoutPromise]);
+      } catch (geminiErr) {
+        console.warn('Gemini AI unavailable or timed out:', geminiErr);
+      }
+
       let itemsToSave = (rawParsed && rawParsed.length > 0)
         ? rawParsed
         : parseFoodTextLocal(text);
 
       // Priority: Overwrite with DB catalog values if dish or ingredient already exists in DB!
-      itemsToSave = await applyCatalogMacros(itemsToSave);
+      try {
+        itemsToSave = await applyCatalogMacros(itemsToSave);
+      } catch (catErr) {
+        console.warn('Error applying catalog macros:', catErr);
+      }
 
-      if (supabase) {
-        const res = await saveIntakesToSupabase({ date: selectedDate, items: itemsToSave, profileId: activeProfileId });
-        if (res && res.success) {
-          await loadData();
-          const dbMatchCount = itemsToSave.filter(i => i.isFromDb).length;
-          const summary = itemsToSave.map(i => `${i.name} (${i.calories} kcal)`).join(', ');
-          const sourceLabel = dbMatchCount > 0 ? 'Catálogo BD' : (rawParsed ? 'Gemini AI' : 'Local');
-          showToast(`Añadido (${sourceLabel}): ${summary}`);
-          return;
+      let savedSuccessfully = false;
+
+      if (supabase && targetProfileId) {
+        try {
+          const res = await saveIntakesToSupabase({ date: targetDate, items: itemsToSave, profileId: targetProfileId });
+          if (res && res.success) {
+            savedSuccessfully = true;
+            await loadData();
+          }
+        } catch (subErr) {
+          console.error('Supabase save error:', subErr);
         }
       }
 
-      const res = await fetch('/api/log-food', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ text, parsedItems: itemsToSave, date: selectedDate })
-      });
-      const result = await res.json();
-      if (result.success) {
-        loadData();
-        const summary = result.addedItems.map(i => `${i.name} (${i.calories} kcal)`).join(', ');
-        showToast(`Añadido (${rawParsed ? 'Gemini AI' : 'Local'}): ${summary}`);
+      // If Supabase wasn't available or failed, update local React state directly so UI ALWAYS updates!
+      if (!savedSuccessfully) {
+        setData(prevData => {
+          if (!prevData) return prevData;
+          const updatedLogs = [...prevData.dailyLogs];
+          let dayLog = updatedLogs.find(l => l.date === targetDate);
+          
+          const now = new Date();
+          const timeStr = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
+
+          const newIntakes = itemsToSave.map(item => ({
+            time: timeStr,
+            name: item.name,
+            dishName: item.dishName || null,
+            quantity: item.quantity || 1,
+            unit: item.unit || 'g',
+            category: item.category || 'other',
+            macros: {
+              calories: item.calories || 0,
+              protein: item.protein || 0,
+              carbs: item.carbs || 0,
+              fats: item.fats || 0
+            }
+          }));
+
+          if (dayLog) {
+            dayLog.intakes = [...dayLog.intakes, ...newIntakes];
+            dayLog.dailyTotals.calories += newIntakes.reduce((s, i) => s + i.macros.calories, 0);
+            dayLog.dailyTotals.protein += newIntakes.reduce((s, i) => s + i.macros.protein, 0);
+            dayLog.dailyTotals.carbs += newIntakes.reduce((s, i) => s + i.macros.carbs, 0);
+            dayLog.dailyTotals.fats += newIntakes.reduce((s, i) => s + i.macros.fats, 0);
+          } else {
+            updatedLogs.push({
+              date: targetDate,
+              intakes: newIntakes,
+              dailyTotals: {
+                calories: newIntakes.reduce((s, i) => s + i.macros.calories, 0),
+                protein: newIntakes.reduce((s, i) => s + i.macros.protein, 0),
+                carbs: newIntakes.reduce((s, i) => s + i.macros.carbs, 0),
+                fats: newIntakes.reduce((s, i) => s + i.macros.fats, 0)
+              }
+            });
+          }
+
+          return { ...prevData, dailyLogs: updatedLogs };
+        });
       }
+
+      const dbMatchCount = itemsToSave.filter(i => i.isFromDb).length;
+      const summary = itemsToSave.map(i => `${i.name} (${i.calories} kcal)`).join(', ');
+      const sourceLabel = dbMatchCount > 0 ? 'Catálogo BD' : (rawParsed ? 'Gemini AI' : 'Local');
+      showToast(`Añadido (${sourceLabel}): ${summary}`);
+
     } catch (err) {
-      console.warn("Backend no disponible...", err);
-      showToast(`Añadido (modo local): ${text}`);
+      console.error("Error processing food:", err);
+      showToast(`Error al procesar: ${text}`);
     } finally {
       setIsLoading(false);
     }
