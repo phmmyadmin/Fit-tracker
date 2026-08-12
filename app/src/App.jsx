@@ -288,7 +288,7 @@ export default function App() {
     return (
       <div className="app-container" style={{ textAlign: 'center', paddingTop: '5rem' }}>
         <h2 style={{ fontFamily: 'var(--font-heading)', color: 'var(--text-muted)' }}>
-          Cargando diario nutricional...
+          {t('diary.loading')}
         </h2>
       </div>
     );

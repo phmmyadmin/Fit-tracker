@@ -18,7 +18,8 @@
     "carbs": "Carbohydrates",
     "fats": "Fats",
     "dailyIntakes": "Daily Intakes",
-    "noIntakes": "No intakes recorded for this day"
+    "noIntakes": "No intakes recorded for this day",
+    "loading": "Loading nutritional diary..."
   },
   "categories": {
     "desayuno": "Breakfast",
