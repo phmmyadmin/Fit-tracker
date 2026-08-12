@@ -120,6 +120,10 @@ export default function ChatInputBar({ onSendFood, onSendFoodDirect, isLoading }
         }
       ]);
     } else {
+      const isGramCat = ['meat','grains','tubers','legumes','vegetables','healthy_fats'].includes(item.category);
+      const targetUnit = (item.unit && item.unit !== 'porcion') ? item.unit : (isGramCat ? 'g' : 'ud');
+      const defaultQty = targetUnit === 'g' ? 100 : 1;
+
       setSelectedChips(prev => [
         ...prev,
         {
@@ -127,8 +131,8 @@ export default function ChatInputBar({ onSendFood, onSendFoodDirect, isLoading }
           type: 'ingredient',
           name: item.name,
           category: item.category || 'other',
-          unit: item.unit || 'g',
-          quantity: item.unit === 'g' ? 100 : 1,
+          unit: targetUnit,
+          quantity: defaultQty,
           baseCalories: item.calories || 0,
           baseProtein: item.protein || 0,
           baseCarbs: item.carbs || 0,

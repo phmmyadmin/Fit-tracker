@@ -141,21 +141,28 @@ export async function saveIntakesToSupabase({ date, items, profileId }) {
     const now = new Date();
     const timeStr = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
 
-    const intakeRows = items.map(i => ({
-      daily_log_id: dayLog.id,
-      profile_id: profileId,
-      date: date,
-      time: timeStr,
-      name: i.name,
-      dish_name: i.dishName || null,
-      quantity: i.quantity || 1,
-      unit: i.unit || 'porcion',
-      category: i.category || 'other',
-      calories: i.calories || i.macros?.calories || 0,
-      protein: i.protein || i.macros?.protein || 0,
-      carbs: i.carbs || i.macros?.carbs || 0,
-      fats: i.fats || i.macros?.fats || 0
-    }));
+    const intakeRows = items.map(i => {
+      const isGramCategory = ['meat','grains','tubers','legumes','vegetables','healthy_fats'].includes(i.category);
+      const resolvedUnit = (i.unit && i.unit !== 'porcion') 
+        ? i.unit 
+        : ((i.quantity && i.quantity > 5) || isGramCategory ? 'g' : 'ud');
+
+      return {
+        daily_log_id: dayLog.id,
+        profile_id: profileId,
+        date: date,
+        time: timeStr,
+        name: i.name,
+        dish_name: i.dishName || null,
+        quantity: i.quantity || (resolvedUnit === 'g' ? 100 : 1),
+        unit: resolvedUnit,
+        category: i.category || 'other',
+        calories: i.calories || i.macros?.calories || 0,
+        protein: i.protein || i.macros?.protein || 0,
+        carbs: i.carbs || i.macros?.carbs || 0,
+        fats: i.fats || i.macros?.fats || 0
+      };
+    });
 
     const { error: insertErr } = await supabase.from('intakes').insert(intakeRows);
     if (insertErr) throw insertErr;
