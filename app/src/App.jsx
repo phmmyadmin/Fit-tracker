@@ -48,7 +48,7 @@ export default function App() {
   const [editingIndex, setEditingIndex] = useState(null);
 
   const [profiles, setProfiles] = useState([]);
-  const [activeProfileId, setActiveProfileId] = useState(null);
+  const [activeProfileId, setActiveProfileId] = useState(() => localStorage.getItem('fit_active_profile_id') || null);
   const [isNewProfileModalOpen, setIsNewProfileModalOpen] = useState(false);
 
   const loadData = async (forceProfileId = null) => {
@@ -61,9 +61,16 @@ export default function App() {
         setProfiles(currentProfiles);
       }
       
-      if (!currentProfileId && currentProfiles.length > 0) {
+      const savedId = localStorage.getItem('fit_active_profile_id');
+      if (savedId && currentProfiles.some(p => p.id === savedId)) {
+        currentProfileId = savedId;
+      } else if (!currentProfileId && currentProfiles.length > 0) {
         currentProfileId = currentProfiles[0].id;
+      }
+
+      if (currentProfileId) {
         setActiveProfileId(currentProfileId);
+        localStorage.setItem('fit_active_profile_id', currentProfileId);
       }
 
       const activeProf = currentProfiles.find(p => p.id === currentProfileId);
@@ -102,6 +109,9 @@ export default function App() {
   // Reload data when active profile changes manually
   const handleProfileChange = (newProfileId) => {
     setActiveProfileId(newProfileId);
+    if (newProfileId) {
+      localStorage.setItem('fit_active_profile_id', newProfileId);
+    }
     const targetProfile = profiles.find(p => p.id === newProfileId);
     if (targetProfile && targetProfile.language) {
       i18n.changeLanguage(targetProfile.language);
