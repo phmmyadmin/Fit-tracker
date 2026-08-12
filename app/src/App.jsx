@@ -12,7 +12,7 @@ import ProfileView from './components/ProfileView';
 import NewProfileModal from './components/NewProfileModal';
 import { parseFoodWithGemini } from './lib/gemini';
 import { parseFoodTextLocal } from './lib/parser';
-import { supabase, fetchDailyLogsFromSupabase, saveIntakesToSupabase, deleteIntakeFromSupabase, deleteIntakesGroupFromSupabase, updateIntakeInSupabase, fetchProfiles } from './lib/supabase';
+import { supabase, fetchDailyLogsFromSupabase, saveIntakesToSupabase, deleteIntakeFromSupabase, deleteIntakesGroupFromSupabase, updateIntakeInSupabase, fetchProfiles, applyCatalogMacros } from './lib/supabase';
 import './index.css';
 
 const getLocalDateStr = () => {
