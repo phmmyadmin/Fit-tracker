@@ -440,28 +440,6 @@ export default function App() {
           >
             {t('header.today')}
           </button>
-          
-          <button
-            onClick={handleToggleLanguage}
-            style={{
-              marginLeft: '0.5rem',
-              padding: '0.2rem 0.6rem',
-              borderRadius: '12px',
-              border: '1px solid var(--border-light)',
-              background: 'var(--bg-subtle)',
-              color: 'var(--text-main)',
-              cursor: 'pointer',
-              fontWeight: 600,
-              fontSize: '0.8rem',
-              display: 'flex',
-              alignItems: 'center',
-              gap: '0.3rem'
-            }}
-            title="Switch Language / Cambiar Idioma"
-          >
-            <Globe size={14} />
-            {(i18n.language || 'es').slice(0, 2).toUpperCase()}
-          </button>
         </div>
       </header>
 
