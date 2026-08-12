@@ -140,26 +140,26 @@ export default function App() {
     const targetProfileId = activeProfileId || (profiles && profiles[0]?.id);
 
     try {
+      // 1. FAST-PATH: Parse locally and check DB catalog FIRST!
+      const localParsed = parseFoodTextLocal(text);
+      let itemsToSave = await applyCatalogMacros(localParsed);
+      const hasDbMatch = itemsToSave.some(i => i.isFromDb);
+
+      // 2. If NO items were matched in DB catalog, ONLY THEN call Gemini AI!
       let rawParsed = null;
-      try {
-        const geminiPromise = parseFoodWithGemini(text);
-        const timeoutPromise = new Promise((_, reject) => 
-          setTimeout(() => reject(new Error('Gemini timeout')), 6000)
-        );
-        rawParsed = await Promise.race([geminiPromise, timeoutPromise]);
-      } catch (geminiErr) {
-        console.warn('Gemini AI unavailable or timed out:', geminiErr);
-      }
-
-      let itemsToSave = (rawParsed && rawParsed.length > 0)
-        ? rawParsed
-        : parseFoodTextLocal(text);
-
-      // Priority: Overwrite with DB catalog values if dish or ingredient already exists in DB!
-      try {
-        itemsToSave = await applyCatalogMacros(itemsToSave);
-      } catch (catErr) {
-        console.warn('Error applying catalog macros:', catErr);
+      if (!hasDbMatch) {
+        try {
+          const geminiPromise = parseFoodWithGemini(text);
+          const timeoutPromise = new Promise((_, reject) => 
+            setTimeout(() => reject(new Error('Gemini timeout')), 6000)
+          );
+          rawParsed = await Promise.race([geminiPromise, timeoutPromise]);
+          if (rawParsed && rawParsed.length > 0) {
+            itemsToSave = await applyCatalogMacros(rawParsed);
+          }
+        } catch (geminiErr) {
+          console.warn('Gemini AI unavailable or timed out:', geminiErr);
+        }
       }
 
       let savedSuccessfully = false;

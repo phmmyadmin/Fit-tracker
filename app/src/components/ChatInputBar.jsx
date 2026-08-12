@@ -87,8 +87,8 @@ export default function ChatInputBar({ onSendFood, isLoading }) {
 
           <button
             type="submit"
-            disabled={!text.trim() || isLoading}
-            className="chat-send-btn"
+            disabled={!text.trim() && !isLoading}
+            className={`chat-send-btn ${isLoading ? 'loading' : ''}`}
           >
             {isLoading ? <Loader2 className="spin animate-spin" size={18} style={{ animation: 'spin 1s linear infinite' }} /> : <Send size={18} />}
           </button>
@@ -184,10 +184,17 @@ export default function ChatInputBar({ onSendFood, isLoading }) {
           background: #4f46e5;
         }
 
-        .chat-send-btn:disabled {
+        .chat-send-btn:disabled:not(.loading) {
           opacity: 0.5;
           cursor: not-allowed;
           box-shadow: none;
+        }
+
+        .chat-send-btn.loading {
+          opacity: 1 !important;
+          cursor: wait !important;
+          background: var(--color-indigo) !important;
+          box-shadow: 0 0 12px rgba(99, 102, 241, 0.6) !important;
         }
 
         @keyframes pulse {
