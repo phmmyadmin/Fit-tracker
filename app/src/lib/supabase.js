@@ -467,3 +467,81 @@ export async function saveToCatalog(items) {
   }
 }
 
+const normalizeStr = (str) =>
+  str ? str.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").trim() : "";
+
+export async function applyCatalogMacros(items) {
+  if (!items || items.length === 0) return items;
+  try {
+    const { ingredients = [], dishes = [] } = await fetchCatalog();
+    const resultItems = [];
+
+    for (const item of items) {
+      const cleanItemName = normalizeStr(item.name);
+      const cleanDishName = normalizeStr(item.dishName);
+
+      // 1. Check if matches a Dish in DB catalog
+      const matchedDish = dishes.find(d => 
+        (cleanDishName && normalizeStr(d.name) === cleanDishName) || 
+        (cleanItemName && normalizeStr(d.name) === cleanItemName)
+      );
+
+      if (matchedDish && matchedDish.components && matchedDish.components.length > 0) {
+        const qtyMultiplier = item.quantity || 1;
+        matchedDish.components.forEach(comp => {
+          resultItems.push({
+            dishName: matchedDish.name,
+            name: comp.name,
+            category: comp.category || 'other',
+            unit: comp.unit || 'g',
+            quantity: comp.quantity * qtyMultiplier,
+            calories: Math.round(comp.calories * qtyMultiplier),
+            protein: Math.round(comp.protein * qtyMultiplier * 10) / 10,
+            carbs: Math.round(comp.carbs * qtyMultiplier * 10) / 10,
+            fats: Math.round(comp.fats * qtyMultiplier * 10) / 10,
+            isFromDb: true
+          });
+        });
+        continue;
+      }
+
+      // 2. Check if matches an Ingredient in DB catalog
+      const matchedIng = ingredients.find(ing => normalizeStr(ing.name) === cleanItemName);
+
+      if (matchedIng) {
+        const qty = item.quantity || 100;
+        const unit = item.unit || matchedIng.unit || 'g';
+
+        let factor = 1;
+        if (unit === 'g' || unit === 'ml') {
+          factor = qty / 100;
+        } else {
+          factor = qty;
+        }
+
+        resultItems.push({
+          ...item,
+          name: matchedIng.name,
+          category: matchedIng.category || item.category || 'other',
+          unit: unit,
+          quantity: qty,
+          calories: Math.round((matchedIng.calories || 0) * factor),
+          protein: Math.round(((matchedIng.protein || 0) * factor) * 10) / 10,
+          carbs: Math.round(((matchedIng.carbs || 0) * factor) * 10) / 10,
+          fats: Math.round(((matchedIng.fats || 0) * factor) * 10) / 10,
+          isFromDb: true
+        });
+        continue;
+      }
+
+      // 3. Fallback: Not in DB catalog, keep AI generated macros
+      resultItems.push(item);
+    }
+
+    return resultItems;
+  } catch (err) {
+    console.error('Error applying catalog macros:', err);
+    return items;
+  }
+}
+

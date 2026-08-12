@@ -139,17 +139,22 @@ export default function App() {
   const handleSendFood = async (text) => {
     setIsLoading(true);
     try {
-      const parsedItems = await parseFoodWithGemini(text);
-      const itemsToSave = (parsedItems && parsedItems.length > 0)
-        ? parsedItems
+      const rawParsed = await parseFoodWithGemini(text);
+      let itemsToSave = (rawParsed && rawParsed.length > 0)
+        ? rawParsed
         : parseFoodTextLocal(text);
+
+      // Priority: Overwrite with DB catalog values if dish or ingredient already exists in DB!
+      itemsToSave = await applyCatalogMacros(itemsToSave);
 
       if (supabase) {
         const res = await saveIntakesToSupabase({ date: selectedDate, items: itemsToSave, profileId: activeProfileId });
         if (res && res.success) {
           await loadData();
+          const dbMatchCount = itemsToSave.filter(i => i.isFromDb).length;
           const summary = itemsToSave.map(i => `${i.name} (${i.calories} kcal)`).join(', ');
-          showToast(`Añadido (${parsedItems ? 'Gemini 1.5 Flash' : 'Local'}): ${summary}`);
+          const sourceLabel = dbMatchCount > 0 ? 'Catálogo BD' : (rawParsed ? 'Gemini AI' : 'Local');
+          showToast(`Añadido (${sourceLabel}): ${summary}`);
           return;
         }
       }
@@ -163,7 +168,7 @@ export default function App() {
       if (result.success) {
         loadData();
         const summary = result.addedItems.map(i => `${i.name} (${i.calories} kcal)`).join(', ');
-        showToast(`Añadido (${parsedItems ? 'Gemini 1.5 Flash' : 'Local'}): ${summary}`);
+        showToast(`Añadido (${rawParsed ? 'Gemini AI' : 'Local'}): ${summary}`);
       }
     } catch (err) {
       console.warn("Backend no disponible...", err);
