@@ -52,24 +52,24 @@ const ProgressTracker = ({ data, activeProfileId, onUpdateProfile }) => {
           const freshData = await fetchDailyLogsFromSupabase(activeProfileId);
           if (freshData) onUpdateProfile(freshData.userProfile);
           setInputWeight('');
-          setFeedback('Peso registrado con éxito');
+          setFeedback(t('toast.weightSaved'));
           setTimeout(() => setFeedback(null), 3000);
           return;
         }
       }
 
-      const res = await fetch('/api/weight', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ date: inputDate, time: inputTime, weight: parseFloat(inputWeight) })
+      // Local Fallback
+      const newEntry = { date: inputDate, time: inputTime, weight: parseFloat(inputWeight) };
+      const updatedHistory = [...history.filter(h => !(h.date === inputDate && h.time === inputTime)), newEntry];
+      updatedHistory.sort((a, b) => `${a.date} ${a.time}`.localeCompare(`${b.date} ${b.time}`));
+
+      onUpdateProfile({
+        ...data.userProfile,
+        weightLog: { ...weightLog, history: updatedHistory }
       });
-      const result = await res.json();
-      if (result.success) {
-        onUpdateProfile(result.userProfile);
-        setInputWeight('');
-        setFeedback('Peso registrado con éxito');
-        setTimeout(() => setFeedback(null), 3000);
-      }
+      setInputWeight('');
+      setFeedback(t('toast.weightSaved'));
+      setTimeout(() => setFeedback(null), 3000);
     } catch (err) {
       console.error(err);
     } finally {
@@ -77,7 +77,7 @@ const ProgressTracker = ({ data, activeProfileId, onUpdateProfile }) => {
     }
   };
 
-  const handleDeleteWeight = async (item, originalIndex) => {
+  const handleDeleteWeight = async (item, index) => {
     try {
       if (supabase) {
         const res = await deleteWeightFromSupabase({ date: item.date, time: item.time, profileId: activeProfileId });
@@ -88,117 +88,96 @@ const ProgressTracker = ({ data, activeProfileId, onUpdateProfile }) => {
         }
       }
 
-      const res = await fetch('/api/weight', {
-        method: 'DELETE',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ date: item.date, time: item.time, index: originalIndex })
+      const updatedHistory = history.filter((_, i) => i !== index);
+      onUpdateProfile({
+        ...data.userProfile,
+        weightLog: { ...weightLog, history: updatedHistory }
       });
-      const result = await res.json();
-      if (result.success) {
-        onUpdateProfile(result.userProfile);
-      }
     } catch (err) {
       console.error(err);
     }
   };
 
-  const remainingToGoal = Math.max(0, currentEstimatedWeight - targetWeight);
-  const totalToLoseGoal = startWeight - targetWeight;
-  const progressPercent = totalToLoseGoal > 0 ? Math.min(100, Math.max(0, (allTimeEstimatedLostKg / totalToLoseGoal) * 100)) : 0;
+  const remainingToGoal = Math.max(0, latestRealWeight - targetWeight);
+  const totalGoalToLose = startWeight - targetWeight;
+  const progressPercent = totalGoalToLose > 0 ? Math.min(100, Math.max(0, ((startWeight - latestRealWeight) / totalGoalToLose) * 100)) : 0;
 
   return (
-    <div style={{ animation: 'fadeIn 0.3s ease', display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
-      {/* Top Banner: Add Weight Form */}
-      <div className="health-card" style={{ background: 'linear-gradient(135deg, rgba(99, 102, 241, 0.05), rgba(168, 85, 247, 0.05))', border: '1px solid rgba(99, 102, 241, 0.2)' }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '1rem' }}>
-          <div style={{ background: 'var(--color-indigo-bg)', padding: '0.5rem', borderRadius: '12px' }}>
-            <Scale color="var(--color-indigo)" size={20} />
-          </div>
-          <div>
-            <h2 style={{ fontSize: '1.15rem', margin: 0, fontWeight: 600 }}>Registrar Pesaje Real</h2>
-            <div style={{ fontSize: '0.85rem', color: 'var(--text-muted)' }}>Añade tu peso báscula para comparar con la estimación teórica</div>
-          </div>
+    <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem', marginTop: '1.5rem', animation: 'fadeIn 0.3s ease' }}>
+      
+      {/* Input Form Card */}
+      <div className="health-card">
+        <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', marginBottom: '1rem' }}>
+          <Scale size={22} color="var(--color-indigo)" />
+          <h2 style={{ fontSize: '1.2rem', margin: 0, fontWeight: 600 }}>{t('progress.logRealWeight')}</h2>
         </div>
+        <p style={{ fontSize: '0.85rem', color: 'var(--text-muted)', marginBottom: '1.25rem' }}>
+          {t('progress.logSubtitle')}
+        </p>
 
-        <form onSubmit={handleAddWeight} style={{ display: 'flex', flexWrap: 'wrap', gap: '1rem', alignItems: 'center' }}>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '0.25rem', flex: '1 1 130px' }}>
-            <label style={{ fontSize: '0.8rem', color: 'var(--text-muted)', fontWeight: 600 }}>Fecha</label>
+        <form onSubmit={handleAddWeight} style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(140px, 1fr))', gap: '1rem', alignItems: 'end' }}>
+          <div>
+            <label style={{ display: 'block', fontSize: '0.8rem', color: 'var(--text-muted)', marginBottom: '0.4rem', fontWeight: 500 }}>
+              {t('progress.date')}
+            </label>
             <input
               type="date"
               value={inputDate}
               onChange={(e) => setInputDate(e.target.value)}
-              style={{
-                padding: '0.65rem 0.85rem',
-                borderRadius: '12px',
-                border: '1px solid var(--border-light)',
-                background: 'var(--bg-body)',
-                color: 'var(--text-main)',
-                fontSize: '0.9rem',
-                outline: 'none'
-              }}
+              className="edit-input"
+              required
             />
           </div>
 
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '0.25rem', flex: '1 1 100px' }}>
-            <label style={{ fontSize: '0.8rem', color: 'var(--text-muted)', fontWeight: 600 }}>Hora</label>
+          <div>
+            <label style={{ display: 'block', fontSize: '0.8rem', color: 'var(--text-muted)', marginBottom: '0.4rem', fontWeight: 500 }}>
+              {t('progress.time')}
+            </label>
             <input
               type="time"
               value={inputTime}
               onChange={(e) => setInputTime(e.target.value)}
-              style={{
-                padding: '0.65rem 0.85rem',
-                borderRadius: '12px',
-                border: '1px solid var(--border-light)',
-                background: 'var(--bg-body)',
-                color: 'var(--text-main)',
-                fontSize: '0.9rem',
-                outline: 'none'
-              }}
+              className="edit-input"
+              required
             />
           </div>
 
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '0.25rem', flex: '1 1 130px' }}>
-            <label style={{ fontSize: '0.8rem', color: 'var(--text-muted)', fontWeight: 600 }}>Peso Báscula (kg)</label>
+          <div>
+            <label style={{ display: 'block', fontSize: '0.8rem', color: 'var(--text-muted)', marginBottom: '0.4rem', fontWeight: 500 }}>
+              {t('progress.scaleWeight')}
+            </label>
             <input
               type="number"
               step="0.1"
-              placeholder="Ej: 72.5"
+              placeholder="Ej: 71.5"
               value={inputWeight}
               onChange={(e) => setInputWeight(e.target.value)}
-              style={{
-                padding: '0.65rem 0.85rem',
-                borderRadius: '12px',
-                border: '1px solid var(--border-light)',
-                background: 'var(--bg-body)',
-                color: 'var(--text-main)',
-                fontSize: '0.9rem',
-                outline: 'none'
-              }}
+              className="edit-input"
+              required
             />
           </div>
 
           <button
             type="submit"
-            disabled={isSubmitting || !inputWeight}
+            disabled={isSubmitting}
             style={{
-              marginTop: 'auto',
-              padding: '0.65rem 1.25rem',
+              padding: '0.75rem 1.25rem',
               borderRadius: '12px',
               border: 'none',
               background: 'var(--color-indigo)',
               color: '#FFF',
               fontWeight: 600,
-              fontSize: '0.9rem',
-              cursor: 'pointer',
+              cursor: isSubmitting ? 'not-allowed' : 'pointer',
               display: 'flex',
               alignItems: 'center',
+              justifyContent: 'center',
               gap: '0.4rem',
-              opacity: isSubmitting || !inputWeight ? 0.6 : 1,
-              transition: 'all 0.2s ease'
+              height: '44px',
+              boxShadow: '0 4px 12px rgba(99, 102, 241, 0.25)'
             }}
           >
             <Plus size={18} />
-            Guardar Peso
+            {t('progress.saveWeight')}
           </button>
         </form>
 
@@ -212,39 +191,39 @@ const ProgressTracker = ({ data, activeProfileId, onUpdateProfile }) => {
       {/* Main KPI Stats */}
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '1rem' }}>
         <div className="health-card" style={{ textAlign: 'center', padding: '1.25rem' }}>
-          <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.5px', marginBottom: '0.4rem' }}>Peso Inicial</div>
+          <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.5px', marginBottom: '0.4rem' }}>{t('progress.initialWeight')}</div>
           <div style={{ fontSize: '1.6rem', fontWeight: 700, color: 'var(--text-main)' }}>
             {startWeight} <span style={{ fontSize: '0.9rem', color: 'var(--text-muted)' }}>kg</span>
           </div>
         </div>
 
         <div className="health-card" style={{ textAlign: 'center', padding: '1.25rem' }}>
-          <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.5px', marginBottom: '0.4rem' }}>Peso Estimado (Déficit)</div>
+          <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.5px', marginBottom: '0.4rem' }}>{t('progress.estimatedWeight')}</div>
           <div style={{ fontSize: '1.6rem', fontWeight: 700, color: 'var(--color-protein)' }}>
             {currentEstimatedWeight.toFixed(1)} <span style={{ fontSize: '0.9rem', color: 'var(--text-muted)' }}>kg</span>
           </div>
           <div style={{ fontSize: '0.75rem', color: 'var(--color-carbs)', marginTop: '0.2rem', fontWeight: 600 }}>
-            -{allTimeEstimatedLostKg.toFixed(1)} kg perdidos teóricos
+            -{allTimeEstimatedLostKg.toFixed(1)} kg {t('report.estimatedChange')}
           </div>
         </div>
 
         <div className="health-card" style={{ textAlign: 'center', padding: '1.25rem' }}>
-          <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.5px', marginBottom: '0.4rem' }}>Último Peso Real</div>
+          <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.5px', marginBottom: '0.4rem' }}>{t('progress.latestRealWeight')}</div>
           <div style={{ fontSize: '1.6rem', fontWeight: 700, color: 'var(--color-indigo)' }}>
             {latestRealWeight} <span style={{ fontSize: '0.9rem', color: 'var(--text-muted)' }}>kg</span>
           </div>
           <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)', marginTop: '0.2rem' }}>
-            {latestRealEntry ? `${latestRealEntry.date} ${latestRealEntry.time || '08:00'}` : 'Sin pesajes registrados'}
+            {latestRealEntry ? `${latestRealEntry.date} ${latestRealEntry.time || '08:00'}` : t('progress.noWeights')}
           </div>
         </div>
 
         <div className="health-card" style={{ textAlign: 'center', padding: '1.25rem' }}>
-          <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.5px', marginBottom: '0.4rem' }}>Desviación (Real vs Est.)</div>
+          <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.5px', marginBottom: '0.4rem' }}>{t('progress.deviation')}</div>
           <div style={{ fontSize: '1.6rem', fontWeight: 700, color: weightDiffVsEstimated <= 0 ? 'var(--color-carbs)' : '#f59e0b' }}>
             {weightDiffVsEstimated > 0 ? `+${weightDiffVsEstimated.toFixed(1)}` : weightDiffVsEstimated.toFixed(1)} <span style={{ fontSize: '0.9rem', color: 'var(--text-muted)' }}>kg</span>
           </div>
           <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)', marginTop: '0.2rem' }}>
-            {weightDiffVsEstimated <= 0 ? '¡Vas por delante del déficit!' : 'Ligera retención o diferencia'}
+            {weightDiffVsEstimated <= 0 ? t('progress.aheadOfDeficit') : t('progress.slightDifference')}
           </div>
         </div>
       </div>
@@ -253,11 +232,10 @@ const ProgressTracker = ({ data, activeProfileId, onUpdateProfile }) => {
       <div className="health-card">
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.75rem' }}>
           <div>
-            <h3 style={{ margin: 0, fontSize: '1.05rem', fontWeight: 600 }}>Meta: {targetWeight} kg</h3>
-            <span style={{ fontSize: '0.85rem', color: 'var(--text-muted)' }}>Basado en tu déficit calórico acumulado ({allTimeDeficit.toLocaleString()} kcal)</span>
+            <h3 style={{ margin: 0, fontSize: '1.05rem', fontWeight: 600 }}>{t('progress.goal')}: {targetWeight} kg</h3>
           </div>
           <span style={{ color: 'var(--color-protein)', fontWeight: 700, fontSize: '1.1rem' }}>
-            {remainingToGoal.toFixed(1)} kg restantes
+            {remainingToGoal.toFixed(1)} kg {t('progress.remaining')}
           </span>
         </div>
         <div style={{ height: '12px', background: 'var(--border-light)', borderRadius: '6px', overflow: 'hidden' }}>
@@ -269,23 +247,23 @@ const ProgressTracker = ({ data, activeProfileId, onUpdateProfile }) => {
       <div className="health-card">
         <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '1.25rem' }}>
           <TrendingDown size={20} color="var(--color-indigo)" />
-          <h3 style={{ margin: 0, fontSize: '1.1rem', fontWeight: 600 }}>Historial de Pesajes & Comparativa</h3>
+          <h3 style={{ margin: 0, fontSize: '1.1rem', fontWeight: 600 }}>{t('progress.history')}</h3>
         </div>
 
         {history.length === 0 ? (
           <div style={{ textAlign: 'center', padding: '2rem 0', color: 'var(--text-muted)', fontSize: '0.9rem' }}>
-            Aún no has añadido ningún pesaje real. ¡Registra tu primer peso arriba para empezar a comparar!
+            {t('progress.noWeights')}
           </div>
         ) : (
           <div style={{ overflowX: 'auto' }}>
             <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left', fontSize: '0.9rem' }}>
               <thead>
                 <tr style={{ borderBottom: '1px solid var(--border-light)', color: 'var(--text-muted)' }}>
-                  <th style={{ padding: '0.75rem 0.5rem', fontWeight: 600 }}>Fecha y Hora</th>
-                  <th style={{ padding: '0.75rem 0.5rem', fontWeight: 600 }}>Peso Real</th>
-                  <th style={{ padding: '0.75rem 0.5rem', fontWeight: 600 }}>Estimado ese día</th>
-                  <th style={{ padding: '0.75rem 0.5rem', fontWeight: 600 }}>Diferencia</th>
-                  <th style={{ padding: '0.75rem 0.5rem', fontWeight: 600, textAlign: 'right' }}>Acción</th>
+                  <th style={{ padding: '0.75rem 0.5rem', fontWeight: 600 }}>{t('progress.dateTime')}</th>
+                  <th style={{ padding: '0.75rem 0.5rem', fontWeight: 600 }}>{t('progress.realWeight')}</th>
+                  <th style={{ padding: '0.75rem 0.5rem', fontWeight: 600 }}>{t('progress.estimatedThatDay')}</th>
+                  <th style={{ padding: '0.75rem 0.5rem', fontWeight: 600 }}>{t('progress.difference')}</th>
+                  <th style={{ padding: '0.75rem 0.5rem', fontWeight: 600, textAlign: 'right' }}>{t('progress.action')}</th>
                 </tr>
               </thead>
               <tbody>
@@ -330,6 +308,7 @@ const ProgressTracker = ({ data, activeProfileId, onUpdateProfile }) => {
           </div>
         )}
       </div>
+
     </div>
   );
 };

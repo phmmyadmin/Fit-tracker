@@ -1,17 +1,19 @@
 import React, { useState } from 'react';
 import { TrendingUp, ChevronLeft, ChevronRight, PieChart, X } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 import { FOOD_CATEGORIES, getCategoryInfo } from '../utils/category';
 
 export default function WeeklyChart({ logs, selectedDate, onSelectDate, targetMacros, onUpdateCategory }) {
+  const { t, i18n } = useTranslation();
   const [activeMacro, setActiveMacro] = useState('calories');
   const [weekOffset, setWeekOffset] = useState(0);
   const [selectedCategoryModal, setSelectedCategoryModal] = useState(null);
 
   const macrosConfig = {
-    calories: { label: 'Kcal', color: 'var(--color-calories)', target: targetMacros.calories },
-    protein: { label: 'Proteína', color: 'var(--color-protein)', target: targetMacros.protein },
-    carbs: { label: 'Carbs', color: 'var(--color-carbs)', target: targetMacros.carbs },
-    fats: { label: 'Grasas', color: 'var(--color-fats)', target: targetMacros.fats }
+    calories: { label: t('diary.calories'), color: 'var(--color-calories)', target: targetMacros.calories },
+    protein: { label: t('diary.protein'), color: 'var(--color-protein)', target: targetMacros.protein },
+    carbs: { label: t('diary.carbs'), color: 'var(--color-carbs)', target: targetMacros.carbs },
+    fats: { label: t('diary.fats'), color: 'var(--color-fats)', target: targetMacros.fats }
   };
 
   const currentConfig = macrosConfig[activeMacro];
@@ -24,7 +26,8 @@ export default function WeeklyChart({ logs, selectedDate, onSelectDate, targetMa
   const formatShortDate = (dateStr) => {
     if (!dateStr) return '';
     const d = new Date(dateStr);
-    return d.toLocaleDateString('es-ES', { day: 'numeric', month: 'short' });
+    const locale = i18n.language.startsWith('es') ? 'es-ES' : 'en-US';
+    return d.toLocaleDateString(locale, { day: 'numeric', month: 'short' });
   };
   
   const dateRangeStr = visibleDays.length > 0 
@@ -36,7 +39,7 @@ export default function WeeklyChart({ logs, selectedDate, onSelectDate, targetMa
       <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem', gap: '1rem' }}>
         <h2 style={{ fontFamily: 'var(--font-heading)', fontSize: '1.25rem', display: 'flex', alignItems: 'center', gap: '0.5rem', margin: 0 }}>
           <TrendingUp size={20} color={currentConfig.color} />
-          Tendencia Semanal
+          {t('trends.weeklyTrend')}
         </h2>
         
         <div style={{ display: 'flex', gap: '0.35rem', background: 'var(--bg-subtle)', padding: '4px', borderRadius: 'var(--radius-md)', maxWidth: '100%', overflowX: 'auto', scrollbarWidth: 'none' }}>
@@ -76,7 +79,7 @@ export default function WeeklyChart({ logs, selectedDate, onSelectDate, targetMa
             {dateRangeStr}
           </span>
           <span style={{ fontSize: '0.8rem', fontWeight: 500, color: 'var(--text-muted)' }}>
-            Objetivo: {currentConfig.target} {activeMacro === 'calories' ? 'kcal' : 'g'}
+            {t('trends.target')}: {currentConfig.target} {activeMacro === 'calories' ? 'kcal' : 'g'}
           </span>
         </div>
         <button 

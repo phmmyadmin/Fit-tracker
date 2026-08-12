@@ -1,6 +1,6 @@
 {
   "header": {
-    "subtitle": "Nutritional Tracking & Caloric Deficit",
+    "subtitle": "Nutritional Control & Caloric Deficit",
     "today": "Today",
     "newProfile": "+ New Profile"
   },
@@ -15,7 +15,7 @@
     "macroSummary": "Macronutrient Summary",
     "calories": "Calories",
     "protein": "Protein",
-    "carbs": "Carbohydrates",
+    "carbs": "Carbs",
     "fats": "Fats",
     "dailyIntakes": "Daily Intakes",
     "noIntakes": "No intakes recorded for this day",
@@ -25,7 +25,7 @@
     "desayuno": "Breakfast",
     "almuerzo": "Lunch",
     "comida": "Meal",
-    "merienda": "Snack",
+    "merienda": "Afternoon Snack",
     "cena": "Dinner",
     "snack": "Snack"
   },
@@ -35,36 +35,46 @@
     "weeklyTrend": "Weekly Trend",
     "category": "Category",
     "consumedFoods": "Consumed Foods",
+    "target": "Target",
+    "categoryFrequency": "Category Frequency",
+    "noWeeklyFoods": "No food entries logged this week.",
+    "time": "time",
+    "times": "times",
+    "clickDetails": "Click to view breakdown",
     "save": "Save",
     "cancel": "Cancel"
   },
   "report": {
     "monthlySummary": "Monthly Summary",
+    "monthlyReport": "Monthly Report",
     "loggedDays": "Logged Days",
-    "avgCalories": "Average Calories"
+    "avgCalories": "Average Calories",
+    "totalDeficit": "Total Deficit / Surplus",
+    "estimatedChange": "Estimated Theoretical Change",
+    "noData": "Not enough data for a monthly report."
   },
   "progress": {
-    "logRealWeight": "Log Scale Weight",
-    "logSubtitle": "Add your scale weight to compare with theoretical deficit estimates",
+    "logRealWeight": "Log Real Weight",
+    "logSubtitle": "Add your scale weight to compare with theoretical estimation",
     "date": "Date",
     "time": "Time",
     "scaleWeight": "Scale Weight (kg)",
     "saveWeight": "Save Weight",
-    "initialWeight": "Starting Weight",
+    "initialWeight": "Start Weight",
     "estimatedWeight": "Estimated Weight (Deficit)",
     "latestRealWeight": "Latest Real Weight",
     "deviation": "Deviation (Real vs Est.)",
-    "aheadOfDeficit": "Ahead of deficit!",
-    "slightDifference": "Slight fluid retention or variance",
+    "aheadOfDeficit": "Ahead of target deficit!",
+    "slightDifference": "Slight variance or fluid retention",
     "goal": "Goal",
     "remaining": "remaining",
-    "history": "Weight Log & Comparison",
+    "history": "Weight Log History & Comparison",
     "dateTime": "Date & Time",
     "realWeight": "Real Weight",
     "estimatedThatDay": "Estimated that day",
     "difference": "Difference",
     "action": "Action",
-    "noWeights": "No scale weights logged yet. Register your first weight above to start comparing!"
+    "noWeights": "No real weights logged yet. Register your first weight above to start comparing!"
   },
   "profile": {
     "settings": "Profile Settings",
@@ -93,9 +103,10 @@
     "maintainWeight": "Maintain Weight",
     "gainWeight": "Gain Muscle (Surplus)",
     "dailyTargets": "Daily Targets (Macros)",
-    "autoCalculate": "Auto calculate",
+    "autoCalculate": "Auto-calculate targets",
     "saveProfile": "Save Profile",
-    "saving": "Saving..."
+    "saving": "Saving...",
+    "newProfile": "+ New Profile"
   },
   "chat": {
     "placeholder": "Type or dictate your meals (e.g., 200g chicken and 150g rice for lunch)...",

@@ -35,13 +35,23 @@
     "weeklyTrend": "Tendencia Semanal",
     "category": "Categoría",
     "consumedFoods": "Alimentos Consumidos",
+    "target": "Objetivo",
+    "categoryFrequency": "Frecuencia por Categorías",
+    "noWeeklyFoods": "No hay alimentos registrados esta semana.",
+    "time": "vez",
+    "times": "veces",
+    "clickDetails": "Haz clic para ver el desglose",
     "save": "Guardar",
     "cancel": "Cancelar"
   },
   "report": {
     "monthlySummary": "Resumen Mensual",
+    "monthlyReport": "Reporte Mensual",
     "loggedDays": "Días registrados",
-    "avgCalories": "Calorías medias"
+    "avgCalories": "Calorías medias",
+    "totalDeficit": "Déficit / Superávit Total",
+    "estimatedChange": "Cambio Teórico Estimado",
+    "noData": "No hay datos suficientes para un reporte mensual."
   },
   "progress": {
     "logRealWeight": "Registrar Pesaje Real",
@@ -95,7 +105,8 @@
     "dailyTargets": "Objetivos Diarios (Macros)",
     "autoCalculate": "Calcular automáticamente",
     "saveProfile": "Guardar Perfil",
-    "saving": "Guardando..."
+    "saving": "Guardando...",
+    "newProfile": "+ Nuevo Perfil"
   },
   "chat": {
     "placeholder": "Escribe o dicta tus comidas (ej: 200g pollo y 150g arroz)...",
