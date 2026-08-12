@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Calendar, ChevronLeft, ChevronRight, CheckCircle2, LayoutDashboard, TrendingUp, CalendarRange, LineChart, User } from 'lucide-react';
+import { Calendar, ChevronLeft, ChevronRight, CheckCircle2, LayoutDashboard, TrendingUp, CalendarRange, LineChart, User, Globe } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 import MacroRing from './components/MacroRing';
 import DailyTimeline from './components/DailyTimeline';
 import WeeklyChart from './components/WeeklyChart';
@@ -33,6 +34,7 @@ const addDays = (dateStr, days) => {
 };
 
 export default function App() {
+  const { t, i18n } = useTranslation();
   const [data, setData] = useState(null);
   const [selectedDate, setSelectedDate] = useState('');
   const [activeTab, setActiveTab] = useState('dashboard');
@@ -343,7 +345,7 @@ export default function App() {
               {profiles.map(p => (
                 <option key={p.id} value={p.id}>{p.name}</option>
               ))}
-              <option value="new">+ Nuevo Perfil</option>
+              <option value="new">{t('header.newProfile')}</option>
             </select>
           </div>
         </div>
@@ -415,7 +417,29 @@ export default function App() {
               fontSize: '0.8rem'
             }}
           >
-            Hoy
+            {t('header.today')}
+          </button>
+          
+          <button
+            onClick={() => i18n.changeLanguage(i18n.language.startsWith('es') ? 'en' : 'es')}
+            style={{
+              marginLeft: '0.5rem',
+              padding: '0.2rem 0.6rem',
+              borderRadius: '12px',
+              border: '1px solid var(--border-light)',
+              background: 'var(--bg-subtle)',
+              color: 'var(--text-main)',
+              cursor: 'pointer',
+              fontWeight: 600,
+              fontSize: '0.8rem',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '0.3rem'
+            }}
+            title="Switch Language / Cambiar Idioma"
+          >
+            <Globe size={14} />
+            {(i18n.language || 'es').slice(0, 2).toUpperCase()}
           </button>
         </div>
       </header>
@@ -427,35 +451,35 @@ export default function App() {
           onClick={() => setActiveTab('dashboard')}
         >
           <LayoutDashboard size={16} />
-          <span>Diario</span>
+          <span>{t('nav.diary')}</span>
         </button>
         <button
           className={`tab-item ${activeTab === 'weekly' ? 'active' : ''}`}
           onClick={() => setActiveTab('weekly')}
         >
           <TrendingUp size={16} />
-          <span>Tendencias</span>
+          <span>{t('nav.trends')}</span>
         </button>
         <button
           className={`tab-item ${activeTab === 'monthly' ? 'active' : ''}`}
           onClick={() => setActiveTab('monthly')}
         >
           <CalendarRange size={16} />
-          <span>Reporte</span>
+          <span>{t('nav.report')}</span>
         </button>
         <button
           className={`tab-item ${activeTab === 'progress' ? 'active' : ''}`}
           onClick={() => setActiveTab('progress')}
         >
           <LineChart size={16} />
-          <span>Progreso</span>
+          <span>{t('nav.progress')}</span>
         </button>
         <button
           className={`tab-item ${activeTab === 'profile' ? 'active' : ''}`}
           onClick={() => setActiveTab('profile')}
         >
           <User size={16} />
-          <span>Perfil</span>
+          <span>{t('nav.profile')}</span>
         </button>
       </div>
 
@@ -464,7 +488,7 @@ export default function App() {
           {/* Left: Macro Rings Card */}
           <div className="health-card">
             <h2 style={{ fontFamily: 'var(--font-heading)', fontSize: '1.25rem', marginBottom: '1.25rem', fontWeight: 600 }}>
-              Resumen de Macronutrientes
+              {t('diary.macroSummary')}
             </h2>
 
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.25rem', justifyItems: 'center' }}>
@@ -472,7 +496,7 @@ export default function App() {
                 value={totals.calories}
                 target={targetMacros.calories}
                 unit="kcal"
-                label="Calorías"
+                label={t('diary.calories')}
                 color="var(--color-calories)"
                 bgColor="var(--color-calories-bg)"
               />
@@ -480,7 +504,7 @@ export default function App() {
                 value={totals.protein}
                 target={targetMacros.protein}
                 unit="g"
-                label="Proteína"
+                label={t('diary.protein')}
                 color="var(--color-protein)"
                 bgColor="var(--color-protein-bg)"
               />
@@ -488,7 +512,7 @@ export default function App() {
                 value={totals.carbs}
                 target={targetMacros.carbs}
                 unit="g"
-                label="Carbohidratos"
+                label={t('diary.carbs')}
                 color="var(--color-carbs)"
                 bgColor="var(--color-carbs-bg)"
               />
@@ -496,7 +520,7 @@ export default function App() {
                 value={totals.fats}
                 target={targetMacros.fats}
                 unit="g"
-                label="Grasas"
+                label={t('diary.fats')}
                 color="var(--color-fats)"
                 bgColor="var(--color-fats-bg)"
               />
@@ -506,7 +530,7 @@ export default function App() {
           {/* Right: Daily Intakes Card */}
           <div className="health-card">
             <h2 style={{ fontFamily: 'var(--font-heading)', fontSize: '1.25rem', marginBottom: '1.25rem', fontWeight: 600 }}>
-              Ingestas del Día ({currentLog.intakes.length})
+              {t('diary.dailyIntakes')} ({currentLog.intakes.length})
             </h2>
 
             <DailyTimeline

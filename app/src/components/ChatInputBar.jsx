@@ -1,7 +1,9 @@
 import React, { useState } from 'react';
 import { Send, Loader2 } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 
 export default function ChatInputBar({ onSendFood, isLoading }) {
+  const { t } = useTranslation();
   const [text, setText] = useState('');
 
   const handleSubmit = (e) => {
@@ -39,7 +41,7 @@ export default function ChatInputBar({ onSendFood, isLoading }) {
           type="text"
           value={text}
           onChange={(e) => setText(e.target.value)}
-          placeholder="¿Qué has comido? (ej. 2 plátanos saba, 150g pollo)"
+          placeholder={t('chat.placeholder')}
           disabled={isLoading}
           style={{
             flex: 1,

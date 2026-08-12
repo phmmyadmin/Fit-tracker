@@ -1,0 +1,105 @@
+{
+  "header": {
+    "subtitle": "Nutritional Tracking & Caloric Deficit",
+    "today": "Today",
+    "newProfile": "+ New Profile"
+  },
+  "nav": {
+    "diary": "Diary",
+    "trends": "Trends",
+    "report": "Report",
+    "progress": "Progress",
+    "profile": "Profile"
+  },
+  "diary": {
+    "macroSummary": "Macronutrient Summary",
+    "calories": "Calories",
+    "protein": "Protein",
+    "carbs": "Carbohydrates",
+    "fats": "Fats",
+    "dailyIntakes": "Daily Intakes",
+    "noIntakes": "No intakes recorded for this day"
+  },
+  "categories": {
+    "desayuno": "Breakfast",
+    "almuerzo": "Lunch",
+    "comida": "Meal",
+    "merienda": "Snack",
+    "cena": "Dinner",
+    "snack": "Snack"
+  },
+  "trends": {
+    "dailyAverage": "Daily Average",
+    "adherence": "Adherence",
+    "weeklyTrend": "Weekly Trend",
+    "category": "Category",
+    "consumedFoods": "Consumed Foods",
+    "save": "Save",
+    "cancel": "Cancel"
+  },
+  "report": {
+    "monthlySummary": "Monthly Summary",
+    "loggedDays": "Logged Days",
+    "avgCalories": "Average Calories"
+  },
+  "progress": {
+    "logRealWeight": "Log Scale Weight",
+    "logSubtitle": "Add your scale weight to compare with theoretical deficit estimates",
+    "date": "Date",
+    "time": "Time",
+    "scaleWeight": "Scale Weight (kg)",
+    "saveWeight": "Save Weight",
+    "initialWeight": "Starting Weight",
+    "estimatedWeight": "Estimated Weight (Deficit)",
+    "latestRealWeight": "Latest Real Weight",
+    "deviation": "Deviation (Real vs Est.)",
+    "aheadOfDeficit": "Ahead of deficit!",
+    "slightDifference": "Slight fluid retention or variance",
+    "goal": "Goal",
+    "remaining": "remaining",
+    "history": "Weight Log & Comparison",
+    "dateTime": "Date & Time",
+    "realWeight": "Real Weight",
+    "estimatedThatDay": "Estimated that day",
+    "difference": "Difference",
+    "action": "Action",
+    "noWeights": "No scale weights logged yet. Register your first weight above to start comparing!"
+  },
+  "profile": {
+    "settings": "Profile Settings",
+    "name": "Name",
+    "gender": "Gender",
+    "male": "Male",
+    "female": "Female",
+    "age": "Age",
+    "height": "Height (cm)",
+    "weight": "Weight (kg)",
+    "activityAndGoal": "Activity & Goal",
+    "activityLevel": "Activity Level (NEAT)",
+    "sedentary": "Sedentary (Little or no exercise)",
+    "light": "Light (Exercise 1-3 days/wk)",
+    "moderate": "Moderate (Exercise 3-5 days/wk)",
+    "active": "Active (Exercise 6-7 days/wk)",
+    "veryActive": "Very Active (Athlete / Heavy work)",
+    "goal": "Goal",
+    "loseWeight": "Lose Weight (Deficit)",
+    "maintainWeight": "Maintain Weight",
+    "gainWeight": "Gain Muscle (Surplus)",
+    "dailyTargets": "Daily Targets (Macros)",
+    "autoCalculate": "Auto calculate",
+    "saveProfile": "Save Profile",
+    "saving": "Saving..."
+  },
+  "chat": {
+    "placeholder": "Type or dictate your meals (e.g., 200g chicken and 150g rice for lunch)...",
+    "processing": "Processing food with AI..."
+  },
+  "toast": {
+    "foodAdded": "Added",
+    "foodDeleted": "Food item deleted",
+    "intakeUpdated": "Intake updated",
+    "categoryUpdated": "Category updated",
+    "weightSaved": "Weight logged successfully",
+    "profileSaved": "Profile saved successfully"
+  }
+}

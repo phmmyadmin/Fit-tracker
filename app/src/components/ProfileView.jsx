@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { Save, User, Activity, Target } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 import { saveProfile } from '../lib/supabase';
 import { calculateProfileTargets } from '../utils/profile';
 
 export default function ProfileView({ profile, onProfileSaved }) {
+  const { t } = useTranslation();
   const [formData, setFormData] = useState(profile || {
     name: '',
     gender: 'male',
@@ -63,7 +65,7 @@ export default function ProfileView({ profile, onProfileSaved }) {
     <div className="health-card" style={{ maxWidth: '600px', margin: '0 auto' }}>
       <h2 style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '1.5rem', fontFamily: 'var(--font-heading)' }}>
         <User size={24} color="var(--color-indigo)" />
-        Configuración de Perfil
+        {t('profile.settings')}
       </h2>
 
       <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
@@ -71,29 +73,29 @@ export default function ProfileView({ profile, onProfileSaved }) {
         {/* Basic Info */}
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
           <div>
-            <label style={{ display: 'block', marginBottom: '0.5rem', fontSize: '0.85rem', color: 'var(--text-muted)' }}>Nombre</label>
+            <label style={{ display: 'block', marginBottom: '0.5rem', fontSize: '0.85rem', color: 'var(--text-muted)' }}>{t('profile.name')}</label>
             <input type="text" name="name" value={formData.name} onChange={handleChange} required className="edit-input" />
           </div>
           <div>
-            <label style={{ display: 'block', marginBottom: '0.5rem', fontSize: '0.85rem', color: 'var(--text-muted)' }}>Género</label>
+            <label style={{ display: 'block', marginBottom: '0.5rem', fontSize: '0.85rem', color: 'var(--text-muted)' }}>{t('profile.gender')}</label>
             <select name="gender" value={formData.gender} onChange={handleChange} className="edit-select">
-              <option value="male">Hombre</option>
-              <option value="female">Mujer</option>
+              <option value="male">{t('profile.male')}</option>
+              <option value="female">{t('profile.female')}</option>
             </select>
           </div>
         </div>
 
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '1rem' }}>
           <div>
-            <label style={{ display: 'block', marginBottom: '0.5rem', fontSize: '0.85rem', color: 'var(--text-muted)' }}>Edad</label>
+            <label style={{ display: 'block', marginBottom: '0.5rem', fontSize: '0.85rem', color: 'var(--text-muted)' }}>{t('profile.age')}</label>
             <input type="number" name="age" value={formData.age} onChange={handleChange} required className="edit-input" />
           </div>
           <div>
-            <label style={{ display: 'block', marginBottom: '0.5rem', fontSize: '0.85rem', color: 'var(--text-muted)' }}>Altura (cm)</label>
+            <label style={{ display: 'block', marginBottom: '0.5rem', fontSize: '0.85rem', color: 'var(--text-muted)' }}>{t('profile.height')}</label>
             <input type="number" name="height" value={formData.height} onChange={handleChange} required className="edit-input" />
           </div>
           <div>
-            <label style={{ display: 'block', marginBottom: '0.5rem', fontSize: '0.85rem', color: 'var(--text-muted)' }}>Peso (kg)</label>
+            <label style={{ display: 'block', marginBottom: '0.5rem', fontSize: '0.85rem', color: 'var(--text-muted)' }}>{t('profile.weight')}</label>
             <input type="number" name="weight" step="0.1" value={formData.weight} onChange={handleChange} required className="edit-input" />
           </div>
         </div>
@@ -101,26 +103,26 @@ export default function ProfileView({ profile, onProfileSaved }) {
         {/* Activity & Goals */}
         <h3 style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginTop: '1rem', fontSize: '1.1rem', fontFamily: 'var(--font-heading)' }}>
           <Activity size={20} color="var(--color-calories)" />
-          Actividad y Meta
+          {t('profile.activityAndGoal')}
         </h3>
 
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
           <div>
-            <label style={{ display: 'block', marginBottom: '0.5rem', fontSize: '0.85rem', color: 'var(--text-muted)' }}>Nivel de Actividad (NEAT)</label>
+            <label style={{ display: 'block', marginBottom: '0.5rem', fontSize: '0.85rem', color: 'var(--text-muted)' }}>{t('profile.activityLevel')}</label>
             <select name="activity_level" value={formData.activity_level} onChange={handleChange} className="edit-select">
-              <option value="sedentary">Sedentario (Poco o ningún ejercicio)</option>
-              <option value="light">Ligero (Ejercicio 1-3 días/sem)</option>
-              <option value="moderate">Moderado (Ejercicio 3-5 días/sem)</option>
-              <option value="active">Activo (Ejercicio 6-7 días/sem)</option>
-              <option value="very_active">Muy Activo (Atleta/Doble turno)</option>
+              <option value="sedentary">{t('profile.sedentary')}</option>
+              <option value="light">{t('profile.light')}</option>
+              <option value="moderate">{t('profile.moderate')}</option>
+              <option value="active">{t('profile.active')}</option>
+              <option value="very_active">{t('profile.veryActive')}</option>
             </select>
           </div>
           <div>
-            <label style={{ display: 'block', marginBottom: '0.5rem', fontSize: '0.85rem', color: 'var(--text-muted)' }}>Objetivo</label>
+            <label style={{ display: 'block', marginBottom: '0.5rem', fontSize: '0.85rem', color: 'var(--text-muted)' }}>{t('profile.goal')}</label>
             <select name="goal" value={formData.goal} onChange={handleChange} className="edit-select">
-              <option value="lose">Perder Peso (Déficit)</option>
-              <option value="maintain">Mantener Peso</option>
-              <option value="gain">Ganar Masa Muscular (Superávit)</option>
+              <option value="lose">{t('profile.loseWeight')}</option>
+              <option value="maintain">{t('profile.maintainWeight')}</option>
+              <option value="gain">{t('profile.gainWeight')}</option>
             </select>
           </div>
         </div>
@@ -129,7 +131,7 @@ export default function ProfileView({ profile, onProfileSaved }) {
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '1rem' }}>
           <h3 style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontSize: '1.1rem', fontFamily: 'var(--font-heading)' }}>
             <Target size={20} color="var(--color-protein)" />
-            Objetivos Diarios (Macros)
+            {t('profile.dailyTargets')}
           </h3>
           <label style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontSize: '0.85rem', cursor: 'pointer' }}>
             <input 
@@ -137,7 +139,7 @@ export default function ProfileView({ profile, onProfileSaved }) {
               checked={autoCalculate} 
               onChange={(e) => setAutoCalculate(e.target.checked)} 
             />
-            Calcular automáticamente
+            {t('profile.autoCalculate')}
           </label>
         </div>
 
@@ -147,15 +149,15 @@ export default function ProfileView({ profile, onProfileSaved }) {
             <input type="number" name="target_calories" value={formData.target_calories} onChange={handleChange} disabled={autoCalculate} className="edit-input" style={{ opacity: autoCalculate ? 0.7 : 1 }} />
           </div>
           <div>
-            <label style={{ display: 'block', marginBottom: '0.5rem', fontSize: '0.85rem', color: 'var(--text-muted)' }}>Proteína (g)</label>
+            <label style={{ display: 'block', marginBottom: '0.5rem', fontSize: '0.85rem', color: 'var(--text-muted)' }}>{t('diary.protein')} (g)</label>
             <input type="number" name="target_protein" value={formData.target_protein} onChange={handleChange} disabled={autoCalculate} className="edit-input" style={{ opacity: autoCalculate ? 0.7 : 1 }} />
           </div>
           <div>
-            <label style={{ display: 'block', marginBottom: '0.5rem', fontSize: '0.85rem', color: 'var(--text-muted)' }}>Carbos (g)</label>
+            <label style={{ display: 'block', marginBottom: '0.5rem', fontSize: '0.85rem', color: 'var(--text-muted)' }}>{t('diary.carbs')} (g)</label>
             <input type="number" name="target_carbs" value={formData.target_carbs} onChange={handleChange} disabled={autoCalculate} className="edit-input" style={{ opacity: autoCalculate ? 0.7 : 1 }} />
           </div>
           <div>
-            <label style={{ display: 'block', marginBottom: '0.5rem', fontSize: '0.85rem', color: 'var(--text-muted)' }}>Grasas (g)</label>
+            <label style={{ display: 'block', marginBottom: '0.5rem', fontSize: '0.85rem', color: 'var(--text-muted)' }}>{t('diary.fats')} (g)</label>
             <input type="number" name="target_fats" value={formData.target_fats} onChange={handleChange} disabled={autoCalculate} className="edit-input" style={{ opacity: autoCalculate ? 0.7 : 1 }} />
           </div>
         </div>
@@ -180,7 +182,7 @@ export default function ProfileView({ profile, onProfileSaved }) {
           }}
         >
           <Save size={18} />
-          {isSaving ? 'Guardando...' : 'Guardar Perfil'}
+          {isSaving ? t('profile.saving') : t('profile.saveProfile')}
         </button>
 
       </form>
