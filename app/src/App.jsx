@@ -12,7 +12,7 @@ import ProfileView from './components/ProfileView';
 import NewProfileModal from './components/NewProfileModal';
 import { parseFoodWithGemini } from './lib/gemini';
 import { parseFoodTextLocal } from './lib/parser';
-import { supabase, fetchDailyLogsFromSupabase, saveIntakesToSupabase, deleteIntakeFromSupabase, updateIntakeInSupabase, fetchProfiles } from './lib/supabase';
+import { supabase, fetchDailyLogsFromSupabase, saveIntakesToSupabase, deleteIntakeFromSupabase, deleteIntakesGroupFromSupabase, updateIntakeInSupabase, fetchProfiles } from './lib/supabase';
 import './index.css';
 
 const getLocalDateStr = () => {
@@ -197,6 +197,25 @@ export default function App() {
     } catch (err) {
       console.error(err);
       showToast("Error al actualizar ingesta");
+    }
+  };
+
+  const handleDeleteGroup = async (itemsToDelete) => {
+    if (!itemsToDelete || itemsToDelete.length === 0) return;
+    try {
+      if (supabase) {
+        const res = await deleteIntakesGroupFromSupabase({ date: selectedDate, items: itemsToDelete, profileId: activeProfileId });
+        if (res && res.success) {
+          await loadData();
+          showToast(t('toast.foodDeleted') || "Comida eliminada");
+          return;
+        }
+      }
+      await loadData();
+      showToast("Comida eliminada");
+    } catch (err) {
+      console.error(err);
+      showToast("Error al eliminar la comida");
     }
   };
 
@@ -541,6 +560,7 @@ export default function App() {
                 setEditingItem(item);
                 setEditingIndex(idx);
               }}
+              onDeleteGroup={handleDeleteGroup}
             />
           </div>
         </div>

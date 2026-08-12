@@ -1,9 +1,9 @@
 import React from 'react';
-import { Clock, Edit2 } from 'lucide-react';
+import { Clock, Edit2, Trash2 } from 'lucide-react';
 import { getFoodEmoji } from '../utils/emoji';
 import { getCategoryInfo } from '../utils/category';
 
-export default function DailyTimeline({ intakes, onItemClick }) {
+export default function DailyTimeline({ intakes, onItemClick, onDeleteGroup }) {
   if (!intakes || intakes.length === 0) {
     return (
       <div style={{ color: 'var(--text-muted)', fontSize: '0.9rem', textAlign: 'center', padding: '2rem' }}>
@@ -110,7 +110,7 @@ export default function DailyTimeline({ intakes, onItemClick }) {
                   {meal.dishName ? `${meal.time} - ${meal.dishName}` : `Toma ${meal.time}`}
                 </span>
               </div>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '0.35rem', flexShrink: 0 }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', flexShrink: 0 }}>
                 <span style={{
                   fontSize: '0.75rem',
                   background: 'rgba(239, 68, 68, 0.12)',
@@ -125,6 +125,30 @@ export default function DailyTimeline({ intakes, onItemClick }) {
                 <span style={{ fontSize: '0.72rem', color: 'var(--text-muted)', fontWeight: 500, whiteSpace: 'nowrap' }}>
                   ({meal.items.length} {meal.items.length === 1 ? 'alimento' : 'alimentos'})
                 </span>
+                {onDeleteGroup && (
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      if (window.confirm('¿Borrar todos los alimentos de esta toma?')) {
+                        onDeleteGroup(meal.items);
+                      }
+                    }}
+                    style={{
+                      background: 'none',
+                      border: 'none',
+                      cursor: 'pointer',
+                      padding: '0.2rem',
+                      borderRadius: '6px',
+                      display: 'flex',
+                      alignItems: 'center',
+                      color: 'var(--text-muted)',
+                      transition: 'color 0.2s ease'
+                    }}
+                    title="Borrar toma / plato completo"
+                  >
+                    <Trash2 size={16} color="#ef4444" />
+                  </button>
+                )}
               </div>
             </div>
 

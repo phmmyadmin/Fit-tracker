@@ -327,11 +327,38 @@ async function updateDailyLogTotals(date, profileId) {
     .eq('profile_id', profileId);
 }
 
+export async function deleteIntakesGroupFromSupabase({ date, items, profileId }) {
+  if (!supabase || !profileId || !items || items.length === 0) return null;
+
+  try {
+    const idsToDelete = items.map(i => i.id).filter(Boolean);
+
+    if (idsToDelete.length > 0) {
+      const { error } = await supabase.from('intakes').delete().in('id', idsToDelete);
+      if (error) throw error;
+    } else {
+      const timeVal = items[0].time;
+      const dishVal = items[0].dishName;
+      let query = supabase.from('intakes').delete().eq('date', date).eq('profile_id', profileId);
+      if (timeVal) query = query.eq('time', timeVal);
+      if (dishVal) query = query.eq('dish_name', dishVal);
+      const { error } = await query;
+      if (error) throw error;
+    }
+
+    await updateDailyLogTotals(date, profileId);
+    return { success: true };
+  } catch (err) {
+    console.error('Error deleting intake group from Supabase:', err);
+    return null;
+  }
+}
+
 export async function fetchCatalog() {
   if (!supabase) return { ingredients: [], dishes: [] };
   try {
-    const { data: ingredientsData } = await supabase.from('ingredients').select('*').order('name');
-    const { data: dishesData } = await supabase.from('dishes').select('*, dish_ingredients(*, ingredients(*))').order('name');
+    const { data: ingredientsData } = await supabase.from('ingredients').select('*').order('name').catch(() => ({ data: null }));
+    const { data: dishesData } = await supabase.from('dishes').select('*, dish_ingredients(*, ingredients(*))').order('name').catch(() => ({ data: null }));
 
     let ingredients = ingredientsData || [];
     let dishes = (dishesData || []).map(d => ({
@@ -348,31 +375,36 @@ export async function fetchCatalog() {
       }))
     }));
 
-    // Fallback if ingredients table does not exist or is empty
-    if (ingredients.length === 0) {
-      const { data: intakesData } = await supabase.from('intakes').select('name, category, unit, calories, protein, carbs, fats, dish_name');
-      if (intakesData) {
-        const uniqueIngMap = new Map();
-        const uniqueDishMap = new Map();
+    // Always fetch intakes to enrich catalog with any recent dishes/ingredients logged in intakes
+    const { data: intakesData } = await supabase.from('intakes').select('name, category, unit, calories, protein, carbs, fats, dish_name');
+    if (intakesData && intakesData.length > 0) {
+      const uniqueIngMap = new Map();
+      const uniqueDishMap = new Map();
 
-        intakesData.forEach(item => {
-          if (item.name && !uniqueIngMap.has(item.name.trim().toLowerCase())) {
-            uniqueIngMap.set(item.name.trim().toLowerCase(), {
-              name: item.name.trim(),
-              category: item.category || 'other',
-              unit: item.unit || 'g',
-              calories: item.calories || 0,
-              protein: item.protein || 0,
-              carbs: item.carbs || 0,
-              fats: item.fats || 0
-            });
+      // Prepopulate with existing
+      ingredients.forEach(ing => ing.name && uniqueIngMap.set(ing.name.trim().toLowerCase(), ing));
+      dishes.forEach(d => d.name && uniqueDishMap.set(d.name.trim().toLowerCase(), d));
+
+      intakesData.forEach(item => {
+        if (item.name && !uniqueIngMap.has(item.name.trim().toLowerCase())) {
+          uniqueIngMap.set(item.name.trim().toLowerCase(), {
+            name: item.name.trim(),
+            category: item.category || 'other',
+            unit: item.unit || 'g',
+            calories: item.calories || 0,
+            protein: item.protein || 0,
+            carbs: item.carbs || 0,
+            fats: item.fats || 0
+          });
+        }
+        if (item.dish_name && item.dish_name.trim()) {
+          const dishKey = item.dish_name.trim().toLowerCase();
+          if (!uniqueDishMap.has(dishKey)) {
+            uniqueDishMap.set(dishKey, { name: item.dish_name.trim(), components: [] });
           }
-          if (item.dish_name && item.dish_name.trim()) {
-            const dishKey = item.dish_name.trim().toLowerCase();
-            if (!uniqueDishMap.has(dishKey)) {
-              uniqueDishMap.set(dishKey, { name: item.dish_name.trim(), components: [] });
-            }
-            uniqueDishMap.get(dishKey).components.push({
+          const existingComponents = uniqueDishMap.get(dishKey).components || [];
+          if (!existingComponents.some(c => c.name === item.name)) {
+            existingComponents.push({
               name: item.name,
               category: item.category || 'other',
               unit: item.unit || 'g',
@@ -382,12 +414,13 @@ export async function fetchCatalog() {
               carbs: item.carbs || 0,
               fats: item.fats || 0
             });
+            uniqueDishMap.get(dishKey).components = existingComponents;
           }
-        });
+        }
+      });
 
-        ingredients = Array.from(uniqueIngMap.values());
-        dishes = Array.from(uniqueDishMap.values());
-      }
+      ingredients = Array.from(uniqueIngMap.values());
+      dishes = Array.from(uniqueDishMap.values());
     }
 
     return { ingredients, dishes };

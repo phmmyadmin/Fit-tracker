@@ -43,6 +43,12 @@ export default function ChatInputBar({ onSendFood, onSendFoodDirect, isLoading }
     }
   }, []);
 
+  useEffect(() => {
+    if (!isLoading) {
+      refreshCatalog();
+    }
+  }, [isLoading]);
+
   // Filter catalog items with accent normalization and substring contains matching
   useEffect(() => {
     if (!text.trim() || text.length < 2) {
@@ -418,6 +424,7 @@ export default function ChatInputBar({ onSendFood, onSendFoodDirect, isLoading }
             type="text"
             value={text}
             onChange={(e) => setText(e.target.value)}
+            onFocus={refreshCatalog}
             placeholder={
               selectedChips.length > 0 
                 ? (i18n.language.startsWith('es') ? 'Añadir más o enviar directo...' : 'Add more or send direct...')
