@@ -1,29 +1,28 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Send, Loader2, Mic, MicOff, Utensils, Egg } from 'lucide-react';
+import { Send, Loader2, Mic, MicOff, Utensils, Egg, X, Plus, Minus } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { fetchCatalog } from '../lib/supabase';
 
-export default function ChatInputBar({ onSendFood, isLoading }) {
+export default function ChatInputBar({ onSendFood, onSendFoodDirect, isLoading }) {
   const { t, i18n } = useTranslation();
   const [text, setText] = useState('');
   const [isListening, setIsListening] = useState(false);
   const [catalog, setCatalog] = useState({ ingredients: [], dishes: [] });
   const [filteredSuggestions, setFilteredSuggestions] = useState([]);
   const [showSuggestions, setShowSuggestions] = useState(false);
+  
+  // Selected chips state
+  const [selectedChips, setSelectedChips] = useState([]);
   const recognitionRef = useRef(null);
 
   useEffect(() => {
-    // Fetch catalog ingredients and dishes
-    fetchCatalog().then(res => {
-      setCatalog(res);
-    });
+    fetchCatalog().then(res => setCatalog(res));
 
     const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
     if (SpeechRecognition) {
       const recognition = new SpeechRecognition();
       recognition.continuous = false;
       recognition.interimResults = true;
-
       recognition.onresult = (event) => {
         let transcript = '';
         for (let i = event.resultIndex; i < event.results.length; i++) {
@@ -31,15 +30,13 @@ export default function ChatInputBar({ onSendFood, isLoading }) {
         }
         setText(transcript);
       };
-
       recognition.onerror = () => setIsListening(false);
       recognition.onend = () => setIsListening(false);
-
       recognitionRef.current = recognition;
     }
   }, []);
 
-  // Handle autocompletion suggestions as text changes
+  // Filter catalog items
   useEffect(() => {
     if (!text.trim() || text.length < 2) {
       setFilteredSuggestions([]);
@@ -48,8 +45,6 @@ export default function ChatInputBar({ onSendFood, isLoading }) {
     }
 
     const query = text.trim().toLowerCase();
-
-    // Find last comma-separated term or whole text
     const parts = query.split(/[,+]/);
     const lastPart = parts[parts.length - 1].trim();
 
@@ -74,12 +69,70 @@ export default function ChatInputBar({ onSendFood, isLoading }) {
     setShowSuggestions(combined.length > 0);
   }, [text, catalog]);
 
-  const selectSuggestion = (item) => {
-    const parts = text.split(/[,+]/);
-    parts[parts.length - 1] = ' ' + item.name;
-    const newText = parts.join(',').trim();
-    setText(newText + ' ');
+  const addChip = (item) => {
+    if (item.type === 'dish') {
+      const components = (item.components && item.components.length > 0) ? item.components : [
+        {
+          name: item.name,
+          category: 'other',
+          unit: 'porcion',
+          quantity: 1,
+          calories: item.calories || 0,
+          protein: item.protein || 0,
+          carbs: item.carbs || 0,
+          fats: item.fats || 0
+        }
+      ];
+
+      setSelectedChips(prev => [
+        ...prev,
+        {
+          chipId: Date.now() + Math.random(),
+          type: 'dish',
+          name: item.name,
+          multiplier: 1,
+          components: components
+        }
+      ]);
+    } else {
+      setSelectedChips(prev => [
+        ...prev,
+        {
+          chipId: Date.now() + Math.random(),
+          type: 'ingredient',
+          name: item.name,
+          category: item.category || 'other',
+          unit: item.unit || 'g',
+          quantity: item.unit === 'g' ? 100 : 1,
+          baseCalories: item.calories || 0,
+          baseProtein: item.protein || 0,
+          baseCarbs: item.carbs || 0,
+          baseFats: item.fats || 0
+        }
+      ]);
+    }
+
+    // Clear search text
+    setText('');
     setShowSuggestions(false);
+  };
+
+  const removeChip = (chipId) => {
+    setSelectedChips(prev => prev.filter(c => c.chipId !== chipId));
+  };
+
+  const updateChipQuantity = (chipId, delta) => {
+    setSelectedChips(prev => prev.map(chip => {
+      if (chip.chipId !== chipId) return chip;
+      if (chip.type === 'dish') {
+        const newMult = Math.max(1, chip.multiplier + delta);
+        return { ...chip, multiplier: newMult };
+      } else {
+        const stepVal = chip.unit === 'g' ? 50 : 1;
+        const newQty = Math.max(stepVal, chip.quantity + (delta * stepVal));
+        return { ...chip, quantity: newQty };
+      }
+    }));
   };
 
   const toggleListening = () => {
@@ -122,10 +175,57 @@ export default function ChatInputBar({ onSendFood, isLoading }) {
   const handleSubmit = (e) => {
     e.preventDefault();
     setShowSuggestions(false);
+
     if (isListening && recognitionRef.current) {
       try { recognitionRef.current.stop(); } catch (err) {}
       setIsListening(false);
     }
+
+    // Direct submission of selected chips (0 AI latency)
+    if (selectedChips.length > 0) {
+      const itemsToSave = [];
+      selectedChips.forEach(chip => {
+        if (chip.type === 'dish') {
+          chip.components.forEach(comp => {
+            const factor = chip.multiplier;
+            itemsToSave.push({
+              name: comp.name,
+              dishName: chip.name,
+              category: comp.category || 'other',
+              quantity: (comp.quantity || 1) * factor,
+              unit: comp.unit || 'porcion',
+              calories: Math.round((comp.calories || 0) * factor),
+              protein: Math.round(((comp.protein || 0) * factor) * 10) / 10,
+              carbs: Math.round(((comp.carbs || 0) * factor) * 10) / 10,
+              fats: Math.round(((comp.fats || 0) * factor) * 10) / 10
+            });
+          });
+        } else {
+          const factor = chip.unit === 'g' ? (chip.quantity / 100) : chip.quantity;
+          itemsToSave.push({
+            name: chip.name,
+            category: chip.category || 'other',
+            quantity: chip.quantity,
+            unit: chip.unit,
+            calories: Math.round(chip.baseCalories * factor),
+            protein: Math.round((chip.baseProtein * factor) * 10) / 10,
+            carbs: Math.round((chip.baseCarbs * factor) * 10) / 10,
+            fats: Math.round((chip.baseFats * factor) * 10) / 10
+          });
+        }
+      });
+
+      if (onSendFoodDirect) {
+        onSendFoodDirect(itemsToSave);
+      } else {
+        onSendFood(itemsToSave.map(i => `${i.name} ${i.quantity}${i.unit}`).join(', '));
+      }
+      setSelectedChips([]);
+      setText('');
+      return;
+    }
+
+    // Text free form submission via AI
     if (!text.trim() || isLoading) return;
     onSendFood(text.trim());
     setText('');
@@ -138,7 +238,7 @@ export default function ChatInputBar({ onSendFood, isLoading }) {
         bottom: 0,
         left: 0,
         right: 0,
-        background: 'rgba(250, 250, 247, 0.92)',
+        background: 'rgba(250, 250, 247, 0.94)',
         backdropFilter: 'blur(12px)',
         borderTop: '1px solid var(--border-light)',
         padding: '0.75rem 1rem',
@@ -154,7 +254,7 @@ export default function ChatInputBar({ onSendFood, isLoading }) {
             background: 'var(--bg-surface)',
             borderRadius: '16px',
             border: '1px solid var(--border-light)',
-            boxShadow: '0 -10px 25px rgba(0,0,0,0.08)',
+            boxShadow: '0 -10px 25px rgba(0,0,0,0.1)',
             padding: '0.5rem',
             maxHeight: '220px',
             overflowY: 'auto',
@@ -162,14 +262,14 @@ export default function ChatInputBar({ onSendFood, isLoading }) {
           }}
         >
           <div style={{ fontSize: '0.75rem', fontWeight: 600, color: 'var(--text-muted)', padding: '0.25rem 0.5rem', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
-            {i18n.language.startsWith('es') ? 'Sugerencias de Catálogo' : 'Catalog Suggestions'}
+            {i18n.language.startsWith('es') ? 'Sugerencias de Catálogo (Añadir Directo)' : 'Catalog Suggestions (Direct Add)'}
           </div>
           {filteredSuggestions.map((item, idx) => (
             <div
               key={idx}
-              onClick={() => selectSuggestion(item)}
+              onClick={() => addChip(item)}
               style={{
-                padding: '0.6rem 0.75rem',
+                padding: '0.65rem 0.75rem',
                 borderRadius: '10px',
                 cursor: 'pointer',
                 display: 'flex',
@@ -218,25 +318,92 @@ export default function ChatInputBar({ onSendFood, isLoading }) {
           alignItems: 'center'
         }}
       >
-        <div style={{ flex: 1, position: 'relative', display: 'flex', alignItems: 'center' }}>
+        <div 
+          style={{ 
+            flex: 1, 
+            display: 'flex', 
+            alignItems: 'center', 
+            flexWrap: 'wrap',
+            gap: '0.4rem',
+            background: isListening ? 'var(--color-calories-bg)' : 'var(--bg-surface)',
+            border: isListening ? '1px solid var(--color-calories)' : '1px solid var(--border-light)',
+            borderRadius: '24px',
+            padding: '0.4rem 0.5rem 0.4rem 0.85rem',
+            boxShadow: '0 2px 8px rgba(0,0,0,0.03)',
+            transition: 'all 0.25s ease',
+            minHeight: '44px'
+          }}
+        >
+          {/* Selected Product Chips */}
+          {selectedChips.map(chip => (
+            <div
+              key={chip.chipId}
+              style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '0.35rem',
+                background: chip.type === 'dish' ? 'var(--color-orange-subtle)' : 'var(--color-indigo-subtle)',
+                border: chip.type === 'dish' ? '1px solid var(--color-orange)' : '1px solid var(--color-indigo)',
+                color: chip.type === 'dish' ? 'var(--color-orange)' : 'var(--color-indigo)',
+                borderRadius: '16px',
+                padding: '0.2rem 0.6rem',
+                fontSize: '0.82rem',
+                fontWeight: 600
+              }}
+            >
+              <span>{chip.type === 'dish' ? '🥗' : '🥚'} {chip.name}</span>
+              
+              {/* Stepper Quantity Controls */}
+              <div style={{ display: 'inline-flex', alignItems: 'center', gap: '0.2rem', background: 'rgba(255,255,255,0.7)', borderRadius: '10px', padding: '1px 4px' }}>
+                <button
+                  type="button"
+                  onClick={() => updateChipQuantity(chip.chipId, -1)}
+                  style={{ border: 'none', background: 'none', cursor: 'pointer', display: 'flex', padding: 0, color: 'inherit' }}
+                >
+                  <Minus size={12} />
+                </button>
+                <span style={{ fontSize: '0.78rem', minWidth: '18px', textAlign: 'center' }}>
+                  {chip.type === 'dish' ? `${chip.multiplier}x` : `${chip.quantity}${chip.unit}`}
+                </span>
+                <button
+                  type="button"
+                  onClick={() => updateChipQuantity(chip.chipId, 1)}
+                  style={{ border: 'none', background: 'none', cursor: 'pointer', display: 'flex', padding: 0, color: 'inherit' }}
+                >
+                  <Plus size={12} />
+                </button>
+              </div>
+
+              {/* Remove Chip */}
+              <button
+                type="button"
+                onClick={() => removeChip(chip.chipId)}
+                style={{ border: 'none', background: 'none', cursor: 'pointer', display: 'flex', padding: 0, color: 'inherit', marginLeft: '2px' }}
+              >
+                <X size={14} />
+              </button>
+            </div>
+          ))}
+
           <input
             type="text"
             value={text}
             onChange={(e) => setText(e.target.value)}
-            placeholder={isListening ? (i18n.language.startsWith('es') ? 'Escuchando tu voz...' : 'Listening to your voice...') : t('chat.placeholder')}
+            placeholder={
+              selectedChips.length > 0 
+                ? (i18n.language.startsWith('es') ? 'Añadir más o enviar directo...' : 'Add more or send direct...')
+                : isListening ? (i18n.language.startsWith('es') ? 'Escuchando tu voz...' : 'Listening to your voice...') : t('chat.placeholder')
+            }
             disabled={isLoading}
             style={{
-              width: '100%',
-              background: isListening ? 'var(--color-calories-bg)' : 'var(--bg-surface)',
-              border: isListening ? '1px solid var(--color-calories)' : '1px solid var(--border-light)',
-              borderRadius: '24px',
-              padding: '0.75rem 3rem 0.75rem 1.25rem',
-              fontSize: '0.95rem',
+              flex: 1,
+              minWidth: '120px',
+              border: 'none',
+              background: 'transparent',
+              fontSize: '0.9rem',
               fontFamily: 'var(--font-body)',
               color: 'var(--text-main)',
-              outline: 'none',
-              boxShadow: '0 2px 8px rgba(0,0,0,0.03)',
-              transition: 'all 0.25s ease'
+              outline: 'none'
             }}
           />
 
@@ -245,31 +412,30 @@ export default function ChatInputBar({ onSendFood, isLoading }) {
             onClick={toggleListening}
             title={isListening ? 'Detener micrófono' : 'Dictar por voz'}
             style={{
-              position: 'absolute',
-              right: '0.5rem',
               background: isListening ? 'var(--color-calories)' : 'transparent',
               color: isListening ? '#FFF' : 'var(--text-muted)',
               border: 'none',
               borderRadius: '50%',
-              width: 34,
-              height: 34,
+              width: 32,
+              height: 32,
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
               cursor: 'pointer',
-              transition: 'all 0.2s ease'
+              transition: 'all 0.2s ease',
+              flexShrink: 0
             }}
           >
-            {isListening ? <MicOff size={18} className="spin" /> : <Mic size={18} />}
+            {isListening ? <MicOff size={16} className="spin" /> : <Mic size={16} />}
           </button>
         </div>
 
         <button
           type="submit"
-          disabled={!text.trim() || isLoading}
+          disabled={(!text.trim() && selectedChips.length === 0) || isLoading}
           style={{
-            background: text.trim() && !isLoading ? 'var(--color-indigo)' : 'var(--bg-subtle)',
-            color: text.trim() && !isLoading ? '#FFF' : 'var(--text-subtle)',
+            background: (text.trim() || selectedChips.length > 0) && !isLoading ? 'var(--color-indigo)' : 'var(--bg-subtle)',
+            color: (text.trim() || selectedChips.length > 0) && !isLoading ? '#FFF' : 'var(--text-subtle)',
             border: 'none',
             borderRadius: '50%',
             width: 44,
@@ -277,7 +443,7 @@ export default function ChatInputBar({ onSendFood, isLoading }) {
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
-            cursor: text.trim() && !isLoading ? 'pointer' : 'not-allowed',
+            cursor: (text.trim() || selectedChips.length > 0) && !isLoading ? 'pointer' : 'not-allowed',
             transition: 'all 0.2s ease',
             flexShrink: 0
           }}
