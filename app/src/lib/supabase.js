@@ -357,8 +357,18 @@ export async function deleteIntakesGroupFromSupabase({ date, items, profileId })
 export async function fetchCatalog() {
   if (!supabase) return { ingredients: [], dishes: [] };
   try {
-    const { data: ingredientsData } = await supabase.from('ingredients').select('*').order('name').catch(() => ({ data: null }));
-    const { data: dishesData } = await supabase.from('dishes').select('*, dish_ingredients(*, ingredients(*))').order('name').catch(() => ({ data: null }));
+    let ingredientsData = null;
+    let dishesData = null;
+
+    try {
+      const resIng = await supabase.from('ingredients').select('*').order('name');
+      ingredientsData = resIng.data;
+    } catch (e) {}
+
+    try {
+      const resDish = await supabase.from('dishes').select('*, dish_ingredients(*, ingredients(*))').order('name');
+      dishesData = resDish.data;
+    } catch (e) {}
 
     let ingredients = ingredientsData || [];
     let dishes = (dishesData || []).map(d => ({
@@ -376,52 +386,54 @@ export async function fetchCatalog() {
     }));
 
     // Always fetch intakes to enrich catalog with any recent dishes/ingredients logged in intakes
-    const { data: intakesData } = await supabase.from('intakes').select('name, category, unit, calories, protein, carbs, fats, dish_name');
-    if (intakesData && intakesData.length > 0) {
-      const uniqueIngMap = new Map();
-      const uniqueDishMap = new Map();
+    try {
+      const { data: intakesData } = await supabase.from('intakes').select('name, category, unit, calories, protein, carbs, fats, dish_name');
+      if (intakesData && intakesData.length > 0) {
+        const uniqueIngMap = new Map();
+        const uniqueDishMap = new Map();
 
-      // Prepopulate with existing
-      ingredients.forEach(ing => ing.name && uniqueIngMap.set(ing.name.trim().toLowerCase(), ing));
-      dishes.forEach(d => d.name && uniqueDishMap.set(d.name.trim().toLowerCase(), d));
+        // Prepopulate with existing
+        ingredients.forEach(ing => ing.name && uniqueIngMap.set(ing.name.trim().toLowerCase(), ing));
+        dishes.forEach(d => d.name && uniqueDishMap.set(d.name.trim().toLowerCase(), d));
 
-      intakesData.forEach(item => {
-        if (item.name && !uniqueIngMap.has(item.name.trim().toLowerCase())) {
-          uniqueIngMap.set(item.name.trim().toLowerCase(), {
-            name: item.name.trim(),
-            category: item.category || 'other',
-            unit: item.unit || 'g',
-            calories: item.calories || 0,
-            protein: item.protein || 0,
-            carbs: item.carbs || 0,
-            fats: item.fats || 0
-          });
-        }
-        if (item.dish_name && item.dish_name.trim()) {
-          const dishKey = item.dish_name.trim().toLowerCase();
-          if (!uniqueDishMap.has(dishKey)) {
-            uniqueDishMap.set(dishKey, { name: item.dish_name.trim(), components: [] });
-          }
-          const existingComponents = uniqueDishMap.get(dishKey).components || [];
-          if (!existingComponents.some(c => c.name === item.name)) {
-            existingComponents.push({
-              name: item.name,
+        intakesData.forEach(item => {
+          if (item.name && !uniqueIngMap.has(item.name.trim().toLowerCase())) {
+            uniqueIngMap.set(item.name.trim().toLowerCase(), {
+              name: item.name.trim(),
               category: item.category || 'other',
               unit: item.unit || 'g',
-              quantity: 1,
               calories: item.calories || 0,
               protein: item.protein || 0,
               carbs: item.carbs || 0,
               fats: item.fats || 0
             });
-            uniqueDishMap.get(dishKey).components = existingComponents;
           }
-        }
-      });
+          if (item.dish_name && item.dish_name.trim()) {
+            const dishKey = item.dish_name.trim().toLowerCase();
+            if (!uniqueDishMap.has(dishKey)) {
+              uniqueDishMap.set(dishKey, { name: item.dish_name.trim(), components: [] });
+            }
+            const existingComponents = uniqueDishMap.get(dishKey).components || [];
+            if (!existingComponents.some(c => c.name === item.name)) {
+              existingComponents.push({
+                name: item.name,
+                category: item.category || 'other',
+                unit: item.unit || 'g',
+                quantity: 1,
+                calories: item.calories || 0,
+                protein: item.protein || 0,
+                carbs: item.carbs || 0,
+                fats: item.fats || 0
+              });
+              uniqueDishMap.get(dishKey).components = existingComponents;
+            }
+          }
+        });
 
-      ingredients = Array.from(uniqueIngMap.values());
-      dishes = Array.from(uniqueDishMap.values());
-    }
+        ingredients = Array.from(uniqueIngMap.values());
+        dishes = Array.from(uniqueDishMap.values());
+      }
+    } catch (e) {}
 
     return { ingredients, dishes };
   } catch (err) {
@@ -445,21 +457,25 @@ export async function saveToCatalog(items) {
           carbs: item.macros?.carbs || item.carbs || 0,
           fats: item.macros?.fats || item.fats || 0
         };
-        const { data } = await supabase.from('ingredients').upsert(ingRow, { onConflict: 'name' }).select().maybeSingle().catch(() => ({ data: null }));
-        savedIng = data;
+        try {
+          const { data } = await supabase.from('ingredients').upsert(ingRow, { onConflict: 'name' }).select().maybeSingle();
+          savedIng = data;
+        } catch (e) {}
       }
 
       if (item.dishName && item.dishName.trim()) {
-        const { data: savedDish } = await supabase.from('dishes').upsert({ name: item.dishName.trim() }, { onConflict: 'name' }).select().maybeSingle().catch(() => ({ data: null }));
-        
-        if (savedDish && savedIng) {
-          await supabase.from('dish_ingredients').upsert({
-            dish_id: savedDish.id,
-            ingredient_id: savedIng.id,
-            quantity: item.quantity || 100,
-            unit: item.unit || 'g'
-          }).catch(() => {});
-        }
+        try {
+          const { data: savedDish } = await supabase.from('dishes').upsert({ name: item.dishName.trim() }, { onConflict: 'name' }).select().maybeSingle();
+          
+          if (savedDish && savedIng) {
+            await supabase.from('dish_ingredients').upsert({
+              dish_id: savedDish.id,
+              ingredient_id: savedIng.id,
+              quantity: item.quantity || 100,
+              unit: item.unit || 'g'
+            });
+          }
+        } catch (e) {}
       }
     }
   } catch (err) {
