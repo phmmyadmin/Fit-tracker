@@ -5,7 +5,7 @@ import { saveProfile } from '../lib/supabase';
 import { calculateProfileTargets } from '../utils/profile';
 
 export default function NewProfileModal({ isOpen, onClose, onProfileCreated }) {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const [step, setStep] = useState(1);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -19,12 +19,15 @@ export default function NewProfileModal({ isOpen, onClose, onProfileCreated }) {
     activity_level: 'moderate',
     goal: 'lose',
     pace: 'moderate',
-    language: 'en'
+    language: i18n.language || 'en'
   });
 
   if (!isOpen) return null;
 
   const handleChange = (field, value) => {
+    if (field === 'language') {
+      i18n.changeLanguage(value);
+    }
     setFormData(prev => ({ ...prev, [field]: value }));
   };
 
@@ -66,7 +69,7 @@ export default function NewProfileModal({ isOpen, onClose, onProfileCreated }) {
           activity_level: 'moderate',
           goal: 'lose',
           pace: 'moderate',
-          language: 'en'
+          language: i18n.language || 'en'
         });
       }
     } catch (err) {
@@ -126,31 +129,41 @@ export default function NewProfileModal({ isOpen, onClose, onProfileCreated }) {
           ))}
         </div>
 
-        {/* Step 1: Name & Gender */}
+        {/* Step 1: Name & Gender & Language */}
         {step === 1 && (
           <div>
             <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', color: 'var(--color-indigo)', marginBottom: '0.5rem' }}>
               <User size={20} />
-              <span style={{ fontSize: '0.85rem', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.5px' }}>Paso 1 de 4</span>
+              <span style={{ fontSize: '0.85rem', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.5px' }}>
+                {t('modal.stepOf', { current: 1, total: 4 })}
+              </span>
             </div>
-            <h2 style={{ fontSize: '1.4rem', fontFamily: 'var(--font-heading)', marginBottom: '0.5rem' }}>¿Cómo te llamas?</h2>
-            <p style={{ fontSize: '0.85rem', color: 'var(--text-muted)', marginBottom: '1.5rem' }}>Crearemos un perfil personalizado para ti.</p>
+            <h2 style={{ fontSize: '1.4rem', fontFamily: 'var(--font-heading)', marginBottom: '0.5rem' }}>
+              {t('modal.step1Title')}
+            </h2>
+            <p style={{ fontSize: '0.85rem', color: 'var(--text-muted)', marginBottom: '1.5rem' }}>
+              {t('modal.step1Desc')}
+            </p>
 
             <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
               <div>
-                <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 600, marginBottom: '0.4rem' }}>Tu Nombre</label>
+                <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 600, marginBottom: '0.4rem' }}>
+                  {t('modal.yourName')}
+                </label>
                 <input 
                   type="text" 
                   value={formData.name} 
                   onChange={(e) => handleChange('name', e.target.value)}
-                  placeholder="Ej: Pablo" 
+                  placeholder={t('modal.namePlaceholder')} 
                   autoFocus
                   className="edit-input" 
                 />
               </div>
 
               <div>
-                <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 600, marginBottom: '0.4rem' }}>Género</label>
+                <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 600, marginBottom: '0.4rem' }}>
+                  {t('profile.gender')}
+                </label>
                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.75rem' }}>
                   <button
                     type="button"
@@ -165,7 +178,7 @@ export default function NewProfileModal({ isOpen, onClose, onProfileCreated }) {
                       cursor: 'pointer'
                     }}
                   >
-                    Hombre
+                    {t('profile.male')}
                   </button>
                   <button
                     type="button"
@@ -180,13 +193,15 @@ export default function NewProfileModal({ isOpen, onClose, onProfileCreated }) {
                       cursor: 'pointer'
                     }}
                   >
-                    Mujer
+                    {t('profile.female')}
                   </button>
                 </div>
               </div>
 
               <div>
-                <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 600, marginBottom: '0.4rem' }}>Idioma de Preferencia</label>
+                <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 600, marginBottom: '0.4rem' }}>
+                  {t('profile.language')}
+                </label>
                 <select 
                   value={formData.language} 
                   onChange={(e) => handleChange('language', e.target.value)}
@@ -205,14 +220,20 @@ export default function NewProfileModal({ isOpen, onClose, onProfileCreated }) {
           <div>
             <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', color: 'var(--color-indigo)', marginBottom: '0.5rem' }}>
               <User size={20} />
-              <span style={{ fontSize: '0.85rem', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.5px' }}>Paso 2 de 4</span>
+              <span style={{ fontSize: '0.85rem', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.5px' }}>
+                {t('modal.stepOf', { current: 2, total: 4 })}
+              </span>
             </div>
-            <h2 style={{ fontSize: '1.4rem', fontFamily: 'var(--font-heading)', marginBottom: '0.5rem' }}>Tus Medidas Corporales</h2>
-            <p style={{ fontSize: '0.85rem', color: 'var(--text-muted)', marginBottom: '1.5rem' }}>Sirven para calcular tu metabolismo basal (TDEE).</p>
+            <h2 style={{ fontSize: '1.4rem', fontFamily: 'var(--font-heading)', marginBottom: '0.5rem' }}>
+              {t('modal.step2Title')}
+            </h2>
+            <p style={{ fontSize: '0.85rem', color: 'var(--text-muted)', marginBottom: '1.5rem' }}>
+              {t('modal.step2Desc')}
+            </p>
 
             <div className="form-grid-4">
               <div>
-                <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 600, marginBottom: '0.4rem' }}>Edad</label>
+                <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 600, marginBottom: '0.4rem' }}>{t('profile.age')}</label>
                 <input 
                   type="number" 
                   value={formData.age} 
@@ -222,7 +243,7 @@ export default function NewProfileModal({ isOpen, onClose, onProfileCreated }) {
               </div>
 
               <div>
-                <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 600, marginBottom: '0.4rem' }}>Altura (cm)</label>
+                <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 600, marginBottom: '0.4rem' }}>{t('profile.height')}</label>
                 <input 
                   type="number" 
                   value={formData.height} 
@@ -232,7 +253,7 @@ export default function NewProfileModal({ isOpen, onClose, onProfileCreated }) {
               </div>
 
               <div>
-                <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 600, marginBottom: '0.4rem' }}>Peso Actual (kg)</label>
+                <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 600, marginBottom: '0.4rem' }}>{t('modal.currentWeight')}</label>
                 <input 
                   type="number" 
                   step="0.1"
@@ -243,7 +264,7 @@ export default function NewProfileModal({ isOpen, onClose, onProfileCreated }) {
               </div>
 
               <div>
-                <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 600, marginBottom: '0.4rem' }}>Peso Meta (kg)</label>
+                <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 600, marginBottom: '0.4rem' }}>{t('modal.targetWeight')}</label>
                 <input 
                   type="number" 
                   step="0.1"
@@ -261,24 +282,30 @@ export default function NewProfileModal({ isOpen, onClose, onProfileCreated }) {
           <div>
             <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', color: 'var(--color-indigo)', marginBottom: '0.5rem' }}>
               <Activity size={20} />
-              <span style={{ fontSize: '0.85rem', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.5px' }}>Paso 3 de 4</span>
+              <span style={{ fontSize: '0.85rem', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.5px' }}>
+                {t('modal.stepOf', { current: 3, total: 4 })}
+              </span>
             </div>
-            <h2 style={{ fontSize: '1.4rem', fontFamily: 'var(--font-heading)', marginBottom: '0.5rem' }}>¿Cuál es tu nivel de actividad?</h2>
-            <p style={{ fontSize: '0.85rem', color: 'var(--text-muted)', marginBottom: '1.25rem' }}>Indica el ejercicio que haces a la semana.</p>
+            <h2 style={{ fontSize: '1.4rem', fontFamily: 'var(--font-heading)', marginBottom: '0.5rem' }}>
+              {t('modal.step3Title')}
+            </h2>
+            <p style={{ fontSize: '0.85rem', color: 'var(--text-muted)', marginBottom: '1.25rem' }}>
+              {t('modal.step3Desc')}
+            </p>
 
             <div style={{ display: 'flex', flexDirection: 'column', gap: '0.65rem' }}>
               {[
-                { id: 'sedentary', title: 'Sedentario', desc: 'Poco o ningún ejercicio' },
-                { id: 'light', title: 'Actividad Ligera', desc: 'Ejercicio 1-3 días a la semana' },
-                { id: 'moderate', title: 'Moderado', desc: 'Ejercicio 3-5 días a la semana' },
-                { id: 'active', title: 'Activo', desc: 'Ejercicio 6-7 días a la semana' },
-                { id: 'very_active', title: 'Muy Activo', desc: 'Atleta o trabajo físico pesado' }
+                { id: 'sedentary', title: t('profile.sedentary') },
+                { id: 'light', title: t('profile.light') },
+                { id: 'moderate', title: t('profile.moderate') },
+                { id: 'active', title: t('profile.active') },
+                { id: 'very_active', title: t('profile.veryActive') }
               ].map(opt => (
                 <div
                   key={opt.id}
                   onClick={() => handleChange('activity_level', opt.id)}
                   style={{
-                    padding: '0.75rem 1rem',
+                    padding: '0.85rem 1rem',
                     borderRadius: '12px',
                     border: formData.activity_level === opt.id ? '2px solid var(--color-indigo)' : '1px solid var(--border-light)',
                     background: formData.activity_level === opt.id ? 'var(--color-indigo-subtle)' : 'var(--bg-app)',
@@ -288,9 +315,8 @@ export default function NewProfileModal({ isOpen, onClose, onProfileCreated }) {
                     alignItems: 'center'
                   }}
                 >
-                  <div>
-                    <div style={{ fontWeight: 600, fontSize: '0.9rem', color: formData.activity_level === opt.id ? 'var(--color-indigo)' : 'var(--text-main)' }}>{opt.title}</div>
-                    <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>{opt.desc}</div>
+                  <div style={{ fontWeight: 600, fontSize: '0.9rem', color: formData.activity_level === opt.id ? 'var(--color-indigo)' : 'var(--text-main)' }}>
+                    {opt.title}
                   </div>
                   {formData.activity_level === opt.id && <Check size={18} color="var(--color-indigo)" />}
                 </div>
@@ -299,21 +325,27 @@ export default function NewProfileModal({ isOpen, onClose, onProfileCreated }) {
           </div>
         )}
 
-        {/* Step 4: Goal */}
+        {/* Step 4: Goal & Pace */}
         {step === 4 && (
           <div>
             <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', color: 'var(--color-indigo)', marginBottom: '0.5rem' }}>
               <Target size={20} />
-              <span style={{ fontSize: '0.85rem', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.5px' }}>Paso final</span>
+              <span style={{ fontSize: '0.85rem', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.5px' }}>
+                {t('modal.finalStep')}
+              </span>
             </div>
-            <h2 style={{ fontSize: '1.4rem', fontFamily: 'var(--font-heading)', marginBottom: '0.5rem' }}>¿Cuál es tu objetivo?</h2>
-            <p style={{ fontSize: '0.85rem', color: 'var(--text-muted)', marginBottom: '1.25rem' }}>Ajustaremos tus macros según tu meta.</p>
+            <h2 style={{ fontSize: '1.4rem', fontFamily: 'var(--font-heading)', marginBottom: '0.5rem' }}>
+              {t('modal.step4Title')}
+            </h2>
+            <p style={{ fontSize: '0.85rem', color: 'var(--text-muted)', marginBottom: '1.25rem' }}>
+              {t('modal.step4Desc')}
+            </p>
 
             <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
               {[
-                { id: 'lose', title: 'Perder Peso (Déficit)', desc: 'Reduce calorías para perder grasa' },
-                { id: 'maintain', title: 'Mantener Peso', desc: 'Mantiene tus calorías en tu gasto total diario' },
-                { id: 'gain', title: 'Ganar Masa Muscular', desc: 'Añade un superávit para subir de peso' }
+                { id: 'lose', title: t('profile.loseWeight') },
+                { id: 'maintain', title: t('profile.maintainWeight') },
+                { id: 'gain', title: t('profile.gainWeight') }
               ].map(opt => (
                 <div
                   key={opt.id}
@@ -329,9 +361,8 @@ export default function NewProfileModal({ isOpen, onClose, onProfileCreated }) {
                     alignItems: 'center'
                   }}
                 >
-                  <div>
-                    <div style={{ fontWeight: 600, fontSize: '0.95rem', color: formData.goal === opt.id ? 'var(--color-indigo)' : 'var(--text-main)' }}>{opt.title}</div>
-                    <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>{opt.desc}</div>
+                  <div style={{ fontWeight: 600, fontSize: '0.95rem', color: formData.goal === opt.id ? 'var(--color-indigo)' : 'var(--text-main)' }}>
+                    {opt.title}
                   </div>
                   {formData.goal === opt.id && <Check size={18} color="var(--color-indigo)" />}
                 </div>
@@ -340,12 +371,14 @@ export default function NewProfileModal({ isOpen, onClose, onProfileCreated }) {
 
             {formData.goal !== 'maintain' && (
               <div style={{ marginTop: '1.25rem' }}>
-                <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 600, marginBottom: '0.5rem' }}>Ritmo / Agresividad del Plan</label>
+                <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 600, marginBottom: '0.5rem' }}>
+                  {t('profile.pace')}
+                </label>
                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '0.5rem' }}>
                   {[
-                    { id: 'relaxed', label: 'Suave', desc: formData.goal === 'lose' ? '-300 kcal' : '+200 kcal' },
-                    { id: 'moderate', label: 'Moderado', desc: formData.goal === 'lose' ? '-500 kcal' : '+350 kcal' },
-                    { id: 'aggressive', label: 'Agresivo', desc: formData.goal === 'lose' ? '-750 kcal' : '+500 kcal' }
+                    { id: 'relaxed', label: t('profile.paceRelaxed'), desc: formData.goal === 'lose' ? '-300 kcal' : '+200 kcal' },
+                    { id: 'moderate', label: t('profile.paceModerate'), desc: formData.goal === 'lose' ? '-500 kcal' : '+350 kcal' },
+                    { id: 'aggressive', label: t('profile.paceAggressive'), desc: formData.goal === 'lose' ? '-750 kcal' : '+500 kcal' }
                   ].map(p => (
                     <button
                       key={p.id}
@@ -391,7 +424,7 @@ export default function NewProfileModal({ isOpen, onClose, onProfileCreated }) {
                 gap: '0.3rem'
               }}
             >
-              <ChevronLeft size={16} /> Atrás
+              <ChevronLeft size={16} /> {t('modal.back')}
             </button>
           ) : <div />}
 
@@ -413,7 +446,7 @@ export default function NewProfileModal({ isOpen, onClose, onProfileCreated }) {
                 gap: '0.3rem'
               }}
             >
-              Siguiente <ChevronRight size={16} />
+              {t('modal.next')} <ChevronRight size={16} />
             </button>
           ) : (
             <button
@@ -434,7 +467,7 @@ export default function NewProfileModal({ isOpen, onClose, onProfileCreated }) {
               }}
             >
               <Sparkles size={18} />
-              {isSubmitting ? 'Creando...' : 'Crear Perfil'}
+              {isSubmitting ? t('modal.creating') : t('modal.create')}
             </button>
           )}
         </div>

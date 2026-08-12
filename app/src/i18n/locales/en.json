@@ -100,6 +100,26 @@
     "placeholder": "Type or dictate your meals (e.g., 200g chicken and 150g rice for lunch)...",
     "processing": "Processing food with AI..."
   },
+  "modal": {
+    "stepOf": "Step {{current}} of {{total}}",
+    "finalStep": "Final step",
+    "step1Title": "What's your name?",
+    "step1Desc": "We will create a customized profile for you.",
+    "yourName": "Your Name",
+    "namePlaceholder": "e.g., Alex",
+    "step2Title": "Your Body Metrics",
+    "step2Desc": "Used to calculate your Total Daily Energy Expenditure (TDEE).",
+    "currentWeight": "Current Weight (kg)",
+    "targetWeight": "Target Weight (kg)",
+    "step3Title": "What is your activity level?",
+    "step3Desc": "Select your weekly physical activity level.",
+    "step4Title": "What is your main goal?",
+    "step4Desc": "We will adjust your macros according to your target.",
+    "back": "Back",
+    "next": "Next",
+    "create": "Create Profile",
+    "creating": "Creating..."
+  },
   "toast": {
     "foodAdded": "Added",
     "foodDeleted": "Food item deleted",

@@ -100,6 +100,26 @@
     "placeholder": "Escribe o dicta tus comidas (ej: 200g pollo y 150g arroz)...",
     "processing": "Procesando alimento con IA..."
   },
+  "modal": {
+    "stepOf": "Paso {{current}} de {{total}}",
+    "finalStep": "Paso final",
+    "step1Title": "¿Cómo te llamas?",
+    "step1Desc": "Crearemos un perfil personalizado para ti.",
+    "yourName": "Tu Nombre",
+    "namePlaceholder": "Ej: Pablo",
+    "step2Title": "Tus Medidas Corporales",
+    "step2Desc": "Sirven para calcular tu metabolismo basal (TDEE).",
+    "currentWeight": "Peso Actual (kg)",
+    "targetWeight": "Peso Meta (kg)",
+    "step3Title": "¿Cuál es tu nivel de actividad?",
+    "step3Desc": "Indica el ejercicio que haces a la semana.",
+    "step4Title": "¿Cuál es tu objetivo?",
+    "step4Desc": "Ajustaremos tus macros según tu meta.",
+    "back": "Atrás",
+    "next": "Siguiente",
+    "create": "Crear Perfil",
+    "creating": "Creando..."
+  },
   "toast": {
     "foodAdded": "Añadido",
     "foodDeleted": "Alimento eliminado",
