@@ -90,7 +90,7 @@ export default function ChatInputBar({ onSendFood, isLoading }) {
             disabled={!text.trim() || isLoading}
             className="chat-send-btn"
           >
-            {isLoading ? <Loader2 className="animate-spin" size={18} /> : <Send size={18} />}
+            {isLoading ? <Loader2 className="spin animate-spin" size={18} style={{ animation: 'spin 1s linear infinite' }} /> : <Send size={18} />}
           </button>
         </div>
       </form>

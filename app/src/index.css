@@ -192,7 +192,7 @@ body {
   }
 }
 
-.spin {
+.spin, .animate-spin {
   animation: spin 1s linear infinite;
 }
 
