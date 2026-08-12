@@ -7,6 +7,7 @@ import { calculateProfileTargets } from '../utils/profile';
 const defaultForm = {
   name: '',
   gender: 'male',
+  language: 'es',
   age: 30,
   height: 170,
   weight: 70,
@@ -75,7 +76,7 @@ export default function ProfileView({ profile, onProfileSaved }) {
       <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
         
         {/* Basic Info */}
-        <div className="form-grid-2">
+        <div className="form-grid-3">
           <div>
             <label style={{ display: 'block', marginBottom: '0.5rem', fontSize: '0.85rem', color: 'var(--text-muted)' }}>{t('profile.name')}</label>
             <input type="text" name="name" value={formData.name || ''} onChange={handleChange} required className="edit-input" />
@@ -85,6 +86,13 @@ export default function ProfileView({ profile, onProfileSaved }) {
             <select name="gender" value={formData.gender || 'male'} onChange={handleChange} className="edit-select">
               <option value="male">{t('profile.male')}</option>
               <option value="female">{t('profile.female')}</option>
+            </select>
+          </div>
+          <div>
+            <label style={{ display: 'block', marginBottom: '0.5rem', fontSize: '0.85rem', color: 'var(--text-muted)' }}>{t('profile.language')}</label>
+            <select name="language" value={formData.language || 'es'} onChange={handleChange} className="edit-select">
+              <option value="es">Español</option>
+              <option value="en">English</option>
             </select>
           </div>
         </div>

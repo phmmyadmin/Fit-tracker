@@ -69,6 +69,7 @@
     "settings": "Configuración de Perfil",
     "name": "Nombre",
     "gender": "Género",
+    "language": "Idioma",
     "male": "Hombre",
     "female": "Mujer",
     "age": "Edad",

@@ -64,6 +64,11 @@ export default function App() {
         setActiveProfileId(currentProfileId);
       }
 
+      const activeProf = currentProfiles.find(p => p.id === currentProfileId);
+      if (activeProf && activeProf.language) {
+        i18n.changeLanguage(activeProf.language);
+      }
+
       if (currentProfileId) {
         const supabaseData = await fetchDailyLogsFromSupabase(currentProfileId);
         if (supabaseData) {
@@ -95,8 +100,23 @@ export default function App() {
   // Reload data when active profile changes manually
   const handleProfileChange = (newProfileId) => {
     setActiveProfileId(newProfileId);
+    const targetProfile = profiles.find(p => p.id === newProfileId);
+    if (targetProfile && targetProfile.language) {
+      i18n.changeLanguage(targetProfile.language);
+    }
     setData(null); // Show loading state
     loadData(newProfileId);
+  };
+
+  const handleToggleLanguage = async () => {
+    const newLang = i18n.language.startsWith('es') ? 'en' : 'es';
+    i18n.changeLanguage(newLang);
+    const activeProf = profiles.find(p => p.id === activeProfileId);
+    if (activeProf && supabase) {
+      const updated = { ...activeProf, language: newLang };
+      await saveProfile(updated);
+      setProfiles(prev => prev.map(p => p.id === activeProf.id ? updated : p));
+    }
   };
 
   const showToast = (msg) => {
@@ -421,7 +441,7 @@ export default function App() {
           </button>
           
           <button
-            onClick={() => i18n.changeLanguage(i18n.language.startsWith('es') ? 'en' : 'es')}
+            onClick={handleToggleLanguage}
             style={{
               marginLeft: '0.5rem',
               padding: '0.2rem 0.6rem',
