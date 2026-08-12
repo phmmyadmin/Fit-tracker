@@ -463,15 +463,8 @@ export default function App() {
           <span>{t('nav.diary')}</span>
         </button>
         <button
-          className={`tab-item ${activeTab === 'weekly' ? 'active' : ''}`}
-          onClick={() => setActiveTab('weekly')}
-        >
-          <TrendingUp size={16} />
-          <span>{t('nav.trends')}</span>
-        </button>
-        <button
-          className={`tab-item ${activeTab === 'monthly' ? 'active' : ''}`}
-          onClick={() => setActiveTab('monthly')}
+          className={`tab-item ${activeTab === 'report' ? 'active' : ''}`}
+          onClick={() => setActiveTab('report')}
         >
           <CalendarRange size={16} />
           <span>{t('nav.report')}</span>
@@ -553,18 +546,17 @@ export default function App() {
         </div>
       )}
 
-      {activeTab === 'weekly' && (
-        <WeeklyChart
-          logs={data.dailyLogs}
-          selectedDate={selectedDate}
-          onSelectDate={setSelectedDate}
-          targetMacros={targetMacros}
-          onUpdateCategory={handleUpdateCategoryFromWeekly}
-        />
-      )}
-
-      {activeTab === 'monthly' && (
-        <MonthlyReport data={data} />
+      {activeTab === 'report' && (
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+          <WeeklyChart
+            logs={data.dailyLogs}
+            selectedDate={selectedDate}
+            onSelectDate={setSelectedDate}
+            targetMacros={targetMacros}
+            onUpdateCategory={handleUpdateCategoryFromWeekly}
+          />
+          <MonthlyReport data={data} />
+        </div>
       )}
 
       {activeTab === 'progress' && (
