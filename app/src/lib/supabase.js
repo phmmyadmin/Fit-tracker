@@ -394,6 +394,7 @@ export async function saveToCatalog(items) {
   if (!supabase || !items || items.length === 0) return;
   try {
     for (const item of items) {
+      let savedIng = null;
       if (item.name) {
         const ingRow = {
           name: item.name.trim(),
@@ -404,12 +405,21 @@ export async function saveToCatalog(items) {
           carbs: item.macros?.carbs || item.carbs || 0,
           fats: item.macros?.fats || item.fats || 0
         };
-        await supabase.from('ingredients').upsert(ingRow, { onConflict: 'name' }).catch(() => {});
+        const { data } = await supabase.from('ingredients').upsert(ingRow, { onConflict: 'name' }).select().maybeSingle().catch(() => ({ data: null }));
+        savedIng = data;
       }
 
       if (item.dishName && item.dishName.trim()) {
-        const dishRow = { name: item.dishName.trim() };
-        await supabase.from('dishes').upsert(dishRow, { onConflict: 'name' }).catch(() => {});
+        const { data: savedDish } = await supabase.from('dishes').upsert({ name: item.dishName.trim() }, { onConflict: 'name' }).select().maybeSingle().catch(() => ({ data: null }));
+        
+        if (savedDish && savedIng) {
+          await supabase.from('dish_ingredients').upsert({
+            dish_id: savedDish.id,
+            ingredient_id: savedIng.id,
+            quantity: item.quantity || 100,
+            unit: item.unit || 'g'
+          }).catch(() => {});
+        }
       }
     }
   } catch (err) {
