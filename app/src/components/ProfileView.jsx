@@ -4,29 +4,33 @@ import { useTranslation } from 'react-i18next';
 import { saveProfile } from '../lib/supabase';
 import { calculateProfileTargets } from '../utils/profile';
 
+const defaultForm = {
+  name: '',
+  gender: 'male',
+  age: 30,
+  height: 170,
+  weight: 70,
+  activity_level: 'moderate',
+  goal: 'maintain',
+  target_calories: 2000,
+  target_protein: 150,
+  target_carbs: 200,
+  target_fats: 60
+};
+
 export default function ProfileView({ profile, onProfileSaved }) {
   const { t } = useTranslation();
-  const [formData, setFormData] = useState(profile || {
-    name: '',
-    gender: 'male',
-    age: 30,
-    height: 170,
-    weight: 70,
-    activity_level: 'moderate',
-    goal: 'maintain',
-    target_calories: 2000,
-    target_protein: 150,
-    target_carbs: 200,
-    target_fats: 60
-  });
+  const [formData, setFormData] = useState(profile || defaultForm);
 
   const [isSaving, setIsSaving] = useState(false);
   const [autoCalculate, setAutoCalculate] = useState(true);
 
-  // Update local state when active profile changes
+  // Update local state when active profile changes (or reset to empty form if profile is null)
   useEffect(() => {
     if (profile) {
       setFormData(profile);
+    } else {
+      setFormData(defaultForm);
     }
   }, [profile]);
 
@@ -71,32 +75,32 @@ export default function ProfileView({ profile, onProfileSaved }) {
       <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
         
         {/* Basic Info */}
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
+        <div className="form-grid-2">
           <div>
             <label style={{ display: 'block', marginBottom: '0.5rem', fontSize: '0.85rem', color: 'var(--text-muted)' }}>{t('profile.name')}</label>
-            <input type="text" name="name" value={formData.name} onChange={handleChange} required className="edit-input" />
+            <input type="text" name="name" value={formData.name || ''} onChange={handleChange} required className="edit-input" />
           </div>
           <div>
             <label style={{ display: 'block', marginBottom: '0.5rem', fontSize: '0.85rem', color: 'var(--text-muted)' }}>{t('profile.gender')}</label>
-            <select name="gender" value={formData.gender} onChange={handleChange} className="edit-select">
+            <select name="gender" value={formData.gender || 'male'} onChange={handleChange} className="edit-select">
               <option value="male">{t('profile.male')}</option>
               <option value="female">{t('profile.female')}</option>
             </select>
           </div>
         </div>
 
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '1rem' }}>
+        <div className="form-grid-3">
           <div>
             <label style={{ display: 'block', marginBottom: '0.5rem', fontSize: '0.85rem', color: 'var(--text-muted)' }}>{t('profile.age')}</label>
-            <input type="number" name="age" value={formData.age} onChange={handleChange} required className="edit-input" />
+            <input type="number" name="age" value={formData.age || ''} onChange={handleChange} required className="edit-input" />
           </div>
           <div>
             <label style={{ display: 'block', marginBottom: '0.5rem', fontSize: '0.85rem', color: 'var(--text-muted)' }}>{t('profile.height')}</label>
-            <input type="number" name="height" value={formData.height} onChange={handleChange} required className="edit-input" />
+            <input type="number" name="height" value={formData.height || ''} onChange={handleChange} required className="edit-input" />
           </div>
           <div>
             <label style={{ display: 'block', marginBottom: '0.5rem', fontSize: '0.85rem', color: 'var(--text-muted)' }}>{t('profile.weight')}</label>
-            <input type="number" name="weight" step="0.1" value={formData.weight} onChange={handleChange} required className="edit-input" />
+            <input type="number" name="weight" step="0.1" value={formData.weight || ''} onChange={handleChange} required className="edit-input" />
           </div>
         </div>
 
@@ -106,10 +110,10 @@ export default function ProfileView({ profile, onProfileSaved }) {
           {t('profile.activityAndGoal')}
         </h3>
 
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
+        <div className="form-grid-2">
           <div>
             <label style={{ display: 'block', marginBottom: '0.5rem', fontSize: '0.85rem', color: 'var(--text-muted)' }}>{t('profile.activityLevel')}</label>
-            <select name="activity_level" value={formData.activity_level} onChange={handleChange} className="edit-select">
+            <select name="activity_level" value={formData.activity_level || 'moderate'} onChange={handleChange} className="edit-select">
               <option value="sedentary">{t('profile.sedentary')}</option>
               <option value="light">{t('profile.light')}</option>
               <option value="moderate">{t('profile.moderate')}</option>
@@ -119,7 +123,7 @@ export default function ProfileView({ profile, onProfileSaved }) {
           </div>
           <div>
             <label style={{ display: 'block', marginBottom: '0.5rem', fontSize: '0.85rem', color: 'var(--text-muted)' }}>{t('profile.goal')}</label>
-            <select name="goal" value={formData.goal} onChange={handleChange} className="edit-select">
+            <select name="goal" value={formData.goal || 'maintain'} onChange={handleChange} className="edit-select">
               <option value="lose">{t('profile.loseWeight')}</option>
               <option value="maintain">{t('profile.maintainWeight')}</option>
               <option value="gain">{t('profile.gainWeight')}</option>
@@ -143,7 +147,7 @@ export default function ProfileView({ profile, onProfileSaved }) {
           </label>
         </div>
 
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr 1fr', gap: '1rem', background: 'var(--bg-subtle)', padding: '1rem', borderRadius: '12px' }}>
+        <div className="form-grid-4" style={{ background: 'var(--bg-subtle)', padding: '1rem', borderRadius: '12px' }}>
           <div>
             <label style={{ display: 'block', marginBottom: '0.5rem', fontSize: '0.85rem', color: 'var(--text-muted)' }}>Kcal</label>
             <input type="number" name="target_calories" value={formData.target_calories} onChange={handleChange} disabled={autoCalculate} className="edit-input" style={{ opacity: autoCalculate ? 0.7 : 1 }} />
