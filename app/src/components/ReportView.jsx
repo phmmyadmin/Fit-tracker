@@ -66,6 +66,15 @@ export default function ReportView({ data, activeProfileId, onUpdateProfile, sel
   const totalGoalToLose = startWeight - targetWeight;
   const progressPercent = totalGoalToLose > 0 ? Math.min(100, Math.max(0, ((startWeight - latestRealWeight) / totalGoalToLose) * 100)) : 0;
 
+  // Estimated Days to Goal Calculation
+  const dailyTargetDeficit = Math.max(200, maintenanceCalories - (targetMacros.calories || 2000));
+  const kcalRemainingToBurn = remainingToGoal * 7700;
+  const daysToGoal = remainingToGoal > 0 ? Math.ceil(kcalRemainingToBurn / dailyTargetDeficit) : 0;
+  
+  const estimatedGoalDateObj = new Date();
+  estimatedGoalDateObj.setDate(estimatedGoalDateObj.getDate() + daysToGoal);
+  const formattedGoalDate = estimatedGoalDateObj.toLocaleDateString(locale, { day: 'numeric', month: 'short' });
+
   // Monthly Data Grouping
   const monthlyStats = useMemo(() => {
     const stats = {};
@@ -298,8 +307,14 @@ export default function ReportView({ data, activeProfileId, onUpdateProfile, sel
                   <h2 style={{ fontSize: '1.2rem', margin: 0, fontWeight: 700 }}>
                     {t('progress.goal')}: {targetWeight} kg
                   </h2>
-                  <span style={{ fontSize: '0.82rem', color: 'var(--text-muted)' }}>
-                    {remainingToGoal.toFixed(1)} kg {t('progress.remaining')} ({progressPercent.toFixed(0)}% completado)
+                  <span style={{ fontSize: '0.82rem', color: 'var(--text-muted)', display: 'block', marginTop: '0.2rem' }}>
+                    {remainingToGoal > 0 ? (
+                      <>
+                        <strong>{remainingToGoal.toFixed(1)} kg</strong> restantes ({progressPercent.toFixed(0)}%) • 🚀 <strong>~{daysToGoal} días restantes</strong> (Meta: {formattedGoalDate})
+                      </>
+                    ) : (
+                      <>🎉 ¡Objetivo de peso alcanzado!</>
+                    )}
                   </span>
                 </div>
               </div>
