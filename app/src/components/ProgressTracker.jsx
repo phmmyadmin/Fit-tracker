@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
 import { Scale, Plus, Trash2, TrendingDown, Target, Info, Check } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 import { supabase, saveWeightToSupabase, deleteWeightFromSupabase, fetchDailyLogsFromSupabase } from '../lib/supabase';
 
 const ProgressTracker = ({ data, activeProfileId, onUpdateProfile }) => {
+  const { t } = useTranslation();
   const todayStr = new Date().toISOString().slice(0, 10);
   const currentTimeStr = new Date().toTimeString().slice(0, 5);
   const [inputDate, setInputDate] = useState(todayStr);

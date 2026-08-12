@@ -1,0 +1,105 @@
+{
+  "header": {
+    "subtitle": "Control Nutricional & Déficit Calórico",
+    "today": "Hoy",
+    "newProfile": "+ Nuevo Perfil"
+  },
+  "nav": {
+    "diary": "Diario",
+    "trends": "Tendencias",
+    "report": "Reporte",
+    "progress": "Progreso",
+    "profile": "Perfil"
+  },
+  "diary": {
+    "macroSummary": "Resumen de Macronutrientes",
+    "calories": "Calorías",
+    "protein": "Proteína",
+    "carbs": "Carbohidratos",
+    "fats": "Grasas",
+    "dailyIntakes": "Ingestas del Día",
+    "noIntakes": "Sin ingestas registradas para este día"
+  },
+  "categories": {
+    "desayuno": "Desayuno",
+    "almuerzo": "Almuerzo",
+    "comida": "Comida",
+    "merienda": "Merienda",
+    "cena": "Cena",
+    "snack": "Snack"
+  },
+  "trends": {
+    "dailyAverage": "Promedio Diario",
+    "adherence": "Cumplimiento",
+    "weeklyTrend": "Tendencia Semanal",
+    "category": "Categoría",
+    "consumedFoods": "Alimentos Consumidos",
+    "save": "Guardar",
+    "cancel": "Cancelar"
+  },
+  "report": {
+    "monthlySummary": "Resumen Mensual",
+    "loggedDays": "Días registrados",
+    "avgCalories": "Calorías medias"
+  },
+  "progress": {
+    "logRealWeight": "Registrar Pesaje Real",
+    "logSubtitle": "Añade tu peso báscula para comparar con la estimación teórica",
+    "date": "Fecha",
+    "time": "Hora",
+    "scaleWeight": "Peso Báscula (kg)",
+    "saveWeight": "Guardar Peso",
+    "initialWeight": "Peso Inicial",
+    "estimatedWeight": "Peso Estimado (Déficit)",
+    "latestRealWeight": "Último Peso Real",
+    "deviation": "Desviación (Real vs Est.)",
+    "aheadOfDeficit": "¡Vas por delante del déficit!",
+    "slightDifference": "Ligera retención o diferencia",
+    "goal": "Meta",
+    "remaining": "restantes",
+    "history": "Historial de Pesajes & Comparativa",
+    "dateTime": "Fecha y Hora",
+    "realWeight": "Peso Real",
+    "estimatedThatDay": "Estimado ese día",
+    "difference": "Diferencia",
+    "action": "Acción",
+    "noWeights": "Aún no has añadido ningún pesaje real. ¡Registra tu primer peso arriba para empezar a comparar!"
+  },
+  "profile": {
+    "settings": "Configuración de Perfil",
+    "name": "Nombre",
+    "gender": "Género",
+    "male": "Hombre",
+    "female": "Mujer",
+    "age": "Edad",
+    "height": "Altura (cm)",
+    "weight": "Peso (kg)",
+    "activityAndGoal": "Actividad y Meta",
+    "activityLevel": "Nivel de Actividad (NEAT)",
+    "sedentary": "Sedentario (Poco o ningún ejercicio)",
+    "light": "Ligero (Ejercicio 1-3 días/sem)",
+    "moderate": "Moderado (Ejercicio 3-5 días/sem)",
+    "active": "Activo (Ejercicio 6-7 días/sem)",
+    "veryActive": "Muy Activo (Atleta/Doble turno)",
+    "goal": "Objetivo",
+    "loseWeight": "Perder Peso (Déficit)",
+    "maintainWeight": "Mantener Peso",
+    "gainWeight": "Ganar Masa Muscular (Superávit)",
+    "dailyTargets": "Objetivos Diarios (Macros)",
+    "autoCalculate": "Calcular automáticamente",
+    "saveProfile": "Guardar Perfil",
+    "saving": "Guardando..."
+  },
+  "chat": {
+    "placeholder": "Escribe o dicta tus comidas (ej: 200g pollo y 150g arroz)...",
+    "processing": "Procesando alimento con IA..."
+  },
+  "toast": {
+    "foodAdded": "Añadido",
+    "foodDeleted": "Alimento eliminado",
+    "intakeUpdated": "Ingesta actualizada",
+    "categoryUpdated": "Categoría actualizada",
+    "weightSaved": "Peso registrado con éxito",
+    "profileSaved": "Perfil guardado con éxito"
+  }
+}
