@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Scale, Plus, Trash2, TrendingDown, Target, Info, Check } from 'lucide-react';
 import { supabase, saveWeightToSupabase, deleteWeightFromSupabase, fetchDailyLogsFromSupabase } from '../lib/supabase';
 
-const ProgressTracker = ({ data, onUpdateProfile }) => {
+const ProgressTracker = ({ data, activeProfileId, onUpdateProfile }) => {
   const todayStr = new Date().toISOString().slice(0, 10);
   const currentTimeStr = new Date().toTimeString().slice(0, 5);
   const [inputDate, setInputDate] = useState(todayStr);
@@ -45,9 +45,9 @@ const ProgressTracker = ({ data, onUpdateProfile }) => {
     setIsSubmitting(true);
     try {
       if (supabase) {
-        const res = await saveWeightToSupabase({ date: inputDate, time: inputTime, weight: parseFloat(inputWeight) });
+        const res = await saveWeightToSupabase({ date: inputDate, time: inputTime, weight: parseFloat(inputWeight), profileId: activeProfileId });
         if (res && res.success) {
-          const freshData = await fetchDailyLogsFromSupabase();
+          const freshData = await fetchDailyLogsFromSupabase(activeProfileId);
           if (freshData) onUpdateProfile(freshData.userProfile);
           setInputWeight('');
           setFeedback('Peso registrado con éxito');
@@ -78,9 +78,9 @@ const ProgressTracker = ({ data, onUpdateProfile }) => {
   const handleDeleteWeight = async (item, originalIndex) => {
     try {
       if (supabase) {
-        const res = await deleteWeightFromSupabase({ date: item.date, time: item.time });
+        const res = await deleteWeightFromSupabase({ date: item.date, time: item.time, profileId: activeProfileId });
         if (res && res.success) {
-          const freshData = await fetchDailyLogsFromSupabase();
+          const freshData = await fetchDailyLogsFromSupabase(activeProfileId);
           if (freshData) onUpdateProfile(freshData.userProfile);
           return;
         }
