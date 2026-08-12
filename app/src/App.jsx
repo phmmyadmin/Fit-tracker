@@ -9,6 +9,7 @@ import ProgressTracker from './components/ProgressTracker';
 import ChatInputBar from './components/ChatInputBar';
 import EditDrawer from './components/EditDrawer';
 import ProfileView from './components/ProfileView';
+import NewProfileModal from './components/NewProfileModal';
 import { parseFoodWithGemini } from './lib/gemini';
 import { parseFoodTextLocal } from './lib/parser';
 import { supabase, fetchDailyLogsFromSupabase, saveIntakesToSupabase, deleteIntakeFromSupabase, updateIntakeInSupabase, fetchProfiles } from './lib/supabase';
@@ -48,6 +49,7 @@ export default function App() {
 
   const [profiles, setProfiles] = useState([]);
   const [activeProfileId, setActiveProfileId] = useState(null);
+  const [isNewProfileModalOpen, setIsNewProfileModalOpen] = useState(false);
 
   const loadData = async (forceProfileId = null) => {
     let currentProfileId = forceProfileId || activeProfileId;
@@ -346,8 +348,7 @@ export default function App() {
               value={activeProfileId || ''} 
               onChange={(e) => {
                 if (e.target.value === 'new') {
-                  setActiveProfileId(null);
-                  setActiveTab('profile');
+                  setIsNewProfileModalOpen(true);
                 } else {
                   handleProfileChange(e.target.value);
                 }
@@ -605,6 +606,18 @@ export default function App() {
         onClose={() => setEditingItem(null)}
         onDelete={handleDeleteItem}
         onUpdate={handleUpdateIntake}
+      />
+
+      {/* New Profile Questionnaire Modal */}
+      <NewProfileModal
+        isOpen={isNewProfileModalOpen}
+        onClose={() => setIsNewProfileModalOpen(false)}
+        onProfileCreated={async (newProf) => {
+          const updatedProfiles = await fetchProfiles();
+          setProfiles(updatedProfiles);
+          handleProfileChange(newProf.id);
+          showToast('Perfil creado con éxito');
+        }}
       />
     </div>
   );
