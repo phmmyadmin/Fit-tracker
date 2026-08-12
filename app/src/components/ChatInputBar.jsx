@@ -3,6 +3,9 @@ import { Send, Loader2, Mic, MicOff, Utensils, Egg, X, Plus, Minus } from 'lucid
 import { useTranslation } from 'react-i18next';
 import { fetchCatalog } from '../lib/supabase';
 
+const normalizeStr = (str) =>
+  str ? str.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").trim() : "";
+
 export default function ChatInputBar({ onSendFood, onSendFoodDirect, isLoading }) {
   const { t, i18n } = useTranslation();
   const [text, setText] = useState('');
@@ -15,8 +18,12 @@ export default function ChatInputBar({ onSendFood, onSendFoodDirect, isLoading }
   const [selectedChips, setSelectedChips] = useState([]);
   const recognitionRef = useRef(null);
 
-  useEffect(() => {
+  const refreshCatalog = () => {
     fetchCatalog().then(res => setCatalog(res));
+  };
+
+  useEffect(() => {
+    refreshCatalog();
 
     const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
     if (SpeechRecognition) {
@@ -36,7 +43,7 @@ export default function ChatInputBar({ onSendFood, onSendFoodDirect, isLoading }
     }
   }, []);
 
-  // Filter catalog items
+  // Filter catalog items with accent normalization and substring contains matching
   useEffect(() => {
     if (!text.trim() || text.length < 2) {
       setFilteredSuggestions([]);
@@ -44,27 +51,45 @@ export default function ChatInputBar({ onSendFood, onSendFoodDirect, isLoading }
       return;
     }
 
-    const query = text.trim().toLowerCase();
-    const parts = query.split(/[,+]/);
-    const lastPart = parts[parts.length - 1].trim();
+    const cleanQuery = normalizeStr(text);
+    const parts = text.split(/[,+]/);
+    const lastPart = normalizeStr(parts[parts.length - 1]);
 
-    if (lastPart.length < 2) {
+    const targetSearch = lastPart.length >= 2 ? lastPart : cleanQuery;
+
+    if (!targetSearch || targetSearch.length < 2) {
       setFilteredSuggestions([]);
       setShowSuggestions(false);
       return;
     }
 
     const matchedIngredients = (catalog.ingredients || [])
-      .filter(ing => ing.name && ing.name.toLowerCase().includes(lastPart))
-      .slice(0, 5)
+      .filter(ing => ing.name && normalizeStr(ing.name).includes(targetSearch))
+      .sort((a, b) => {
+        const aNorm = normalizeStr(a.name);
+        const bNorm = normalizeStr(b.name);
+        if (aNorm === targetSearch) return -1;
+        if (bNorm === targetSearch) return 1;
+        if (aNorm.startsWith(targetSearch) && !bNorm.startsWith(targetSearch)) return -1;
+        if (!aNorm.startsWith(targetSearch) && bNorm.startsWith(targetSearch)) return 1;
+        return aNorm.localeCompare(bNorm);
+      })
       .map(ing => ({ ...ing, type: 'ingredient' }));
 
     const matchedDishes = (catalog.dishes || [])
-      .filter(d => d.name && d.name.toLowerCase().includes(lastPart))
-      .slice(0, 3)
+      .filter(d => d.name && normalizeStr(d.name).includes(targetSearch))
+      .sort((a, b) => {
+        const aNorm = normalizeStr(a.name);
+        const bNorm = normalizeStr(b.name);
+        if (aNorm === targetSearch) return -1;
+        if (bNorm === targetSearch) return 1;
+        if (aNorm.startsWith(targetSearch) && !bNorm.startsWith(targetSearch)) return -1;
+        if (!aNorm.startsWith(targetSearch) && bNorm.startsWith(targetSearch)) return 1;
+        return aNorm.localeCompare(bNorm);
+      })
       .map(d => ({ ...d, type: 'dish' }));
 
-    const combined = [...matchedDishes, ...matchedIngredients];
+    const combined = [...matchedDishes, ...matchedIngredients].slice(0, 10);
     setFilteredSuggestions(combined);
     setShowSuggestions(combined.length > 0);
   }, [text, catalog]);
