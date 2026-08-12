@@ -161,6 +161,7 @@ export async function saveIntakesToSupabase({ date, items, profileId }) {
     if (insertErr) throw insertErr;
 
     await updateDailyLogTotals(date, profileId);
+    await saveToCatalog(items);
 
     return { success: true, addedItems: items };
   } catch (err) {
@@ -318,3 +319,76 @@ async function updateDailyLogTotals(date, profileId) {
     .eq('date', date)
     .eq('profile_id', profileId);
 }
+
+export async function fetchCatalog() {
+  if (!supabase) return { ingredients: [], dishes: [] };
+  try {
+    const { data: ingredientsData } = await supabase.from('ingredients').select('*').order('name');
+    const { data: dishesData } = await supabase.from('dishes').select('*').order('name');
+
+    let ingredients = ingredientsData || [];
+    let dishes = dishesData || [];
+
+    // Fallback if ingredients table does not exist or is empty
+    if (ingredients.length === 0) {
+      const { data: intakesData } = await supabase.from('intakes').select('name, category, unit, calories, protein, carbs, fats, dish_name');
+      if (intakesData) {
+        const uniqueIngMap = new Map();
+        const uniqueDishMap = new Set();
+
+        intakesData.forEach(item => {
+          if (item.name && !uniqueIngMap.has(item.name.trim().toLowerCase())) {
+            uniqueIngMap.set(item.name.trim().toLowerCase(), {
+              name: item.name.trim(),
+              category: item.category || 'other',
+              unit: item.unit || 'g',
+              calories: item.calories || 0,
+              protein: item.protein || 0,
+              carbs: item.carbs || 0,
+              fats: item.fats || 0
+            });
+          }
+          if (item.dish_name && item.dish_name.trim()) {
+            uniqueDishMap.add(item.dish_name.trim());
+          }
+        });
+
+        ingredients = Array.from(uniqueIngMap.values());
+        dishes = Array.from(uniqueDishMap).map(d => ({ name: d }));
+      }
+    }
+
+    return { ingredients, dishes };
+  } catch (err) {
+    console.error('Error fetching catalog:', err);
+    return { ingredients: [], dishes: [] };
+  }
+}
+
+export async function saveToCatalog(items) {
+  if (!supabase || !items || items.length === 0) return;
+  try {
+    for (const item of items) {
+      if (item.name) {
+        const ingRow = {
+          name: item.name.trim(),
+          category: item.category || 'other',
+          unit: item.unit || 'g',
+          calories: item.macros?.calories || item.calories || 0,
+          protein: item.macros?.protein || item.protein || 0,
+          carbs: item.macros?.carbs || item.carbs || 0,
+          fats: item.macros?.fats || item.fats || 0
+        };
+        await supabase.from('ingredients').upsert(ingRow, { onConflict: 'name' }).catch(() => {});
+      }
+
+      if (item.dishName && item.dishName.trim()) {
+        const dishRow = { name: item.dishName.trim() };
+        await supabase.from('dishes').upsert(dishRow, { onConflict: 'name' }).catch(() => {});
+      }
+    }
+  } catch (err) {
+    console.error('Error saving to catalog:', err);
+  }
+}
+
