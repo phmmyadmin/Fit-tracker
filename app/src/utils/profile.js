@@ -3,7 +3,7 @@
  * Fórmulas basadas en Mifflin-St Jeor
  */
 export function calculateProfileTargets(profile) {
-  const { weight, height, age, gender, activity_level, goal } = profile;
+  const { weight, height, age, gender, activity_level, goal, pace = 'moderate' } = profile;
 
   // Si faltan datos básicos, devolver algo por defecto
   if (!weight || !height || !age || !gender) {
@@ -25,13 +25,19 @@ export function calculateProfileTargets(profile) {
   const multiplier = activityMultipliers[activity_level] || 1.375;
   const maintenanceCalories = Math.round(tmb * multiplier);
 
-  // 3. Ajuste por Objetivo
-  let targetCalories = maintenanceCalories;
+  // 3. Ajuste por Objetivo y Ritmo (Agresividad)
+  let offset = 0;
   if (goal === 'lose') {
-    targetCalories -= 500; // Déficit estándar
+    if (pace === 'relaxed') offset = -300;       // Suave (~0.3 kg/sem)
+    else if (pace === 'aggressive') offset = -750; // Agresivo (~0.75 kg/sem)
+    else offset = -500;                          // Moderado (~0.5 kg/sem)
   } else if (goal === 'gain') {
-    targetCalories += 300; // Superávit
+    if (pace === 'relaxed') offset = 200;       // Suave
+    else if (pace === 'aggressive') offset = 500; // Agresivo
+    else offset = 350;                          // Moderado
   }
+
+  let targetCalories = maintenanceCalories + offset;
 
   // Límite de seguridad
   if (gender === 'male' && targetCalories < 1500) targetCalories = 1500;

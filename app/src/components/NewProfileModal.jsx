@@ -15,8 +15,10 @@ export default function NewProfileModal({ isOpen, onClose, onProfileCreated }) {
     age: 30,
     height: 170,
     weight: 70,
+    target_weight: 65,
     activity_level: 'moderate',
     goal: 'lose',
+    pace: 'moderate',
     language: 'en'
   });
 
@@ -60,8 +62,10 @@ export default function NewProfileModal({ isOpen, onClose, onProfileCreated }) {
           age: 30,
           height: 170,
           weight: 70,
+          target_weight: 65,
           activity_level: 'moderate',
           goal: 'lose',
+          pace: 'moderate',
           language: 'en'
         });
       }
@@ -206,7 +210,7 @@ export default function NewProfileModal({ isOpen, onClose, onProfileCreated }) {
             <h2 style={{ fontSize: '1.4rem', fontFamily: 'var(--font-heading)', marginBottom: '0.5rem' }}>Tus Medidas Corporales</h2>
             <p style={{ fontSize: '0.85rem', color: 'var(--text-muted)', marginBottom: '1.5rem' }}>Sirven para calcular tu metabolismo basal (TDEE).</p>
 
-            <div className="form-grid-3">
+            <div className="form-grid-4">
               <div>
                 <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 600, marginBottom: '0.4rem' }}>Edad</label>
                 <input 
@@ -228,12 +232,23 @@ export default function NewProfileModal({ isOpen, onClose, onProfileCreated }) {
               </div>
 
               <div>
-                <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 600, marginBottom: '0.4rem' }}>Peso (kg)</label>
+                <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 600, marginBottom: '0.4rem' }}>Peso Actual (kg)</label>
                 <input 
                   type="number" 
                   step="0.1"
                   value={formData.weight} 
                   onChange={(e) => handleChange('weight', Number(e.target.value))}
+                  className="edit-input" 
+                />
+              </div>
+
+              <div>
+                <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 600, marginBottom: '0.4rem' }}>Peso Meta (kg)</label>
+                <input 
+                  type="number" 
+                  step="0.1"
+                  value={formData.target_weight} 
+                  onChange={(e) => handleChange('target_weight', Number(e.target.value))}
                   className="edit-input" 
                 />
               </div>
@@ -296,9 +311,9 @@ export default function NewProfileModal({ isOpen, onClose, onProfileCreated }) {
 
             <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
               {[
-                { id: 'lose', title: 'Perder Peso (Déficit)', desc: 'Reduce ~500 kcal para perder grasa de forma limpia' },
+                { id: 'lose', title: 'Perder Peso (Déficit)', desc: 'Reduce calorías para perder grasa' },
                 { id: 'maintain', title: 'Mantener Peso', desc: 'Mantiene tus calorías en tu gasto total diario' },
-                { id: 'gain', title: 'Ganar Masa Muscular', desc: 'Añade un ligero superávit para subir de peso' }
+                { id: 'gain', title: 'Ganar Masa Muscular', desc: 'Añade un superávit para subir de peso' }
               ].map(opt => (
                 <div
                   key={opt.id}
@@ -322,6 +337,39 @@ export default function NewProfileModal({ isOpen, onClose, onProfileCreated }) {
                 </div>
               ))}
             </div>
+
+            {formData.goal !== 'maintain' && (
+              <div style={{ marginTop: '1.25rem' }}>
+                <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 600, marginBottom: '0.5rem' }}>Ritmo / Agresividad del Plan</label>
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '0.5rem' }}>
+                  {[
+                    { id: 'relaxed', label: 'Suave', desc: formData.goal === 'lose' ? '-300 kcal' : '+200 kcal' },
+                    { id: 'moderate', label: 'Moderado', desc: formData.goal === 'lose' ? '-500 kcal' : '+350 kcal' },
+                    { id: 'aggressive', label: 'Agresivo', desc: formData.goal === 'lose' ? '-750 kcal' : '+500 kcal' }
+                  ].map(p => (
+                    <button
+                      key={p.id}
+                      type="button"
+                      onClick={() => handleChange('pace', p.id)}
+                      style={{
+                        padding: '0.6rem 0.4rem',
+                        borderRadius: '10px',
+                        border: formData.pace === p.id ? '2px solid var(--color-indigo)' : '1px solid var(--border-light)',
+                        background: formData.pace === p.id ? 'var(--color-indigo-subtle)' : 'var(--bg-app)',
+                        color: formData.pace === p.id ? 'var(--color-indigo)' : 'var(--text-main)',
+                        fontWeight: 600,
+                        fontSize: '0.85rem',
+                        cursor: 'pointer',
+                        textAlign: 'center'
+                      }}
+                    >
+                      <div>{p.label}</div>
+                      <div style={{ fontSize: '0.75rem', fontWeight: 400, opacity: 0.8 }}>{p.desc}</div>
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
           </div>
         )}
 
