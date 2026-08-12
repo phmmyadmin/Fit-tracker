@@ -3,9 +3,7 @@ import { Calendar, ChevronLeft, ChevronRight, CheckCircle2, LayoutDashboard, Tre
 import { useTranslation } from 'react-i18next';
 import MacroRing from './components/MacroRing';
 import DailyTimeline from './components/DailyTimeline';
-import WeeklyChart from './components/WeeklyChart';
-import MonthlyReport from './components/MonthlyReport';
-import ProgressTracker from './components/ProgressTracker';
+import ReportView from './components/ReportView';
 import ChatInputBar from './components/ChatInputBar';
 import EditDrawer from './components/EditDrawer';
 import ProfileView from './components/ProfileView';
@@ -552,14 +550,7 @@ export default function App() {
           onClick={() => setActiveTab('report')}
         >
           <CalendarRange size={16} />
-          <span>{t('nav.report')}</span>
-        </button>
-        <button
-          className={`tab-item ${activeTab === 'progress' ? 'active' : ''}`}
-          onClick={() => setActiveTab('progress')}
-        >
-          <LineChart size={16} />
-          <span>{t('nav.progress')}</span>
+          <span>{t('nav.report')} & {t('nav.progress')}</span>
         </button>
         <button
           className={`tab-item ${activeTab === 'profile' ? 'active' : ''}`}
@@ -633,20 +624,14 @@ export default function App() {
       )}
 
       {activeTab === 'report' && (
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
-          <WeeklyChart
-            logs={data.dailyLogs}
-            selectedDate={selectedDate}
-            onSelectDate={setSelectedDate}
-            targetMacros={targetMacros}
-            onUpdateCategory={handleUpdateCategoryFromWeekly}
-          />
-          <MonthlyReport data={data} />
-        </div>
-      )}
-
-      {activeTab === 'progress' && (
-        <ProgressTracker data={data} activeProfileId={activeProfileId} onUpdateProfile={handleUpdateProfile} />
+        <ReportView
+          data={data}
+          activeProfileId={activeProfileId}
+          onUpdateProfile={handleUpdateProfile}
+          selectedDate={selectedDate}
+          onSelectDate={setSelectedDate}
+          onUpdateCategory={handleUpdateCategoryFromWeekly}
+        />
       )}
 
       {activeTab === 'profile' && (
