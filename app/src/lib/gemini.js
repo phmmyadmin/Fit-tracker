@@ -50,6 +50,7 @@ Reglas estrictas de parseo para CUALQUIER alimento del mundo:
    - Ejemplo 2: "150g pechuga de pollo" -> quantity: 150, unit: "g", category: "meat", calories: 247, protein: 46.5, carbs: 0, fats: 5.4.
    - Ejemplo 3: "1 manzana" -> quantity: 1, unit: "ud", category: "fruit", calories: 80, protein: 0.4, carbs: 21, fats: 0.2.
 6. Para textos con múltiples ingredientes (ej: "2 huevos cocidos y 50g de avena"), genera un objeto independiente por cada alimento.
+7. "dishName": (Opcional). Si los alimentos forman parte de un plato compuesto, combo o receta (ej: "Menú Jollibee con pollo y arroz" o "Ensalada César con pollo"), asigna el nombre del plato general a "dishName".
 
 Texto del usuario: "${userText}"
 
@@ -57,6 +58,7 @@ Devuelve ÚNICAMENTE la estructura JSON en este formato:
 [
   {
     "name": "Nombre Alimento",
+    "dishName": "Nombre del plato (opcional)",
     "quantity": 1,
     "unit": "ud|g|porcion|ml",
     "category": "meat|legumes|vegetables|fruit|fast_food|dairy|grains|healthy_fats|beverages|other",
